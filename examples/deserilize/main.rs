@@ -39,5 +39,7 @@ fn main() {
     let config = config.try_deserialize::<MyConfig>().unwrap();
     
     println!("'key1, key2, key3' Config element is: '{:?}', '{:?}', '{:?}'", config.key1, config.key2, config.key3);
+
+
 }
 

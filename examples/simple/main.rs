@@ -15,9 +15,10 @@ fn main() {
     .build()
     .expect("Building configuration object");
 
-    let value = config
+    let value :String = config
         .get("key1")
-        .expect("Accessing configuration object");
+        .expect("Accessing configuration object")
+        .into();
 
     println!("'key1' Config element is: '{value:?}'");
 }

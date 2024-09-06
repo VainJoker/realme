@@ -1,7 +1,8 @@
 mod des;
 mod ser;
 
-use serde::de::DeserializeOwned;
+use ser::ValueSerializer;
+use serde::{Deserialize, Serialize};
 
 use crate::{map::Map, RealmError};
 
@@ -29,10 +30,27 @@ impl Value {
         }
     }
 
-    pub fn try_deserialize<T>(self) -> Result<T, RealmError>
-    where
-        T: DeserializeOwned,
-    {
+    pub fn try_deserialize<'de, T: Deserialize<'de>>(
+        self,
+    ) -> Result<T, RealmError> {
         T::deserialize(self).map_err(|e| RealmError::Anyhow(anyhow::anyhow!(e)))
+    }
+
+    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmError> {
+        from.serialize(&mut ValueSerializer)
+    }
+}
+
+impl From<Value> for String {
+    fn from(value: Value) -> Self {
+        match value {
+            Value::Null => Self::new(),
+            Value::Boolean(b) => b.to_string(),
+            Value::Integer(i) => i.to_string(),
+            Value::Float(f) => f.to_string(),
+            Value::String(s) => s,
+            Value::Array(_) => todo!(),
+            Value::Table(_) => todo!(),
+        }
     }
 }

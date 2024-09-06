@@ -42,6 +42,15 @@ impl<K, V> IntoIterator for Map<K, V> {
     }
 }
 
+impl<'a, K, V> IntoIterator for &'a Map<K, V> {
+    type Item = (&'a K, &'a V);
+    type IntoIter = std::collections::hash_map::Iter<'a, K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter()
+    }
+}
+
 impl<K, V> Map<K, V> {
     pub fn new() -> Self {
         Self::default()
@@ -68,5 +77,17 @@ impl<K, V> Map<K, V> {
         Self {
             inner: iter.into_iter().collect(),
         }
+    }
+
+    pub fn len(&self) -> usize {
+        self.inner.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.inner.is_empty()
+    }
+
+    pub fn iter(&self) -> std::collections::hash_map::Iter<K, V> {
+        <&Self as IntoIterator>::into_iter(self)
     }
 }

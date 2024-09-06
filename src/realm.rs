@@ -1,5 +1,5 @@
 // use builder::RealmBuilder;
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::{value::Value, Adaptor, Map, RealmError};
 
@@ -27,6 +27,12 @@ impl Realm {
         &self,
     ) -> Result<T, RealmError> {
         self.cache.clone().try_deserialize()
+    }
+
+    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmError> {
+        Ok(Self {
+            cache: Value::try_serialize(from)?,
+        })
     }
 }
 
