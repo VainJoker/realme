@@ -1,4 +1,4 @@
-use realm::{adaptor::{source::StringSource, Adaptor}, parser::FormatParser, Realm};
+use realm::{adaptor::{format::toml::TomlParser, source::StringSource, Adaptor}, Realm};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -18,20 +18,19 @@ key2 = "value0"
 key3 = "value0"
 "#;
 
-
 fn main() {
     let config = Realm::builder()
         .load(
         Adaptor::new(
             Box::new(StringSource::new(
                 CONFIGURATION1.to_string(),
-                 FormatParser::Toml)))
+                 TomlParser)))
                 )
     .load(
         Adaptor::new(
             Box::new(StringSource::new(
                 CONFIGURATION2.to_string(),
-                 FormatParser::Toml)))
+                TomlParser)))
                 )
     .build()
     .expect("Building configuration object");

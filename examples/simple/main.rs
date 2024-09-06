@@ -1,4 +1,4 @@
-use realm::{adaptor::{source::StringSource, Adaptor},  parser::FormatParser, Realm};
+use realm::{adaptor::{format::toml::TomlParser, source::StringSource, Adaptor},   Realm};
 
 fn main() {
     const CONFIGURATION1: &str = r#"
@@ -10,7 +10,7 @@ fn main() {
         Adaptor::new(
             Box::new(StringSource::new(
                 CONFIGURATION1.to_string(),
-                 FormatParser::Toml)))
+                 TomlParser)))
                 )
     .build()
     .expect("Building configuration object");

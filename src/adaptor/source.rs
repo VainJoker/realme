@@ -1,55 +1,52 @@
-use super::format::toml;
-use crate::{errors::RealmError, parser::FormatParser, util, value::Value};
+use crate::{errors::RealmError, parser::Parser, value::Value};
 
-pub trait Source: std::fmt::Debug {
+pub trait Source {
     fn parse(&self) -> Result<Value, RealmError>;
 }
 
+// #[derive(Debug)]
+// pub struct FileSource {
+//     path: String,
+//     format: FormatParser,
+// }
+
+// impl FileSource {
+//     pub const fn new(path: String, format: FormatParser) -> Self {
+//         Self { path, format }
+//     }
+// }
+
+// impl Source for FileSource {
+//     fn parse(&self) -> Result<Value, RealmError> {
+//         let content = util::read_file(&self.path)?;
+//         match self.format {
+//             FormatParser::Toml => toml::parse(&content),
+//             _ => Err(RealmError::Anyhow(anyhow::anyhow!(
+//                 "Unsupported file format"
+//             ))),
+//         }
+//     }
+// }
+
 #[derive(Debug)]
-pub struct FileSource {
-    path: String,
-    format: FormatParser,
-}
-
-impl FileSource {
-    pub const fn new(path: String, format: FormatParser) -> Self {
-        Self { path, format }
-    }
-}
-
-impl Source for FileSource {
-    fn parse(&self) -> Result<Value, RealmError> {
-        let content = util::read_file(&self.path)?;
-        match self.format {
-            FormatParser::Toml => toml::parse(&content),
-            _ => Err(RealmError::Anyhow(anyhow::anyhow!(
-                "Unsupported file format"
-            ))),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct StringSource {
+pub struct StringSource<T: Parser> {
     content: String,
-    format: FormatParser,
+    parser: T,
 }
 
-impl StringSource {
-    pub const fn new(content: String, format: FormatParser) -> Self {
-        Self { content, format }
+impl<T: Parser> StringSource<T> {
+    pub const fn new(content: String, parser: T) -> Self {
+        Self { content, parser }
     }
 }
 
-impl Source for StringSource {
+impl<T: Parser> Source for StringSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        // let contents = util::read_file(&self.path)?;
-        match self.format {
-            FormatParser::Toml => toml::parse(&self.content),
-            _ => Err(RealmError::Anyhow(anyhow::anyhow!(
-                "Unsupported file format"
-            ))),
-        }
+        Value::try_serialize(&self.parser.parse(&self.content).map_err(
+            |_e| {
+                RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
+            },
+        )?)
     }
 }
 

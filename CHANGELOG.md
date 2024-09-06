@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Serialize Realm works - ([5cf578e](https://github.com/vainjoker/realm/commit/5cf578e7e684d2796a74dfc79a0ed9e01e66918b))
 - Finish basic deserialize for Realm - ([a6f9dc4](https://github.com/vainjoker/realm/commit/a6f9dc416a74933b2a507d4ed568178df1234c92))
 - Complete basic TOML parsing functionality - ([875275d](https://github.com/vainjoker/realm/commit/875275d9341c98118a92dc24aec228ec9ea71bae))
 - Implement the basic structure - ([6c6e3aa](https://github.com/vainjoker/realm/commit/6c6e3aadbd250b41f8096ae7cae91dd742f89d4a))

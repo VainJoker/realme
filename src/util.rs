@@ -5,6 +5,7 @@ use std::{
 
 use crate::errors::RealmError;
 
+#[allow(dead_code)]
 pub fn read_file(path: &str) -> Result<String, RealmError> {
     let file = File::open(path).map_err(|e| anyhow::anyhow!(e))?;
     let mut reader = BufReader::new(file);

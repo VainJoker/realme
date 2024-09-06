@@ -36,7 +36,7 @@ impl Realm {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct RealmBuilder {
     adaptors: Vec<Adaptor>,
 }
