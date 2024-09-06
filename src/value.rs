@@ -1,7 +1,9 @@
 mod des;
 mod ser;
 
-use crate::map::Map;
+use serde::de::DeserializeOwned;
+
+use crate::{map::Map, RealmError};
 
 pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;
@@ -27,18 +29,10 @@ impl Value {
         }
     }
 
-    // pub fn try_deserialize<'de, T: Deserialize<'de>>(self) ->
-    // Result<T,RealmError> {     T::deserialize(self).map_err(|e|
-    // RealmError::Anyhow(e.to_string())) }
-    // fn contains_key(&self, key: &str) -> bool {
-    //     self.get(key).is_some()
-    // }
-
-    // fn keys(&self) -> Vec<String>{
-    //     todo!()
-    // }
-
-    // fn values(&self) -> Vec<Value>{
-    //     todo!()
-    // }
+    pub fn try_deserialize<T>(self) -> Result<T, RealmError>
+    where
+        T: DeserializeOwned,
+    {
+        T::deserialize(self).map_err(|e| RealmError::Anyhow(anyhow::anyhow!(e)))
+    }
 }

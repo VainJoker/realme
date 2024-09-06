@@ -108,8 +108,6 @@ value = "sin(x) * cos(y)"
         "#;
 
         let t_value: toml::Value = toml::from_str(toml).unwrap();
-        // println!("{:#?}", t_value.get("custom"));
-        // println!("{:#?}", t_value.get("logs"));
         let value: Value = t_value.into();
         println!("{:#?}", value.get("owner").and_then(|v| v.get("name")));
         println!("{:#?}", value.get("owner").and_then(|v| v.get("name2")));

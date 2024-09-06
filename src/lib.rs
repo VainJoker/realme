@@ -1,7 +1,13 @@
 pub mod adaptor;
-pub mod config;
 mod errors;
 pub mod map;
 pub mod parser;
+pub mod realm;
 mod util;
 mod value;
+
+pub use adaptor::Adaptor;
+pub use errors::RealmError;
+use map::Map;
+pub use realm::Realm;
+pub use value::Value;
