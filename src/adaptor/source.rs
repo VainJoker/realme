@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 pub trait Source {
@@ -31,18 +33,18 @@ pub trait Source {
 #[derive(Debug)]
 pub struct StringSource<T: Parser> {
     content: String,
-    parser: T,
+    _marker: PhantomData<T>,
 }
 
 impl<T: Parser> StringSource<T> {
-    pub const fn new(content: String, parser: T) -> Self {
-        Self { content, parser }
+    pub fn new(content: String) -> Self {
+        Self { content, _marker: PhantomData }
     }
 }
 
 impl<T: Parser> Source for StringSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&self.parser.parse(&self.content).map_err(
+        Value::try_serialize(&T::parse(&self.content).map_err(
             |_e| {
                 RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
             },

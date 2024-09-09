@@ -35,7 +35,7 @@ impl Parser for TomlParser {
 
     type Error = RealmError;
 
-    fn parse(&self, content: &str) -> Result<Self::Item, Self::Error> {
+    fn parse(content: &str) -> Result<Self::Item, Self::Error> {
         let value: toml::Value =
             toml::from_str(content).map_err(|e| anyhow::anyhow!(e))?;
         Ok(value)

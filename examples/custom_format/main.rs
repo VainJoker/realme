@@ -7,9 +7,8 @@ fn main() {
     let config = Realm::builder()
     .load(
         Adaptor::new(
-            Box::new(StringSource::new(
-                CONFIGURATION1.to_string(),
-                 MyParser)))
+            Box::new(StringSource::<MyParser>::new(
+                CONFIGURATION1.to_string())))
                 )
     .build()
     .expect("Building configuration object");
@@ -40,7 +39,7 @@ impl Parser for MyParser {
 
     type Error = anyhow::Error;
 
-    fn parse(&self, content: &str) -> Result<Self::Item, Self::Error> {
+    fn parse(content: &str) -> Result<Self::Item, Self::Error> {
         let res: Vec<&str> = content.trim().split('=').collect();
         Ok(MyValue{
             key: res[0].to_string(),

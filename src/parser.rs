@@ -17,5 +17,5 @@ use serde::Serialize;
 pub trait Parser {
     type Item: Serialize;
     type Error;
-    fn parse(&self, content: &str) -> Result<Self::Item, Self::Error>;
+    fn parse(content: &str) -> Result<Self::Item, Self::Error>;
 }

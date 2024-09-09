@@ -8,9 +8,8 @@ fn main() {
     let config = Realm::builder()
     .load(
         Adaptor::new(
-            Box::new(StringSource::new(
-                CONFIGURATION1.to_string(),
-                 TomlParser)))
+            Box::new(StringSource::<TomlParser>::new(
+                CONFIGURATION1.to_string())))
                 )
     .build()
     .expect("Building configuration object");
