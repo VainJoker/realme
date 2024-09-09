@@ -5,7 +5,7 @@ use crate::{map::Map, RealmError};
 
 pub struct ValueSerializer;
 
-impl<'a> serde::ser::Serializer for &'a mut ValueSerializer {
+impl<'a> serde::ser::Serializer for ValueSerializer {
     type Ok = Value;
     type Error = RealmError;
 
@@ -265,7 +265,7 @@ impl serde::ser::SerializeSeq for SerializeSeq {
     where
         T: ?Sized + Serialize,
     {
-        self.vec.push(value.serialize(&mut ValueSerializer)?);
+        self.vec.push(value.serialize(ValueSerializer)?);
         Ok(())
     }
 
@@ -282,7 +282,7 @@ impl serde::ser::SerializeTuple for SerializeSeq {
     where
         T: ?Sized + Serialize,
     {
-        self.vec.push(value.serialize(&mut ValueSerializer)?);
+        self.vec.push(value.serialize(ValueSerializer)?);
         Ok(())
     }
 
@@ -299,7 +299,7 @@ impl serde::ser::SerializeTupleStruct for SerializeSeq {
     where
         T: ?Sized + Serialize,
     {
-        self.vec.push(value.serialize(&mut ValueSerializer)?);
+        self.vec.push(value.serialize(ValueSerializer)?);
         Ok(())
     }
 
@@ -316,7 +316,7 @@ impl serde::ser::SerializeTupleVariant for SerializeSeq {
     where
         T: ?Sized + Serialize,
     {
-        self.vec.push(value.serialize(&mut ValueSerializer)?);
+        self.vec.push(value.serialize(ValueSerializer)?);
         Ok(())
     }
 
@@ -338,7 +338,7 @@ impl serde::ser::SerializeMap for SerializeMap {
     where
         T: ?Sized + Serialize,
     {
-        if let Value::String(key) = key.serialize(&mut ValueSerializer)? {
+        if let Value::String(key) = key.serialize(ValueSerializer)? {
             self.next_key = Some(key);
             Ok(())
         } else {
@@ -351,7 +351,7 @@ impl serde::ser::SerializeMap for SerializeMap {
         T: ?Sized + Serialize,
     {
         if let Some(key) = self.next_key.take() {
-            self.map.insert(key, value.serialize(&mut ValueSerializer)?);
+            self.map.insert(key, value.serialize(ValueSerializer)?);
             Ok(())
         } else {
             Err(serde::ser::Error::custom("Value serialized before key"))
@@ -376,7 +376,7 @@ impl serde::ser::SerializeStruct for SerializeMap {
         T: ?Sized + Serialize,
     {
         self.map
-            .insert(key.to_string(), value.serialize(&mut ValueSerializer)?);
+            .insert(key.to_string(), value.serialize(ValueSerializer)?);
         Ok(())
     }
 
@@ -398,7 +398,7 @@ impl serde::ser::SerializeStructVariant for SerializeMap {
         T: ?Sized + Serialize,
     {
         self.map
-            .insert(key.to_string(), value.serialize(&mut ValueSerializer)?);
+            .insert(key.to_string(), value.serialize(ValueSerializer)?);
         Ok(())
     }
 

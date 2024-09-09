@@ -42,6 +42,22 @@ impl Parser for TomlParser {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use crate::Value;
+
+    use super::*;
+
+    #[test]
+    fn test_toml_datetime() {
+        let toml = r#"
+        time = 2024-09-01T13:45:30
+        "#;
+        let toml_value = TomlParser::parse(toml).unwrap();
+        let my_value = Value::try_serialize(&toml_value).unwrap();
+        println!("{:#?}", my_value);
+    }
+}
 // #[cfg(test)]
 // mod tests {
 

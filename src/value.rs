@@ -37,7 +37,7 @@ impl Value {
     }
 
     pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmError> {
-        from.serialize(&mut ValueSerializer)
+        from.serialize(ValueSerializer)
     }
 }
 
