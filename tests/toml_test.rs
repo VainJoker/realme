@@ -1,3 +1,5 @@
+#![cfg(feature = "toml")]
+
 use realm::{
     adaptor::{format::toml::TomlParser, source::StringSource},
     Adaptor, Realm,

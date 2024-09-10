@@ -1,5 +1,8 @@
+
+#[cfg(feature = "toml")]
 use realm::{adaptor::{format::toml::TomlParser, source::StringSource, Adaptor},   Realm};
 
+#[cfg(feature = "toml")]
 fn main() {
     const CONFIGURATION1: &str = r#"
     key1 = "value1"
@@ -20,4 +23,10 @@ fn main() {
         .into();
 
     println!("'key1' Config element is: '{value:?}'");
+}
+
+#[cfg(not(feature = "toml"))]
+fn main() {
+    println!("Please enable toml feature");
+    println!("cargo run --example simple --features toml");
 }

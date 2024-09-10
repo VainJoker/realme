@@ -11,12 +11,23 @@ exclude = [
   "CHANGELOG.md",
 ]
 
+[features]
+default = ["toml"]
+toml = ["dep:toml"]
+json = ["dep:serde_json"]
+chrono = ["dep:chrono"]
+
 [dependencies]
-toml = "0.8.19"
 anyhow = "1.0.78"
 thiserror = "1.0.42"
 serde = { version = "1.0.182", features = ["derive"] }
-serde_json = "1.0.102"
+serde_json = { version = "1.0", optional = true }
+toml = { version = "0.8.19", optional = true }
+chrono = { version = "0.4.24", features = ["serde"], optional = true }
+
+[dev-dependencies]
+toml = "0.8.19"
+serde_json = "1.0"
 
 [lints.rust]
 unsafe_code = "forbid"

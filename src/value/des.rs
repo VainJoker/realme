@@ -13,85 +13,85 @@ impl<'de> Deserialize<'de> for Value {
     where
         D: Deserializer<'de>,
     {
-        struct ValueVisitor;
+        deserializer.deserialize_any(ValueVisitor)
+    }
+}
 
-        impl<'de> Visitor<'de> for ValueVisitor {
-            type Value = Value;
+struct ValueVisitor;
 
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("a valid Value")
-            }
+impl<'de> Visitor<'de> for ValueVisitor {
+    type Value = Value;
 
-            fn visit_bool<E>(self, value: bool) -> Result<Value, E> {
-                Ok(Value::Boolean(value))
-            }
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("a valid Value")
+    }
 
-            fn visit_i64<E>(self, value: i64) -> Result<Value, E> {
-                Ok(Value::Integer(value))
-            }
+    fn visit_bool<E>(self, value: bool) -> Result<Value, E> {
+        Ok(Value::Boolean(value))
+    }
 
-            fn visit_u64<E: de::Error>(self, value: u64) -> Result<Value, E> {
-                if i64::try_from(value).is_ok() {
-                    Ok(Value::Integer(value as i64))
-                } else {
-                    Err(de::Error::custom("u64 value was too large"))
-                }
-            }
+    fn visit_i64<E>(self, value: i64) -> Result<Value, E> {
+        Ok(Value::Integer(value))
+    }
 
-            fn visit_u32<E>(self, value: u32) -> Result<Value, E> {
-                Ok(Value::Integer(value.into()))
-            }
+    fn visit_u64<E: de::Error>(self, value: u64) -> Result<Value, E> {
+        if i64::try_from(value).is_ok() {
+            Ok(Value::Integer(value as i64))
+        } else {
+            Err(de::Error::custom("u64 value was too large"))
+        }
+    }
 
-            fn visit_i32<E>(self, value: i32) -> Result<Value, E> {
-                Ok(Value::Integer(value.into()))
-            }
+    fn visit_u32<E>(self, value: u32) -> Result<Value, E> {
+        Ok(Value::Integer(value.into()))
+    }
 
-            fn visit_f64<E>(self, value: f64) -> Result<Value, E> {
-                Ok(Value::Float(value))
-            }
+    fn visit_i32<E>(self, value: i32) -> Result<Value, E> {
+        Ok(Value::Integer(value.into()))
+    }
 
-            fn visit_str<E>(self, value: &str) -> Result<Value, E> {
-                Ok(Value::String(value.into()))
-            }
+    fn visit_f64<E>(self, value: f64) -> Result<Value, E> {
+        Ok(Value::Float(value))
+    }
 
-            fn visit_string<E>(self, value: String) -> Result<Value, E> {
-                Ok(Value::String(value))
-            }
+    fn visit_str<E>(self, value: &str) -> Result<Value, E> {
+        Ok(Value::String(value.into()))
+    }
 
-            fn visit_some<D>(self, deserializer: D) -> Result<Value, D::Error>
-            where
-                D: de::Deserializer<'de>,
-            {
-                de::Deserialize::deserialize(deserializer)
-            }
+    fn visit_string<E>(self, value: String) -> Result<Value, E> {
+        Ok(Value::String(value))
+    }
 
-            fn visit_seq<V>(self, mut visitor: V) -> Result<Value, V::Error>
-            where
-                V: de::SeqAccess<'de>,
-            {
-                let mut vec = Vec::new();
-                while let Some(elem) = visitor.next_element()? {
-                    vec.push(elem);
-                }
-                Ok(Value::Array(vec))
-            }
+    fn visit_some<D>(self, deserializer: D) -> Result<Value, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        de::Deserialize::deserialize(deserializer)
+    }
 
-            fn visit_map<M>(self, mut access: M) -> Result<Value, M::Error>
-            where
-                M: de::MapAccess<'de>,
-            {
-                let mut map = Map::new();
+    fn visit_seq<V>(self, mut visitor: V) -> Result<Value, V::Error>
+    where
+        V: de::SeqAccess<'de>,
+    {
+        let mut vec = Vec::new();
+        while let Some(elem) = visitor.next_element()? {
+            vec.push(elem);
+        }
+        Ok(Value::Array(vec))
+    }
 
-                while let Some((key, value)) = access.next_entry()? {
-                    eprintln!("key: {key}, value: {value:#?}");
-                    map.insert(key, value);
-                }
+    fn visit_map<M>(self, mut access: M) -> Result<Value, M::Error>
+    where
+        M: de::MapAccess<'de>,
+    {
+        let mut map = Map::new();
 
-                Ok(Value::Table(map))
-            }
+        while let Some((key, value)) = access.next_entry()? {
+            eprintln!("key: {key}, value: {value:#?}");
+            map.insert(key, value);
         }
 
-        deserializer.deserialize_any(ValueVisitor)
+        Ok(Value::Table(map))
     }
 }
 
