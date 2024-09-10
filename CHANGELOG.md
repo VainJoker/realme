@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Finish Serialize&Deserialize for Value - ([c41e6c7](https://github.com/vainjoker/realm/commit/c41e6c7f0c5ca528f544876747dc0a557a23328d))
 - Use PhantomData wrap Parser - ([98ea304](https://github.com/vainjoker/realm/commit/98ea304c1f432e8c551611417604dddc0ac16934))
 - Support custom parser - ([35fb75d](https://github.com/vainjoker/realm/commit/35fb75dabc46ac9ec0108aa3cca81567f52e87c8))
 - Serialize Realm works - ([5cf578e](https://github.com/vainjoker/realm/commit/5cf578e7e684d2796a74dfc79a0ed9e01e66918b))
