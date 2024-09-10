@@ -83,7 +83,7 @@ impl<'de> Deserialize<'de> for Value {
                 let mut map = Map::new();
 
                 while let Some((key, value)) = access.next_entry()? {
-                    eprintln!("key: {}, value: {:#?}", key, value);
+                    eprintln!("key: {key}, value: {value:#?}");
                     map.insert(key, value);
                 }
 

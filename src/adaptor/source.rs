@@ -37,18 +37,19 @@ pub struct StringSource<T: Parser> {
 }
 
 impl<T: Parser> StringSource<T> {
-    pub fn new(content: String) -> Self {
-        Self { content, _marker: PhantomData }
+    pub const fn new(content: String) -> Self {
+        Self {
+            content,
+            _marker: PhantomData,
+        }
     }
 }
 
 impl<T: Parser> Source for StringSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&T::parse(&self.content).map_err(
-            |_e| {
-                RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
-            },
-        )?)
+        Value::try_serialize(&T::parse(&self.content).map_err(|_e| {
+            RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
+        })?)
     }
 }
 
