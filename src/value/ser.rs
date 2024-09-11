@@ -10,6 +10,35 @@ use serde::{
 use super::Value;
 use crate::{map::Map, RealmError};
 
+impl Serialize for Value {
+    fn serialize<S: Serializer>(
+        &self,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        match self {
+            Self::Null => serializer.serialize_none(),
+            Self::Boolean(b) => serializer.serialize_bool(*b),
+            Self::Integer(i) => serializer.serialize_i64(*i),
+            Self::Float(f) => serializer.serialize_f64(*f),
+            Self::String(s) => serializer.serialize_str(s),
+            Self::Array(arr) => {
+                let mut seq = serializer.serialize_seq(Some(arr.len()))?;
+                for value in arr {
+                    seq.serialize_element(value)?;
+                }
+                seq.end()
+            }
+            Self::Table(table) => {
+                let mut map = serializer.serialize_map(Some(table.len()))?;
+                for (key, value) in table {
+                    map.serialize_entry(key, value)?;
+                }
+                map.end()
+            }
+        }
+    }
+}
+
 pub struct ValueSerializer;
 
 impl Serializer for ValueSerializer {

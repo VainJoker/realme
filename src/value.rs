@@ -54,3 +54,13 @@ impl From<Value> for String {
         }
     }
 }
+
+// impl From<Value> for i8 {
+//     fn from(value: Value) -> Self {
+//         match value {
+//             Value::Integer(i) => i as i8,
+//             Value::String(s) => s.parse().unwrap(),
+//             _ => panic!("Invalid value type"),
+//         }
+//     }
+// }

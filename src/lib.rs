@@ -7,7 +7,7 @@ mod util;
 mod value;
 
 pub use adaptor::{
-    format::toml::TomlParser,
+    format::{env::EnvParser, toml::TomlParser},
     source::{env::EnvSource, file::FileSource, string::StringSource},
     Adaptor,
 };

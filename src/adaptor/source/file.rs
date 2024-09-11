@@ -1,27 +1,51 @@
-use std::marker::PhantomData;
+use std::{marker::PhantomData, path::PathBuf};
 
 use super::Source;
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct FileSource<'a, T: Parser<&'a str>> {
-    buffer: &'a str,
+pub struct FileSource<T: for<'a> Parser<&'a str>> {
+    path: PathBuf,
     _marker: PhantomData<T>,
 }
 
-impl<'a, T: Parser<&'a str>> FileSource<'a, T> {
-    pub const fn new(buffer: &'a str) -> Self {
+impl<T: for<'a> Parser<&'a str>> FileSource<T> {
+    pub fn new(path: impl Into<PathBuf>) -> Self {
         Self {
-            buffer,
+            path: path.into(),
             _marker: PhantomData,
         }
     }
 }
 
-impl<'a, T: Parser<&'a str>> Source for FileSource<'a, T> {
+impl<T: for<'a> Parser<&'a str>> Source for FileSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&T::parse(self.buffer).map_err(|_e| {
+        let buffer =
+            std::fs::read_to_string(self.path.clone()).map_err(|e| {
+                RealmError::Anyhow(anyhow::anyhow!("read file failed: {}", e))
+            })?;
+        let parsed = T::parse(&buffer).map_err(|_e| {
             RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
-        })?)
+        })?;
+        Value::try_serialize(&parsed).map_err(|e| {
+            RealmError::Anyhow(anyhow::anyhow!(
+                "serialize source data failed: {}",
+                e
+            ))
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::TomlParser;
+
+    #[test]
+    fn test_file_source() {
+        let source =
+            FileSource::<TomlParser>::new(PathBuf::from("./Cargo.toml"));
+        let value = source.parse().unwrap();
+        println!("{value:#?}");
     }
 }
