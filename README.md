@@ -42,11 +42,11 @@ fn main() {
     key = "value"
     "#;
 
-    let realm = Realm::builder()
+    let config = Realm::builder()
     .load(
         Adaptor::new(
             Box::new(StringSource::<TomlParser>::new(
-                CONFIGURATION1.to_string())))
+                CONFIGURATION1)))
                 )
     .build()
     .expect("Building configuration object");
