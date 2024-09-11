@@ -1,12 +1,16 @@
-pub mod adaptor;
+mod adaptor;
 mod errors;
-pub mod map;
-pub mod parser;
-pub mod realm;
+mod map;
+mod parser;
+mod realm;
 mod util;
 mod value;
 
-pub use adaptor::Adaptor;
+pub use adaptor::{
+    format::toml::TomlParser,
+    source::{env::EnvSource, file::FileSource, string::StringSource},
+    Adaptor,
+};
 pub use errors::RealmError;
 use map::Map;
 pub use parser::Parser;

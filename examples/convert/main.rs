@@ -9,6 +9,7 @@ use serde::{Serialize, Deserialize};
 struct Person {
     name: String,
     age: u32,
+    birthday: chrono::DateTime<chrono::Utc>,
 }
 
 #[cfg(feature = "toml")]
@@ -16,6 +17,7 @@ fn main() {
     let person_toml = toml::toml!{
         name = "John"
         age = 30
+        birthday = 1993-01-01T00:00:00Z
     };
         
 

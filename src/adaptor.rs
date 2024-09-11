@@ -5,7 +5,6 @@ use crate::{errors::RealmError, value::Value};
 pub mod format;
 pub mod source;
 
-// #[derive(Debug)]
 pub struct Adaptor {
     source: Box<dyn Source>,
 }

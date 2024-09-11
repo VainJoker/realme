@@ -1,6 +1,6 @@
 
 #[cfg(feature = "toml")]
-use realm::{adaptor::{format::toml::TomlParser, source::StringSource, Adaptor},   Realm};
+use realm::{TomlParser, StringSource, Adaptor,   Realm};
 
 #[cfg(feature = "toml")]
 fn main() {
@@ -12,7 +12,7 @@ fn main() {
     .load(
         Adaptor::new(
             Box::new(StringSource::<TomlParser>::new(
-                CONFIGURATION1.to_string())))
+                CONFIGURATION1)))
                 )
     .build()
     .expect("Building configuration object");

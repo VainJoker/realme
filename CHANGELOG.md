@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Make Parser into features - ([79dc063](https://github.com/vainjoker/realm/commit/79dc0634f8e95813529882c2e8727368b767b81d))
 - Finish Serialize&Deserialize for Value - ([c41e6c7](https://github.com/vainjoker/realm/commit/c41e6c7f0c5ca528f544876747dc0a557a23328d))
 - Use PhantomData wrap Parser - ([98ea304](https://github.com/vainjoker/realm/commit/98ea304c1f432e8c551611417604dddc0ac16934))
 - Support custom parser - ([35fb75d](https://github.com/vainjoker/realm/commit/35fb75dabc46ac9ec0108aa3cca81567f52e87c8))

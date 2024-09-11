@@ -1,9 +1,6 @@
 #![cfg(feature = "toml")]
 
-use realm::{
-    adaptor::{format::toml::TomlParser, source::StringSource},
-    Adaptor, Realm,
-};
+use realm::{Adaptor, Realm, StringSource, TomlParser};
 use serde::{Deserialize, Serialize};
 
 const TOML_STRING: &str = r#"
@@ -171,7 +168,7 @@ pub struct Expression {
 fn toml_parse() {
     let realm = Realm::builder()
         .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
-            TOML_STRING.to_string(),
+            TOML_STRING,
         ))))
         .build()
         .expect("Building configuration object");

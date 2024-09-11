@@ -1,4 +1,4 @@
-use realm::{adaptor::{ source::StringSource, Adaptor}, parser::Parser, Realm};
+use realm::{Adaptor, Parser, Realm, StringSource};
 use serde::{Deserialize, Serialize};
 
 fn main() {
@@ -8,7 +8,7 @@ fn main() {
     .load(
         Adaptor::new(
             Box::new(StringSource::<MyParser>::new(
-                CONFIGURATION1.to_string())))
+                CONFIGURATION1)))
                 )
     .build()
     .expect("Building configuration object");
@@ -34,7 +34,7 @@ pub struct MyValue{
     value: String
 }
 
-impl Parser for MyParser {
+impl Parser<&str> for MyParser {
     type Item = MyValue;
 
     type Error = anyhow::Error;
