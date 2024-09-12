@@ -95,6 +95,38 @@ impl TryFrom<Value> for f64 {
     }
 }
 
+impl TryFrom<Value> for u64 {
+    type Error = RealmError;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(0),
+            Value::Boolean(b) => Ok(b.into()),
+            Value::Integer(i) => Self::try_from(i).map_err(|_e| {
+                RealmError::new_cast_error(
+                    i.to_string(),
+                    "Cannot cast i64 to u64".to_string(),
+                )
+            }),
+            Value::Float(f) => Ok(f as Self),
+            Value::String(s) => s.parse().map_err(|_e| {
+                RealmError::new_cast_error(
+                    s,
+                    "Cannot cast string to u64".to_string(),
+                )
+            }),
+            Value::Array(_) => Err(RealmError::new_cast_error(
+                "array".to_string(),
+                "u64".to_string(),
+            )),
+            Value::Table(_) => Err(RealmError::new_cast_error(
+                "table".to_string(),
+                "u64".to_string(),
+            )),
+        }
+    }
+}
+
 impl TryFrom<Value> for bool {
     type Error = RealmError;
 
@@ -149,5 +181,115 @@ impl TryFrom<Value> for Table {
                 "table".to_string(),
             )),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{map::Map, value::Value};
+
+    #[test]
+    fn test_string_conversion() {
+        assert_eq!(String::try_from(Value::Null).unwrap(), "");
+        assert_eq!(String::try_from(Value::Boolean(true)).unwrap(), "true");
+        assert_eq!(String::try_from(Value::Integer(42)).unwrap(), "42");
+        assert_eq!(String::try_from(Value::Float(0.618)).unwrap(), "0.618");
+        assert_eq!(
+            String::try_from(Value::String("test".to_string())).unwrap(),
+            "test"
+        );
+        assert!(String::try_from(Value::Array(vec![])).is_err());
+        assert!(String::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_i64_conversion() {
+        assert_eq!(i64::try_from(Value::Null).unwrap(), 0);
+        assert_eq!(i64::try_from(Value::Boolean(true)).unwrap(), 1);
+        assert_eq!(i64::try_from(Value::Integer(42)).unwrap(), 42);
+        assert_eq!(i64::try_from(Value::Float(0.618)).unwrap(), 0);
+        assert_eq!(i64::try_from(Value::String("42".to_string())).unwrap(), 42);
+        assert!(i64::try_from(Value::String("test".to_string())).is_err());
+        assert!(i64::try_from(Value::Array(vec![])).is_err());
+        assert!(i64::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_f64_conversion() {
+        assert!(
+            (f64::try_from(Value::Null).unwrap() - 0.0).abs() < f64::EPSILON
+        );
+        assert!(f64::try_from(Value::Boolean(true)).is_err());
+        assert!(
+            (f64::try_from(Value::Integer(42)).unwrap() - 42.0).abs()
+                < f64::EPSILON
+        );
+        assert!(
+            (f64::try_from(Value::Float(0.618)).unwrap() - 0.618).abs()
+                < f64::EPSILON
+        );
+        assert!(
+            (f64::try_from(Value::String("0.618".to_string())).unwrap()
+                - 0.618)
+                .abs()
+                < f64::EPSILON
+        );
+        assert!(f64::try_from(Value::String("test".to_string())).is_err());
+        assert!(f64::try_from(Value::Array(vec![])).is_err());
+        assert!(f64::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_u64_conversion() {
+        assert_eq!(u64::try_from(Value::Null).unwrap(), 0);
+        assert_eq!(u64::try_from(Value::Boolean(true)).unwrap(), 1);
+        assert_eq!(u64::try_from(Value::Integer(42)).unwrap(), 42);
+        assert_eq!(u64::try_from(Value::Float(0.618)).unwrap(), 0);
+        assert_eq!(u64::try_from(Value::String("42".to_string())).unwrap(), 42);
+        assert!(u64::try_from(Value::String("test".to_string())).is_err());
+        assert!(u64::try_from(Value::Array(vec![])).is_err());
+        assert!(u64::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_bool_conversion() {
+        assert!(!bool::try_from(Value::Null).unwrap());
+        assert!(bool::try_from(Value::Boolean(true)).unwrap());
+        assert!(bool::try_from(Value::Integer(1)).unwrap());
+        assert!(bool::try_from(Value::Float(1.0)).unwrap());
+        assert!(bool::try_from(Value::String("true".to_string())).unwrap());
+        assert!(!bool::try_from(Value::String("false".to_string())).unwrap());
+        assert!(bool::try_from(Value::String("1".to_string())).unwrap());
+        assert!(!bool::try_from(Value::String("0".to_string())).unwrap());
+        assert!(bool::try_from(Value::String("yes".to_string())).unwrap());
+        assert!(!bool::try_from(Value::String("no".to_string())).unwrap());
+        assert!(bool::try_from(Value::String("on".to_string())).unwrap());
+        assert!(!bool::try_from(Value::String("off".to_string())).unwrap());
+        assert!(bool::try_from(Value::String("test".to_string())).is_err());
+        assert!(bool::try_from(Value::Array(vec![])).is_err());
+        assert!(bool::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_array_conversion() {
+        assert!(Array::try_from(Value::Null).is_err());
+        assert!(Array::try_from(Value::Boolean(true)).is_err());
+        assert!(Array::try_from(Value::Integer(42)).is_err());
+        assert!(Array::try_from(Value::Float(0.618)).is_err());
+        assert!(Array::try_from(Value::String("test".to_string())).is_err());
+        assert!(Array::try_from(Value::Array(vec![])).is_ok());
+        assert!(Array::try_from(Value::Table(Map::default())).is_err());
+    }
+
+    #[test]
+    fn test_table_conversion() {
+        assert!(Table::try_from(Value::Null).is_err());
+        assert!(Table::try_from(Value::Boolean(true)).is_err());
+        assert!(Table::try_from(Value::Integer(42)).is_err());
+        assert!(Table::try_from(Value::Float(0.618)).is_err());
+        assert!(Table::try_from(Value::String("test".to_string())).is_err());
+        assert!(Table::try_from(Value::Array(vec![])).is_err());
+        assert!(Table::try_from(Value::Table(Map::default())).is_ok());
     }
 }

@@ -1,6 +1,6 @@
-- [ ] Error handling
+- [x] Error handling
 - [ ] Documentation
-- [ ] Attempt type conversion in serialize and deserialize
+- [x] Attempt type conversion in serialize and deserialize
 - [ ] When parsing {{env}}, allow using variables from env
 - [ ] Separate adaptors: use fileadaptor, envadaptor, overrideadaptor
 - [ ] Monitor configuration file changes, hot reload

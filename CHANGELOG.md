@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Implement parser and cast error - ([89f2685](https://github.com/vainjoker/realm/commit/89f26853af813aa824e21a8163fd276a9319689b))
 - Implement better error handling - ([1e1490d](https://github.com/vainjoker/realm/commit/1e1490ddf2851bfa9f317345961bf1ad5fc8a2e1))
 - Add support for env and file adaptor - ([78e57dd](https://github.com/vainjoker/realm/commit/78e57dd7270c7531d34eba7fba6caf22511a6694))
 - Make Parser into features - ([79dc063](https://github.com/vainjoker/realm/commit/79dc0634f8e95813529882c2e8727368b767b81d))
