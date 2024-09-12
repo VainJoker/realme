@@ -23,7 +23,11 @@ impl<T: for<'a> Parser<&'a str>> Source for FileSource<T> {
         let buffer = std::fs::read_to_string(self.path.clone())
             .map_err(|e| RealmError::ReadFileError(e.to_string()))?;
         let parsed = T::parse(&buffer).map_err(|_e| {
-            RealmError::ParseError("parse source data failed".to_string())
+            RealmError::new_parse_error(
+                self.path.to_string_lossy().to_string(),
+                "file".to_string(),
+                "parse source data failed".to_string(),
+            )
         })?;
         Value::try_serialize(&parsed)
             .map_err(|e| RealmError::BuildError(e.to_string()))

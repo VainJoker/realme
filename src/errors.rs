@@ -6,10 +6,11 @@ pub type RealmResult<T> = Result<T, RealmError>;
 
 #[derive(Error, Debug)]
 pub enum RealmError {
-    #[error("Invalid cast: {0}")]
-    InvalidCast(String),
-    #[error("Parse error: {0}")]
-    ParseError(String),
+    #[error(transparent)]
+    InvalidCast(CastError),
+    #[error(transparent)]
+    ParseError(ParseError),
+
     #[error("Build error: {0}")]
     BuildError(String),
     #[error("Read file error: {0}")]
@@ -22,6 +23,61 @@ pub enum RealmError {
 
     #[error("Unknown error: {0}")]
     Unknown(String),
+}
+
+impl RealmError {
+    pub const fn new_cast_error(origin: String, cause: String) -> Self {
+        Self::InvalidCast(CastError::new(origin, cause))
+    }
+
+    pub const fn new_parse_error(
+        from: String,
+        to: String,
+        cause: String,
+    ) -> Self {
+        Self::ParseError(ParseError::new(from, to, cause))
+    }
+}
+
+#[derive(Debug, Error)]
+pub struct CastError {
+    origin: String,
+    cause: String,
+}
+
+impl CastError {
+    pub const fn new(origin: String, cause: String) -> Self {
+        Self { origin, cause }
+    }
+}
+
+impl Display for CastError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Cast from {} , error: {}", self.origin, self.cause)
+    }
+}
+
+#[derive(Debug, Error)]
+pub struct ParseError {
+    from: String,
+    to: String,
+    cause: String,
+}
+
+impl Display for ParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Parse {} to {}, error: {}",
+            self.from, self.to, self.cause
+        )
+    }
+}
+
+impl ParseError {
+    pub const fn new(from: String, to: String, cause: String) -> Self {
+        Self { from, to, cause }
+    }
 }
 
 #[derive(Debug, Error)]

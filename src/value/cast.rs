@@ -11,11 +11,13 @@ impl TryFrom<Value> for String {
             Value::Integer(i) => Ok(i.to_string()),
             Value::Float(f) => Ok(f.to_string()),
             Value::String(s) => Ok(s),
-            Value::Array(_) => Err(RealmError::InvalidCast(
-                "Cannot cast array to string".to_string(),
+            Value::Array(_) => Err(RealmError::new_cast_error(
+                "array".to_string(),
+                "string".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::InvalidCast(
-                "Cannot cast table to string".to_string(),
+            Value::Table(_) => Err(RealmError::new_cast_error(
+                "table".to_string(),
+                "string".to_string(),
             )),
         }
     }
@@ -46,13 +48,18 @@ impl TryFrom<Value> for i64 {
             Value::Integer(i) => Ok(i),
             Value::Float(f) => Ok(f as Self),
             Value::String(s) => s.parse().map_err(|_e| {
-                RealmError::InvalidCast("Cannot cast string to i64".to_string())
+                RealmError::new_cast_error(
+                    s,
+                    "Cannot cast string to i64".to_string(),
+                )
             }),
-            Value::Array(_) => Err(RealmError::InvalidCast(
-                "Cannot cast array to i64".to_string(),
+            Value::Array(_) => Err(RealmError::new_cast_error(
+                "array".to_string(),
+                "i64".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::InvalidCast(
-                "Cannot cast table to i64".to_string(),
+            Value::Table(_) => Err(RealmError::new_cast_error(
+                "table".to_string(),
+                "i64".to_string(),
             )),
         }
     }
@@ -64,19 +71,25 @@ impl TryFrom<Value> for f64 {
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
             Value::Null => Ok(0.0),
-            Value::Boolean(_) => Err(RealmError::InvalidCast(
-                "Cannot cast boolean to f64".to_string(),
+            Value::Boolean(_) => Err(RealmError::new_cast_error(
+                "boolean".to_string(),
+                "f64".to_string(),
             )),
             Value::Integer(i) => Ok(i as Self),
             Value::Float(f) => Ok(f),
             Value::String(s) => s.parse().map_err(|_e| {
-                RealmError::InvalidCast("Cannot cast string to f64".to_string())
+                RealmError::new_cast_error(
+                    s,
+                    "Cannot cast string to f64".to_string(),
+                )
             }),
-            Value::Array(_) => Err(RealmError::InvalidCast(
-                "Cannot cast array to f64".to_string(),
+            Value::Array(_) => Err(RealmError::new_cast_error(
+                "array".to_string(),
+                "f64".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::InvalidCast(
-                "Cannot cast table to f64".to_string(),
+            Value::Table(_) => Err(RealmError::new_cast_error(
+                "table".to_string(),
+                "f64".to_string(),
             )),
         }
     }
@@ -94,15 +107,18 @@ impl TryFrom<Value> for bool {
             Value::String(s) => match s.as_str() {
                 "true" | "1" | "yes" | "on" => Ok(true),
                 "false" | "0" | "no" | "off" => Ok(false),
-                _ => Err(RealmError::InvalidCast(
+                _ => Err(RealmError::new_cast_error(
+                    s,
                     "Cannot cast string to bool".to_string(),
                 )),
             },
-            Value::Array(_) => Err(RealmError::InvalidCast(
-                "Cannot cast array to bool".to_string(),
+            Value::Array(_) => Err(RealmError::new_cast_error(
+                "array".to_string(),
+                "bool".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::InvalidCast(
-                "Cannot cast table to bool".to_string(),
+            Value::Table(_) => Err(RealmError::new_cast_error(
+                "table".to_string(),
+                "bool".to_string(),
             )),
         }
     }
@@ -114,8 +130,9 @@ impl TryFrom<Value> for Array {
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
             Value::Array(a) => Ok(a),
-            _ => Err(RealmError::InvalidCast(
-                "Cannot cast value to array".to_string(),
+            _ => Err(RealmError::new_cast_error(
+                value.value_type().to_string(),
+                "array".to_string(),
             )),
         }
     }
@@ -127,8 +144,9 @@ impl TryFrom<Value> for Table {
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
             Value::Table(t) => Ok(t),
-            _ => Err(RealmError::InvalidCast(
-                "Cannot cast value to table".to_string(),
+            _ => Err(RealmError::new_cast_error(
+                value.value_type().to_string(),
+                "table".to_string(),
             )),
         }
     }

@@ -20,9 +20,12 @@ impl<'a, T: Parser<&'a str>> EnvSource<'a, T> {
 
 impl<'a, T: Parser<&'a str>> Source for EnvSource<'a, T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(
-            &T::parse(self.prefix)
-                .map_err(|e| RealmError::ParseError(e.to_string()))?,
-        )
+        Value::try_serialize(&T::parse(self.prefix).map_err(|e| {
+            RealmError::new_parse_error(
+                self.prefix.to_string(),
+                "env".to_string(),
+                e.to_string(),
+            )
+        })?)
     }
 }

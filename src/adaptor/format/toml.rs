@@ -8,6 +8,12 @@ impl Parser<&str> for TomlParser {
     type Error = RealmError;
 
     fn parse(args: &str) -> Result<Self::Item, Self::Error> {
-        toml::from_str(args).map_err(|e| RealmError::ParseError(e.to_string()))
+        toml::from_str(args).map_err(|e| {
+            RealmError::new_parse_error(
+                args.to_string(),
+                "toml".to_string(),
+                e.to_string(),
+            )
+        })
     }
 }
