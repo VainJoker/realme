@@ -20,19 +20,13 @@ impl<T: for<'a> Parser<&'a str>> FileSource<T> {
 
 impl<T: for<'a> Parser<&'a str>> Source for FileSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        let buffer =
-            std::fs::read_to_string(self.path.clone()).map_err(|e| {
-                RealmError::Anyhow(anyhow::anyhow!("read file failed: {}", e))
-            })?;
+        let buffer = std::fs::read_to_string(self.path.clone())
+            .map_err(|e| RealmError::ReadFileError(e.to_string()))?;
         let parsed = T::parse(&buffer).map_err(|_e| {
-            RealmError::Anyhow(anyhow::anyhow!("parse source data failed"))
+            RealmError::ParseError("parse source data failed".to_string())
         })?;
-        Value::try_serialize(&parsed).map_err(|e| {
-            RealmError::Anyhow(anyhow::anyhow!(
-                "serialize source data failed: {}",
-                e
-            ))
-        })
+        Value::try_serialize(&parsed)
+            .map_err(|e| RealmError::BuildError(e.to_string()))
     }
 }
 

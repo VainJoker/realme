@@ -1,10 +1,11 @@
+mod cast;
 mod des;
 mod ser;
 
 use ser::ValueSerializer;
 use serde::{Deserialize, Serialize};
 
-use crate::{map::Map, RealmError};
+use crate::{map::Map, RealmResult};
 
 pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;
@@ -30,37 +31,24 @@ impl Value {
         }
     }
 
-    pub fn try_deserialize<'de, T: Deserialize<'de>>(
-        self,
-    ) -> Result<T, RealmError> {
-        T::deserialize(self).map_err(|e| RealmError::Anyhow(anyhow::anyhow!(e)))
+    pub fn try_deserialize<'de, T: Deserialize<'de>>(self) -> RealmResult<T> {
+        T::deserialize(self).map_err(std::convert::Into::into)
     }
 
-    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmError> {
+    pub fn try_serialize<T: Serialize>(from: &T) -> RealmResult<Self> {
         from.serialize(ValueSerializer)
+            .map_err(std::convert::Into::into)
     }
-}
 
-impl From<Value> for String {
-    fn from(value: Value) -> Self {
-        match value {
-            Value::Null => Self::new(),
-            Value::Boolean(b) => b.to_string(),
-            Value::Integer(i) => i.to_string(),
-            Value::Float(f) => f.to_string(),
-            Value::String(s) => s,
-            Value::Array(_) => todo!(),
-            Value::Table(_) => todo!(),
+    pub const fn value_type(&self) -> &'static str {
+        match self {
+            Self::Null => "null",
+            Self::Boolean(_) => "boolean",
+            Self::Integer(_) => "integer",
+            Self::Float(_) => "float",
+            Self::String(_) => "string",
+            Self::Array(_) => "array",
+            Self::Table(_) => "table",
         }
     }
 }
-
-// impl From<Value> for i8 {
-//     fn from(value: Value) -> Self {
-//         match value {
-//             Value::Integer(i) => i as i8,
-//             Value::String(s) => s.parse().unwrap(),
-//             _ => panic!("Invalid value type"),
-//         }
-//     }
-// }

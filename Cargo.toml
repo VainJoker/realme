@@ -19,13 +19,13 @@ toml = ["dep:toml"]
 json = ["dep:serde_json"]
 
 [dependencies]
-anyhow = "1.0.78"
 thiserror = "1.0.42"
 serde = { version = "1.0.182", features = ["derive"] }
 serde_json = { version = "1.0", optional = true }
 toml = { version = "0.8.19", optional = true }
 
 [dev-dependencies]
+anyhow = "1.0.78"
 toml = "0.8.19"
 serde_json = "1.0"
 chrono = { version = "0.4.24", features = ["serde"] }

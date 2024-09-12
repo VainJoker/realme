@@ -17,11 +17,12 @@ fn main() {
     let value :String = config
         .get("key")
         .expect("Accessing configuration object")
-        .into();
+        .try_into()
+        .expect("Casting configuration object");
 
     println!("'key' Config element is: '{value:?}'");
 
-    let my_value: MyValue = config.try_deserialize().unwrap();
+    let my_value: MyValue = config.try_deserialize().expect("Deserializing configuration object");
     println!("{my_value:#?}");
 }
 

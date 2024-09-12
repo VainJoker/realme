@@ -1,6 +1,6 @@
 use serde::{
     ser::{
-        Serialize, SerializeMap, SerializeSeq, SerializeStruct,
+        self, Serialize, SerializeMap, SerializeSeq, SerializeStruct,
         SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
         SerializeTupleVariant,
     },
@@ -8,7 +8,7 @@ use serde::{
 };
 
 use super::Value;
-use crate::{map::Map, RealmError};
+use crate::map::Map;
 
 impl Serialize for Value {
     fn serialize<S: Serializer>(
@@ -43,7 +43,7 @@ pub struct ValueSerializer;
 
 impl Serializer for ValueSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     type SerializeSeq = SeqSerializer;
     type SerializeTuple = TupleSerializer;
@@ -125,15 +125,14 @@ impl Serializer for ValueSerializer {
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
-        Ok(Value::Null)
+        Err(ser::Error::custom("unit type not supported"))
     }
 
     fn serialize_unit_struct(
         self,
         _name: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        // TODO:
-        Ok(Value::Null)
+        Err(ser::Error::custom("unit type not supported"))
     }
 
     fn serialize_unit_variant(
@@ -142,8 +141,7 @@ impl Serializer for ValueSerializer {
         _variant_index: u32,
         _variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        // TODO:
-        Ok(Value::Null)
+        Err(ser::Error::custom("unit type not supported"))
     }
 
     fn serialize_newtype_struct<T: ?Sized + Serialize>(
@@ -288,7 +286,7 @@ impl StructVariantSerializer {
 
 impl SerializeSeq for SeqSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_element<T: ?Sized + Serialize>(
         &mut self,
@@ -306,61 +304,55 @@ impl SerializeSeq for SeqSerializer {
 
 impl SerializeTuple for TupleSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_element<T: ?Sized + Serialize>(
         &mut self,
         _value: &T,
     ) -> Result<(), Self::Error> {
-        //    TODO
-        Ok(())
+        Err(ser::Error::custom("tuple type not supported"))
     }
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        //  TODO
-        Ok(Value::Null) // Placeholder
+        Err(ser::Error::custom("tuple type not supported"))
     }
 }
 
 impl SerializeTupleStruct for TupleStructSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
         _value: &T,
     ) -> Result<(), Self::Error> {
-        //    TODO
-        Ok(())
+        Err(ser::Error::custom("tuple struct type not supported"))
     }
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        //    TODO
-        Ok(Value::Null) // Placeholder
+        Err(ser::Error::custom("tuple struct type not supported"))
     }
 }
 
 impl SerializeTupleVariant for TupleVariantSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
         _value: &T,
     ) -> Result<(), Self::Error> {
-        //    TODO
-        Ok(())
+        Err(ser::Error::custom("tuple variant type not supported"))
     }
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        //    TODO
-        Ok(Value::Null) // Placeholder
+        Err(ser::Error::custom("tuple variant type not supported"))
     }
 }
 
 impl SerializeMap for MapSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_key<K: ?Sized + Serialize>(
         &mut self,
@@ -371,9 +363,7 @@ impl SerializeMap for MapSerializer {
             self.current_key = Some(key_str);
             Ok(())
         } else {
-            Err(RealmError::Anyhow(anyhow::anyhow!(
-                "Only string keys are supported"
-            )))
+            Err(ser::Error::custom("Only string keys are supported"))
         }
     }
 
@@ -387,7 +377,7 @@ impl SerializeMap for MapSerializer {
             self.current_key = None;
             Ok(())
         } else {
-            Err(RealmError::Anyhow(anyhow::anyhow!("No current key")))
+            Err(ser::Error::custom("No current key"))
         }
     }
 
@@ -398,7 +388,7 @@ impl SerializeMap for MapSerializer {
 
 impl SerializeStruct for StructSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
@@ -406,7 +396,13 @@ impl SerializeStruct for StructSerializer {
         value: &T,
     ) -> Result<(), Self::Error> {
         let serialized_value = value.serialize(ValueSerializer)?;
-        // TODO: 只有开启了toml feature 才会判断
+
+        // Handle special case for TOML datetime serialization
+        // If the key is "$__toml_private_datetime", it's a special case for
+        // TOML where the entire struct should be replaced with the
+        // serialized datetime value. This is only relevant when the
+        // "toml" feature is enabled.
+        #[cfg(feature = "toml")]
         if key == "$__toml_private_datetime" {
             self.fields = serialized_value;
             return Ok(());
@@ -422,12 +418,12 @@ impl SerializeStruct for StructSerializer {
                 t.insert(key.to_string(), serialized_value);
             }
             _ => {
-                // TODO
-                eprintln!("something not expect to happen");
+                return Err(ser::Error::custom(
+                    "something not expect to happen",
+                ));
             }
         }
-        // self.fields.insert(key.to_string(), serialized_value);
-        // self.fields = Value::Table(map);
+
         Ok(())
     }
 
@@ -438,20 +434,18 @@ impl SerializeStruct for StructSerializer {
 
 impl SerializeStructVariant for StructVariantSerializer {
     type Ok = Value;
-    type Error = RealmError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
         _key: &'static str,
         _value: &T,
     ) -> Result<(), Self::Error> {
-        // TODO
-        Ok(())
+        Err(ser::Error::custom("struct variant type not supported"))
     }
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
-        // TODO
-        Ok(Value::Null) // Placeholder
+        Err(ser::Error::custom("struct variant type not supported"))
     }
 }
 

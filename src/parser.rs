@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::Serialize;
 
 // use crate::adaptor::format::toml::TomlParser;
@@ -16,6 +18,6 @@ use serde::Serialize;
 
 pub trait Parser<T> {
     type Item: Serialize;
-    type Error;
+    type Error: Display;
     fn parse(args: T) -> Result<Self::Item, Self::Error>;
 }

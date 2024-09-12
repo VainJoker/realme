@@ -20,7 +20,7 @@ fn main() {
     let value :String = config
         .get("key1")
         .expect("Accessing configuration object")
-        .into();
+        .try_into().unwrap();
 
     println!("'key1' Config element is: '{value:?}'");
 }

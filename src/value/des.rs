@@ -6,7 +6,7 @@ use serde::{
 };
 
 use super::Value;
-use crate::{map::Map, RealmError};
+use crate::map::Map;
 
 impl<'de> Deserialize<'de> for Value {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -96,7 +96,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
 }
 
 impl<'de> serde::Deserializer<'de> for Value {
-    type Error = RealmError;
+    type Error = crate::errors::DeserializeError;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
@@ -121,7 +121,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::String(s) = self {
             visitor.visit_str(&s)
         } else {
-            Err(de::Error::custom("expected a string"))
+            Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -132,7 +135,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_i64(i)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -143,7 +149,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Boolean(b) = self {
             visitor.visit_bool(b)
         } else {
-            Err(de::Error::custom("expected a boolean"))
+            Err(de::Error::custom(format!(
+                "expected a boolean, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -154,7 +163,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_i8(i as i8)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -165,7 +177,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_i16(i as i16)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -176,7 +191,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_i32(i as i32)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -187,7 +205,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_u8(i as u8)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -198,7 +219,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_u16(i as u16)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -209,7 +233,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_u32(i as u32)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -220,7 +247,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Integer(i) = self {
             visitor.visit_u64(i as u64)
         } else {
-            Err(de::Error::custom("expected an integer"))
+            Err(de::Error::custom(format!(
+                "expected an integer, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -231,7 +261,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Float(f) = self {
             visitor.visit_f32(f as f32)
         } else {
-            Err(de::Error::custom("expected a float"))
+            Err(de::Error::custom(format!(
+                "expected a float, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -242,7 +275,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::Float(f) = self {
             visitor.visit_f64(f)
         } else {
-            Err(de::Error::custom("expected a float"))
+            Err(de::Error::custom(format!(
+                "expected a float, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -253,7 +289,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::String(s) = self {
             visitor.visit_char(s.chars().next().unwrap())
         } else {
-            Err(de::Error::custom("expected a string"))
+            Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -263,7 +302,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     {
         match self {
             Self::String(s) => visitor.visit_str(&s),
-            _ => Err(de::Error::custom("expected a string")),
+            _ => Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            ))),
         }
     }
 
@@ -274,7 +316,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::String(s) = self {
             visitor.visit_str(&s)
         } else {
-            Err(de::Error::custom("expected a string"))
+            Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -288,7 +333,10 @@ impl<'de> serde::Deserializer<'de> for Value {
         if let Self::String(s) = self {
             visitor.visit_str(&s)
         } else {
-            Err(de::Error::custom("expected a string"))
+            Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            )))
         }
     }
 
@@ -338,7 +386,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     {
         match self {
             Self::Array(a) => visitor.visit_seq(SeqDeserializer::new(a)),
-            _ => Err(de::Error::custom("expected a sequence")),
+            _ => Err(de::Error::custom(format!(
+                "expected a sequence, got {}",
+                self.value_type()
+            ))),
         }
     }
 
@@ -350,7 +401,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        Err(de::Error::custom(format!(
+            "unsupported type: {}",
+            self.value_type()
+        )))
     }
 
     fn deserialize_tuple_struct<V>(
@@ -362,7 +416,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        Err(de::Error::custom(format!(
+            "unsupported type: {}",
+            self.value_type()
+        )))
     }
 
     fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -371,7 +428,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     {
         match self {
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
-            _ => Err(de::Error::custom("expected a table")),
+            _ => Err(de::Error::custom(format!(
+                "expected a table, got {}",
+                self.value_type()
+            ))),
         }
     }
 
@@ -386,7 +446,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     {
         match self {
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
-            _ => Err(de::Error::custom("expected a table")),
+            _ => Err(de::Error::custom(format!(
+                "expected a table, got {}",
+                self.value_type()
+            ))),
         }
     }
 
@@ -399,7 +462,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        Err(de::Error::custom(format!(
+            "unsupported type: {}",
+            self.value_type()
+        )))
     }
 
     fn deserialize_identifier<V>(
@@ -411,7 +477,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     {
         match self {
             Self::String(s) => visitor.visit_str(&s),
-            _ => Err(de::Error::custom("expected a string")),
+            _ => Err(de::Error::custom(format!(
+                "expected a string, got {}",
+                self.value_type()
+            ))),
         }
     }
 
@@ -422,7 +491,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        Err(de::Error::custom(format!(
+            "unsupported type: {}",
+            self.value_type()
+        )))
     }
 }
 
@@ -441,7 +513,7 @@ impl MapDeserializer {
 }
 
 impl<'de> de::MapAccess<'de> for MapDeserializer {
-    type Error = RealmError;
+    type Error = crate::errors::DeserializeError;
 
     fn next_key_seed<T>(
         &mut self,
@@ -480,11 +552,10 @@ impl<'de> de::MapAccess<'de> for MapDeserializer {
 
 struct SeqDeserializer {
     iter: <Vec<Value> as IntoIterator>::IntoIter,
-    // value: Option<Value>,
 }
 
 impl<'de> de::SeqAccess<'de> for SeqDeserializer {
-    type Error = RealmError;
+    type Error = crate::errors::DeserializeError;
 
     fn next_element_seed<T>(
         &mut self,
@@ -511,7 +582,6 @@ impl SeqDeserializer {
     fn new(seq: Vec<Value>) -> Self {
         Self {
             iter: seq.into_iter(),
-            // value: None,
         }
     }
 }

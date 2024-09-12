@@ -3,7 +3,6 @@ mod errors;
 mod map;
 mod parser;
 mod realm;
-mod util;
 mod value;
 
 pub use adaptor::{
@@ -11,7 +10,8 @@ pub use adaptor::{
     source::{env::EnvSource, file::FileSource, string::StringSource},
     Adaptor,
 };
-pub use errors::RealmError;
+use errors::RealmError;
+pub use errors::RealmResult;
 use map::Map;
 pub use parser::Parser;
 pub use realm::Realm;

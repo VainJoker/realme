@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Add support for env and file adaptor - ([78e57dd](https://github.com/vainjoker/realm/commit/78e57dd7270c7531d34eba7fba6caf22511a6694))
 - Make Parser into features - ([79dc063](https://github.com/vainjoker/realm/commit/79dc0634f8e95813529882c2e8727368b767b81d))
 - Finish Serialize&Deserialize for Value - ([c41e6c7](https://github.com/vainjoker/realm/commit/c41e6c7f0c5ca528f544876747dc0a557a23328d))
 - Use PhantomData wrap Parser - ([98ea304](https://github.com/vainjoker/realm/commit/98ea304c1f432e8c551611417604dddc0ac16934))
@@ -26,6 +27,7 @@ All notable changes to this project will be documented in this file.
 
 ### 📚 Documentation
 
+- Add TODO.md - ([cc93326](https://github.com/vainjoker/realm/commit/cc93326bfb462b71c2dd34551d61b213fd29f5b0))
 - Add readme file for the project - ([cf57b8b](https://github.com/vainjoker/realm/commit/cf57b8b1a3aa2eb4f491d2bc97dccb19fa887a3d))
 
 ### 🎨 Styling
