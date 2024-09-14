@@ -167,9 +167,9 @@ pub struct Expression {
 #[test]
 fn toml_parse() {
     let realm = Realm::builder()
-        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+        .load(Adaptor::new(StringSource::<TomlParser, _>::new(
             TOML_STRING,
-        ))))
+        )))
         .build()
         .expect("Building configuration object");
 

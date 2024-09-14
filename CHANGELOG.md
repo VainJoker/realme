@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Add tracing support - ([24d1af1](https://github.com/vainjoker/realm/commit/24d1af191bb94bbc5d39cd1b2321fbc60c6b8378))
 - Support load adaptor from cmd input - ([2c403d3](https://github.com/vainjoker/realm/commit/2c403d33aac99ace16bacbf6a8fd7d484371de9f))
 - Implement parser and cast error - ([89f2685](https://github.com/vainjoker/realm/commit/89f26853af813aa824e21a8163fd276a9319689b))
 - Implement better error handling - ([1e1490d](https://github.com/vainjoker/realm/commit/1e1490ddf2851bfa9f317345961bf1ad5fc8a2e1))

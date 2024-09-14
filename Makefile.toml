@@ -91,5 +91,6 @@ install_crate = { crate_name = "git-cliff", binary = "git-cliff", test_arg = "--
 
 [tasks.changelog]
 description = "Generate changelog"
+dependencies = ["install-cliff"]
 command = "git"
 args = ["cliff", "-o", "CHANGELOG.md"]

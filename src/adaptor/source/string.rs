@@ -1,16 +1,20 @@
+#![cfg(feature = "string")]
 use std::marker::PhantomData;
 
 use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct StringSource<'a, T: Parser<&'a str>> {
-    buffer: &'a str,
-    _marker: PhantomData<T>,
+pub struct StringSource<'a, T, U = &'a str> {
+    buffer: U,
+    _marker: PhantomData<&'a T>,
 }
 
-impl<'a, T: Parser<&'a str>> StringSource<'a, T> {
-    pub const fn new(buffer: &'a str) -> Self {
+impl<'a, T, U> StringSource<'a, T, U>
+where
+    T: Parser<U>,
+{
+    pub const fn new(buffer: U) -> Self {
         Self {
             buffer,
             _marker: PhantomData,
@@ -18,11 +22,15 @@ impl<'a, T: Parser<&'a str>> StringSource<'a, T> {
     }
 }
 
-impl<'a, T: Parser<&'a str>> Source for StringSource<'a, T> {
+impl<'a, T, U> Source for StringSource<'a, T, U>
+where
+    U: AsRef<str> + Clone,
+    T: Parser<U>,
+{
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&T::parse(self.buffer).map_err(|e| {
+        Value::try_serialize(&T::parse(self.buffer.clone()).map_err(|e| {
             RealmError::new_parse_error(
-                self.buffer.to_string(),
+                self.buffer.as_ref().to_string(),
                 "string".to_string(),
                 e.to_string(),
             )

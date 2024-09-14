@@ -5,13 +5,17 @@ use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct EnvSource<'a, T: for<'b> Parser<&'b str>> {
-    prefix: &'a str,
-    _marker: PhantomData<T>,
+pub struct EnvSource<'a, T, U> {
+    prefix: U,
+    _marker: PhantomData<&'a T>,
 }
 
-impl<'a, T: for<'b> Parser<&'b str>> EnvSource<'a, T> {
-    pub const fn new(prefix: &'a str) -> Self {
+impl<'a, T, U> EnvSource<'a, T, U>
+where
+    U: AsRef<str>,
+    T: Parser<U>,
+{
+    pub const fn new(prefix: U) -> Self {
         Self {
             prefix,
             _marker: PhantomData,
@@ -19,17 +23,20 @@ impl<'a, T: for<'b> Parser<&'b str>> EnvSource<'a, T> {
     }
 }
 
-impl<'a, T: for<'b> Parser<&'b str>> Source for EnvSource<'a, T> {
+impl<'a, T, U> Source for EnvSource<'a, T, U>
+where
+    T: Parser<U>,
+    U: AsRef<str> + Clone,
+{
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&T::parse(self.prefix).map_err(|e| {
+        Value::try_serialize(&T::parse(self.prefix.clone()).map_err(|_e| {
             RealmError::new_parse_error(
-                self.prefix.to_string(),
+                self.prefix.as_ref().to_string(),
                 "env".to_string(),
-                e.to_string(),
+                "parse source data failed".to_string(),
             )
         })?)
     }
-
     fn source_type(&self) -> SourceType {
         SourceType::Env
     }
