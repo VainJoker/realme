@@ -6,8 +6,10 @@ mod realm;
 mod value;
 
 pub use adaptor::{
-    format::{env::EnvParser, toml::TomlParser},
-    source::{env::EnvSource, file::FileSource, string::StringSource},
+    format::{cmd::CmdParser, env::EnvParser, toml::TomlParser},
+    source::{
+        cmd::CmdSource, env::EnvSource, file::FileSource, string::StringSource,
+    },
     Adaptor,
 };
 use errors::RealmError;

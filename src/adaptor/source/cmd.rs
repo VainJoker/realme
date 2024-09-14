@@ -1,35 +1,36 @@
+#![cfg(feature = "cmd")]
 use std::marker::PhantomData;
 
 use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct StringSource<'a, T: Parser<&'a str>> {
-    buffer: &'a str,
+pub struct CmdSource<T: Parser<String>> {
+    options: String,
     _marker: PhantomData<T>,
 }
 
-impl<'a, T: Parser<&'a str>> StringSource<'a, T> {
-    pub const fn new(buffer: &'a str) -> Self {
+impl<T: Parser<String>> CmdSource<T> {
+    pub const fn new(options: String) -> Self {
         Self {
-            buffer,
+            options,
             _marker: PhantomData,
         }
     }
 }
 
-impl<'a, T: Parser<&'a str>> Source for StringSource<'a, T> {
+impl<T: Parser<String>> Source for CmdSource<T> {
     fn parse(&self) -> Result<Value, RealmError> {
-        Value::try_serialize(&T::parse(self.buffer).map_err(|e| {
+        Value::try_serialize(&T::parse(self.options.clone()).map_err(|e| {
             RealmError::new_parse_error(
-                self.buffer.to_string(),
-                "string".to_string(),
+                self.options.clone(),
+                "cmd".to_string(),
                 e.to_string(),
             )
         })?)
     }
 
     fn source_type(&self) -> SourceType {
-        SourceType::Str
+        SourceType::Cmd
     }
 }

@@ -161,11 +161,13 @@ impl TryFrom<Value> for Array {
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(vec![Value::Boolean(b)]),
+            Value::Integer(i) => Ok(vec![Value::Integer(i)]),
+            Value::Float(f) => Ok(vec![Value::Float(f)]),
+            Value::String(s) => Ok(vec![Value::String(s)]),
             Value::Array(a) => Ok(a),
-            _ => Err(RealmError::new_cast_error(
-                value.value_type().to_string(),
-                "array".to_string(),
-            )),
+            Value::Table(t) => t.try_into(),
         }
     }
 }
@@ -175,12 +177,31 @@ impl TryFrom<Value> for Table {
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
+            Value::Null => Ok(Self::new()),
+            Value::Array(a) => a.try_into(),
             Value::Table(t) => Ok(t),
-            _ => Err(RealmError::new_cast_error(
-                value.value_type().to_string(),
-                "table".to_string(),
-            )),
+            _ => Ok(Self::from_iter(vec![(0.to_string(), value)])),
         }
+    }
+}
+
+impl TryFrom<Table> for Array {
+    type Error = RealmError;
+
+    fn try_from(value: Table) -> Result<Self, Self::Error> {
+        Ok(value.into_iter().map(|(_, v)| v).collect())
+    }
+}
+
+impl TryFrom<Array> for Table {
+    type Error = RealmError;
+
+    fn try_from(value: Array) -> Result<Self, Self::Error> {
+        Ok(value
+            .iter()
+            .enumerate()
+            .map(|(i, v)| (i.to_string(), v.clone()))
+            .collect())
     }
 }
 
@@ -273,23 +294,77 @@ mod tests {
 
     #[test]
     fn test_array_conversion() {
-        assert!(Array::try_from(Value::Null).is_err());
-        assert!(Array::try_from(Value::Boolean(true)).is_err());
-        assert!(Array::try_from(Value::Integer(42)).is_err());
-        assert!(Array::try_from(Value::Float(0.618)).is_err());
-        assert!(Array::try_from(Value::String("test".to_string())).is_err());
-        assert!(Array::try_from(Value::Array(vec![])).is_ok());
-        assert!(Array::try_from(Value::Table(Map::default())).is_err());
+        assert_eq!(Array::try_from(Value::Null).unwrap(), vec![]);
+        assert_eq!(
+            Array::try_from(Value::Boolean(true)).unwrap(),
+            vec![Value::Boolean(true)]
+        );
+        assert_eq!(
+            Array::try_from(Value::Integer(42)).unwrap(),
+            vec![Value::Integer(42)]
+        );
+        assert_eq!(
+            Array::try_from(Value::Float(0.618)).unwrap(),
+            vec![Value::Float(0.618)]
+        );
+        assert_eq!(
+            Array::try_from(Value::String("test".to_string())).unwrap(),
+            vec![Value::String("test".to_string())]
+        );
+        assert_eq!(Array::try_from(Value::Array(vec![])).unwrap(), vec![]);
+        assert_eq!(
+            Array::try_from(Value::Table(Map::default())).unwrap(),
+            vec![]
+        );
+        assert_eq!(
+            Array::try_from(Value::Table(Map::from_iter([(
+                "a".to_string(),
+                Value::Integer(42)
+            )])))
+            .unwrap(),
+            vec![Value::Integer(42)]
+        );
     }
 
     #[test]
     fn test_table_conversion() {
-        assert!(Table::try_from(Value::Null).is_err());
-        assert!(Table::try_from(Value::Boolean(true)).is_err());
-        assert!(Table::try_from(Value::Integer(42)).is_err());
-        assert!(Table::try_from(Value::Float(0.618)).is_err());
-        assert!(Table::try_from(Value::String("test".to_string())).is_err());
-        assert!(Table::try_from(Value::Array(vec![])).is_err());
-        assert!(Table::try_from(Value::Table(Map::default())).is_ok());
+        assert_eq!(Table::try_from(Value::Null).unwrap(), Map::default());
+        assert_eq!(
+            Table::try_from(Value::Boolean(true)).unwrap(),
+            Map::from([("0".to_string(), Value::Boolean(true))])
+        );
+        assert_eq!(
+            Table::try_from(Value::Integer(42)).unwrap(),
+            Map::from([("0".to_string(), Value::Integer(42))])
+        );
+        assert_eq!(
+            Table::try_from(Value::Float(0.618)).unwrap(),
+            Map::from([("0".to_string(), Value::Float(0.618))])
+        );
+        assert_eq!(
+            Table::try_from(Value::String("test".to_string())).unwrap(),
+            Map::from([("0".to_string(), Value::String("test".to_string()))])
+        );
+        assert_eq!(
+            Table::try_from(Value::Array(vec![])).unwrap(),
+            Map::default()
+        );
+        assert_eq!(
+            Table::try_from(Value::Array(vec![
+                Value::Integer(42),
+                Value::Integer(43),
+                Value::Integer(44)
+            ]))
+            .unwrap(),
+            Map::from([
+                ("0".to_string(), Value::Integer(42)),
+                ("1".to_string(), Value::Integer(43)),
+                ("2".to_string(), Value::Integer(44))
+            ])
+        );
+        assert_eq!(
+            Table::try_from(Value::Table(Map::default())).unwrap(),
+            Map::default()
+        );
     }
 }

@@ -1,7 +1,9 @@
 // use builder::RealmBuilder;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
-use crate::{value::Value, Adaptor, Map, RealmError};
+use crate::{
+    adaptor::source::SourceType, value::Value, Adaptor, Map, RealmError,
+};
 
 // mod builder;
 
@@ -38,7 +40,10 @@ impl Realm {
 
 #[derive(Default)]
 pub struct RealmBuilder {
-    adaptors: Vec<Adaptor>,
+    str: Vec<Adaptor>,
+    env: Vec<Adaptor>,
+    cmd: Vec<Adaptor>,
+    r#override: Vec<Adaptor>,
 }
 
 impl RealmBuilder {
@@ -48,17 +53,26 @@ impl RealmBuilder {
 
     #[must_use]
     pub fn load(mut self, adaptor: Adaptor) -> Self {
-        self.adaptors.push(adaptor);
+        match adaptor.source_type() {
+            SourceType::Str => self.str.push(adaptor),
+            SourceType::Env => self.env.push(adaptor),
+            SourceType::Cmd => self.cmd.push(adaptor),
+            SourceType::Override => {
+                // TODO: add log
+            }
+        }
         self
     }
 
     pub fn build(&self) -> Result<Realm, RealmError> {
         let mut cache = Map::new();
-        for adaptor in &self.adaptors {
-            let value = adaptor.parse()?;
-            if let Value::Table(table) = value {
-                for (k, v) in table {
-                    cache.insert(k, v);
+        for adaptors in [&self.str, &self.env, &self.cmd, &self.r#override] {
+            for adaptor in adaptors {
+                let value = adaptor.parse()?;
+                if let Value::Table(table) = value {
+                    for (k, v) in table {
+                        cache.insert(k, v);
+                    }
                 }
             }
         }

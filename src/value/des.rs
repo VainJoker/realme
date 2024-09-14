@@ -318,13 +318,10 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        match self {
-            Self::Array(a) => visitor.visit_seq(SeqDeserializer::new(a)),
-            _ => Err(de::Error::custom(format!(
-                "expected a sequence, got {}",
-                self.value_type()
-            ))),
-        }
+        let seq = self
+            .try_into()
+            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        visitor.visit_seq(SeqDeserializer::new(seq))
     }
 
     fn deserialize_tuple<V>(
@@ -363,8 +360,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         match self {
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
             _ => Err(de::Error::custom(format!(
-                "expected a table, got {}",
-                self.value_type()
+                "expected a table, got {}, value: {:?}",
+                self.value_type(),
+                self
             ))),
         }
     }
@@ -381,8 +379,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         match self {
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
             _ => Err(de::Error::custom(format!(
-                "expected a table, got {}",
-                self.value_type()
+                "expected a table, got {}, value: {:?}",
+                self.value_type(),
+                self
             ))),
         }
     }
@@ -412,8 +411,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         match self {
             Self::String(s) => visitor.visit_str(&s),
             _ => Err(de::Error::custom(format!(
-                "expected a string, got {}",
-                self.value_type()
+                "expected a string, got {}, value: {:?}",
+                self.value_type(),
+                self
             ))),
         }
     }
@@ -570,6 +570,16 @@ mod tests {
         ]);
         let result: Vec<i64> = value.try_deserialize().unwrap();
         assert_eq!(result, vec![1, 2, 3]);
+    }
+
+    #[test]
+    fn test_deserialize_array_of_array() {
+        let value = Value::Array(vec![
+            Value::Array(vec![Value::Integer(1), Value::Integer(2)]),
+            Value::Array(vec![Value::Integer(3), Value::Integer(4)]),
+        ]);
+        let result: Vec<Vec<i64>> = value.try_deserialize().unwrap();
+        assert_eq!(result, vec![vec![1, 2], vec![3, 4]]);
     }
 
     #[test]

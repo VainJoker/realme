@@ -51,4 +51,11 @@ impl Value {
             Self::Table(_) => "table",
         }
     }
+
+    pub fn as_table_mut(&mut self) -> Option<&mut Table> {
+        match self {
+            Self::Table(table) => Some(table),
+            _ => None,
+        }
+    }
 }

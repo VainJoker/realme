@@ -17,4 +17,8 @@ impl Adaptor {
     pub fn parse(&self) -> Result<Value, RealmError> {
         self.source.parse()
     }
+
+    pub fn source_type(&self) -> source::SourceType {
+        self.source.source_type()
+    }
 }

@@ -2,11 +2,14 @@
 - [ ] Documentation
 - [x] Attempt type conversion in serialize and deserialize
 - [ ] When parsing {{env}}, allow using variables from env
-- [ ] Separate adaptors: use fileadaptor, envadaptor, overrideadaptor
+- [x] Separate adaptors: use fileadaptor, envadaptor, overrideadaptor
 - [ ] Monitor configuration file changes, hot reload
 - [ ] Default value support
-- [ ] Support command-line arguments
+- [x] Support command-line arguments
 - [ ] Configuration export
 - [ ] Support getting configuration subtrees, nested reading config1.key1
 - [ ] Support environment control, namespaces
 - [ ] Add functionality to read configurations from remote sources (such as etcd, Consul, or custom HTTP endpoints)
+- [ ] Add tracing support
+- [ ] Struct with underscore field name should be parsed 
+- [ ] Better performance

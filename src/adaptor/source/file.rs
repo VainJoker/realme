@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, path::PathBuf};
 
-use super::Source;
+use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
@@ -31,6 +31,10 @@ impl<T: for<'a> Parser<&'a str>> Source for FileSource<T> {
         })?;
         Value::try_serialize(&parsed)
             .map_err(|e| RealmError::BuildError(e.to_string()))
+    }
+
+    fn source_type(&self) -> SourceType {
+        SourceType::Str
     }
 }
 
