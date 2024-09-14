@@ -5,13 +5,13 @@ use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct CmdSource<T: Parser<String>> {
-    options: String,
-    _marker: PhantomData<T>,
+pub struct CmdSource<'a, T, U = &'a str> {
+    options: U,
+    _marker: PhantomData<&'a T>,
 }
 
-impl<T: Parser<String>> CmdSource<T> {
-    pub const fn new(options: String) -> Self {
+impl<'a, T, U> CmdSource<'a, T, U> {
+    pub const fn new(options: U) -> Self {
         Self {
             options,
             _marker: PhantomData,
@@ -19,11 +19,15 @@ impl<T: Parser<String>> CmdSource<T> {
     }
 }
 
-impl<T: Parser<String>> Source for CmdSource<T> {
+impl<'a, T, U> Source for CmdSource<'a, T, U>
+where
+    T: Parser<U>,
+    U: AsRef<str> + Clone,
+{
     fn parse(&self) -> Result<Value, RealmError> {
         Value::try_serialize(&T::parse(self.options.clone()).map_err(|e| {
             RealmError::new_parse_error(
-                self.options.clone(),
+                self.options.as_ref().to_string(),
                 "cmd".to_string(),
                 e.to_string(),
             )

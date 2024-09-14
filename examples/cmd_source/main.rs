@@ -7,7 +7,7 @@ use serde::Deserialize;
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct User {
-    age: String,
+    age: u8,
     name: Name,
     skills: Vec<String>,
     nested_array: Vec<Vec<Vec<String>>>,
@@ -38,16 +38,17 @@ struct Args {
 // cargo run --example cmd_source -- -c age=30,name.first=John,name.last=Doe
 
 // for complex key-value pairs with nested arrays and extra fields
-// cargo run --example cmd_source -- -c "age=30,name.first=John,name.last=Doe,skills=[Go Rust; Python; Bash Scripting],nested_array=[[12]; [3; four; [5; 6]]],extra=and.and,email=john.doe@example.com,address.city=New York"
+
+// cargo run --example cmd_source -- -c "age=30,name.first=John,name.last=Doe,skills=[Go;Rust; Python; Bash Scripting],nested_array=[[12]; [3; four; [5; 6]]],extra=and.and,email=john.doe@example.com,address.city=New York"
+
+// Of course, you can use JsonParser or other parser instead of CmdParser
+// cargo run --example cmd_source -- -c '{\"age\":30,\"name\":{\"first\":\"John\",\"last\":\"Doe\"}}'
 fn main() {
     let args = Args::parse();
-
-    // println!("{:?}", args.config);
    
     let realm = Realm::builder()
     .load(Adaptor::new(
-        // TODO: weather CmdSource can use TomlParser
-        Box::new(CmdSource::<CmdParser>::new(args.config.clone()))
+        CmdSource::<CmdParser,String>::new(args.config)
     ))
     .build()
     .expect("Building configuration object");

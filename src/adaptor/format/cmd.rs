@@ -10,6 +10,7 @@ use nom::{
 
 use crate::{errors::RealmError, map::Map, parser::Parser, value::Value};
 
+#[derive(Debug, Default)]
 pub struct CmdParser;
 
 impl CmdParser {
@@ -88,12 +89,12 @@ impl CmdParser {
     }
 }
 
-impl Parser<String> for CmdParser {
+impl<T: AsRef<str>> Parser<T> for CmdParser {
     type Item = Value;
     type Error = RealmError;
 
-    fn parse(args: String) -> Result<Self::Item, Self::Error> {
-        let args = args.trim();
+    fn parse(args: T) -> Result<Self::Item, Self::Error> {
+        let args = args.as_ref().trim();
         match Self::parse_cmd(args) {
             Ok((_, map)) => Ok(Value::Table(map)),
             Err(_) => Err(RealmError::new_parse_error(

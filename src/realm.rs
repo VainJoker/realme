@@ -1,8 +1,12 @@
 // use builder::RealmBuilder;
+use std::fmt::Debug;
+
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::{
-    adaptor::source::SourceType, value::Value, Adaptor, Map, RealmError,
+    adaptor::source::{Source, SourceType},
+    value::Value,
+    Adaptor, Map, RealmError,
 };
 
 // mod builder;
@@ -17,7 +21,7 @@ impl Realm {
         Self { cache: value }
     }
 
-    pub fn builder() -> RealmBuilder {
+    pub const fn builder<T: Source + Debug>() -> RealmBuilder<T> {
         RealmBuilder::new()
     }
 
@@ -38,21 +42,32 @@ impl Realm {
     }
 }
 
-#[derive(Default, Debug)]
-pub struct RealmBuilder {
-    str: Vec<Adaptor>,
-    env: Vec<Adaptor>,
-    cmd: Vec<Adaptor>,
-    r#override: Vec<Adaptor>,
+#[derive(Debug)]
+pub struct RealmBuilder<T: Source + Debug> {
+    r#str: Vec<Adaptor<T>>,
+    r#env: Vec<Adaptor<T>>,
+    r#cmd: Vec<Adaptor<T>>,
+    r#override: Vec<Adaptor<T>>,
 }
 
-impl RealmBuilder {
-    pub fn new() -> Self {
-        Self::default()
+impl<T: Source + Debug> Default for RealmBuilder<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T: Source + Debug> RealmBuilder<T> {
+    pub const fn new() -> Self {
+        Self {
+            r#str: Vec::new(),
+            r#env: Vec::new(),
+            r#cmd: Vec::new(),
+            r#override: Vec::new(),
+        }
     }
 
     #[must_use]
-    pub fn load(mut self, adaptor: Adaptor) -> Self {
+    pub fn load(mut self, adaptor: Adaptor<T>) -> Self {
         match adaptor.source_type() {
             SourceType::Str => self.str.push(adaptor),
             SourceType::Env => self.env.push(adaptor),

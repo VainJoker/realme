@@ -11,9 +11,11 @@ fn main() {
     let config = Realm::builder()
     .load(
         Adaptor::new(
-            Box::new(StringSource::<MyParser>::new(
-                CONFIGURATION1)))
-                )
+            StringSource::<MyParser,&str>::new(
+                CONFIGURATION1
+            )
+        )
+    )
     .build()
     .expect("Building configuration object");
 

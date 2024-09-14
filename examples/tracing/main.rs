@@ -12,9 +12,8 @@ fn main() {
     let config = Realm::builder()
     .load(
         Adaptor::new(
-            Box::new(StringSource::<TomlParser>::new(
+            StringSource::<TomlParser>::new(
                 CONFIGURATION1)))
-                )
     .build()
     .expect("Building configuration object");
 
