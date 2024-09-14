@@ -2,6 +2,8 @@ mod cast;
 mod des;
 mod ser;
 
+use std::fmt::{Display, Formatter};
+
 use ser::ValueSerializer;
 use serde::{Deserialize, Serialize};
 
@@ -21,6 +23,20 @@ pub enum Value {
     String(String),
     Array(Array),
     Table(Table),
+}
+
+impl Display for Value {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Null => write!(f, "null"),
+            Self::Boolean(b) => write!(f, "{b}"),
+            Self::Integer(i) => write!(f, "{i}"),
+            Self::Float(fl) => write!(f, "{fl}",),
+            Self::String(s) => write!(f, "{s}"),
+            Self::Array(a) => write!(f, "{a:?}"),
+            Self::Table(t) => write!(f, "{t:?}"),
+        }
+    }
 }
 
 impl Value {

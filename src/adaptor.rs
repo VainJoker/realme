@@ -1,3 +1,5 @@
+use std::fmt::Formatter;
+
 use source::Source;
 
 use crate::{errors::RealmError, value::Value};
@@ -7,6 +9,12 @@ pub mod source;
 
 pub struct Adaptor {
     source: Box<dyn Source>,
+}
+
+impl std::fmt::Debug for Adaptor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Adaptor {{ source: {:?} }}", self.source.source_type())
+    }
 }
 
 impl Adaptor {

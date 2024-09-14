@@ -38,7 +38,7 @@ impl Realm {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct RealmBuilder {
     str: Vec<Adaptor>,
     env: Vec<Adaptor>,
@@ -64,15 +64,31 @@ impl RealmBuilder {
         self
     }
 
+    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn build(&self) -> Result<Realm, RealmError> {
         let mut cache = Map::new();
-        for adaptors in [&self.str, &self.env, &self.cmd, &self.r#override] {
-            for adaptor in adaptors {
-                let value = adaptor.parse()?;
-                if let Value::Table(table) = value {
+        let all_adaptors = self
+            .str
+            .iter()
+            .chain(self.env.iter())
+            .chain(self.cmd.iter())
+            .chain(self.r#override.iter());
+
+        for adaptor in all_adaptors {
+            tracing::trace!("adaptor: {:?}", adaptor);
+            match adaptor.parse() {
+                Ok(Value::Table(table)) => {
                     for (k, v) in table {
                         cache.insert(k, v);
                     }
+                }
+                Err(e) => {
+                    return Err(RealmError::new_build_error(e.to_string()));
+                }
+                Ok(value) => {
+                    tracing::warn!(
+                        "adaptor parse result is not a table: {value}"
+                    );
                 }
             }
         }

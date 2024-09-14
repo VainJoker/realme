@@ -37,6 +37,10 @@ impl RealmError {
     ) -> Self {
         Self::ParseError(ParseError::new(from, to, cause))
     }
+
+    pub const fn new_build_error(cause: String) -> Self {
+        Self::BuildError(cause)
+    }
 }
 
 #[derive(Debug, Error)]

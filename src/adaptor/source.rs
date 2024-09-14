@@ -11,6 +11,7 @@ pub trait Source {
     fn source_type(&self) -> SourceType;
 }
 
+#[derive(Debug)]
 pub enum SourceType {
     Str,
     Env,
