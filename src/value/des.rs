@@ -110,7 +110,7 @@ impl<'de> serde::Deserializer<'de> for Value {
             Self::Array(a) => visitor.visit_seq(SeqDeserializer::new(a)),
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
             _ => Err(de::Error::custom(format!(
-                "unsupported type: {}, value: {:?}",
+                "unsupported type for any: {}, value: {:?}",
                 self.value_type(),
                 self
             ))),
@@ -354,7 +354,7 @@ impl<'de> serde::Deserializer<'de> for Value {
         V: Visitor<'de>,
     {
         Err(de::Error::custom(format!(
-            "unsupported type: {}, value: {:?}",
+            "unsupported type for tuple struct: {}, value: {:?}",
             self.value_type(),
             self
         )))
@@ -403,7 +403,7 @@ impl<'de> serde::Deserializer<'de> for Value {
         V: Visitor<'de>,
     {
         Err(de::Error::custom(format!(
-            "unsupported type: {}, value: {:?}",
+            "unsupported type for enum: {}, value: {:?}",
             self.value_type(),
             self
         )))
@@ -428,16 +428,20 @@ impl<'de> serde::Deserializer<'de> for Value {
 
     fn deserialize_ignored_any<V>(
         self,
-        _visitor: V,
+        visitor: V,
     ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(de::Error::custom(format!(
-            "unsupported type: {}, value: {:?}",
-            self.value_type(),
-            self
-        )))
+        match self {
+            Self::Null => visitor.visit_none(),
+            Self::Boolean(b) => visitor.visit_bool(b),
+            Self::Integer(i) => visitor.visit_i64(i),
+            Self::Float(f) => visitor.visit_f64(f),
+            Self::String(s) => visitor.visit_str(&s),
+            Self::Array(a) => visitor.visit_seq(SeqDeserializer::new(a)),
+            Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
+        }
     }
 }
 

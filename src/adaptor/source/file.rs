@@ -5,7 +5,7 @@ use std::{
 };
 
 use super::{Source, SourceType};
-use crate::{errors::RealmError, parser::Parser, value::Value};
+use crate::{Parser, RealmError, Value};
 
 #[derive(Debug)]
 pub struct FileSource<T, U = PathBuf> {

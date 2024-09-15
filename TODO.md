@@ -11,5 +11,4 @@
 - [ ] Support environment control, namespaces
 - [ ] Add functionality to read configurations from remote sources (such as etcd, Consul, or custom HTTP endpoints)
 - [x] Add tracing support
-- [ ] Struct with underscore field name should be parsed 
 - [ ] Better performance
