@@ -10,6 +10,8 @@ pub enum RealmError {
     InvalidCast(CastError),
     #[error(transparent)]
     ParseError(ParseError),
+    #[error("Expression error: {0}")]
+    ExprError(String),
 
     #[error("Build error: {0}")]
     BuildError(String),
@@ -129,5 +131,14 @@ impl From<SerializeError> for RealmError {
     fn from(value: SerializeError) -> Self {
         tracing::error!("Serialize error: {}", value);
         Self::SerializeError(value)
+    }
+}
+
+#[derive(Debug, Error)]
+pub struct ExprError(String);
+
+impl Display for ExprError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }

@@ -81,6 +81,13 @@ impl<K, V> Map<K, V> {
         self.inner.get(key)
     }
 
+    pub fn get_mut(&mut self, key: &K) -> Option<&mut V>
+    where
+        K: std::hash::Hash + Eq,
+    {
+        self.inner.get_mut(key)
+    }
+
     pub fn collect<I>(iter: I) -> Self
     where
         I: IntoIterator<Item = (K, V)>,

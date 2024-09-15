@@ -26,6 +26,10 @@ impl Realm {
         self.cache.get(key)
     }
 
+    pub fn set(&mut self, key: &str, value: Value) {
+        self.cache.set(key, value);
+    }
+
     pub fn try_deserialize<T: DeserializeOwned>(
         &self,
     ) -> Result<T, RealmError> {

@@ -1,5 +1,5 @@
 use super::{Array, Table, Value};
-use crate::RealmError;
+use crate::{Map, RealmError};
 
 impl TryFrom<Value> for String {
     type Error = RealmError;
@@ -23,108 +23,113 @@ impl TryFrom<Value> for String {
     }
 }
 
-// TODO: Need log error
-// impl From<Value> for String {
-//     fn from(value: Value) -> Self {
-//         match value {
-//             Value::Null => Self::new(),
-//             Value::Boolean(b) => b.to_string(),
-//             Value::Integer(i) => i.to_string(),
-//             Value::Float(f) => f.to_string(),
-//             Value::String(s) => s,
-//             Value::Array(_) => Self::new(),
-//             Value::Table(_) => Self::new(),
-//         }
-//     }
-// }
+macro_rules! impl_try_from_value_for_integer {
+    ($type:ty) => {
+        impl TryFrom<Value> for $type {
+            type Error = RealmError;
 
-impl TryFrom<Value> for i64 {
-    type Error = RealmError;
-
-    fn try_from(value: Value) -> Result<Self, Self::Error> {
-        match value {
-            Value::Null => Ok(0),
-            Value::Boolean(b) => Ok(Self::from(b)),
-            Value::Integer(i) => Ok(i),
-            Value::Float(f) => Ok(f as Self),
-            Value::String(s) => s.parse().map_err(|_e| {
-                RealmError::new_cast_error(
-                    s,
-                    "Cannot cast string to i64".to_string(),
-                )
-            }),
-            Value::Array(_) => Err(RealmError::new_cast_error(
-                "array".to_string(),
-                "i64".to_string(),
-            )),
-            Value::Table(_) => Err(RealmError::new_cast_error(
-                "table".to_string(),
-                "i64".to_string(),
-            )),
+            fn try_from(value: Value) -> Result<Self, Self::Error> {
+                match value {
+                    Value::Null => Ok(0 as Self),
+                    Value::Boolean(b) => Ok(b.into()),
+                    #[allow(clippy::cast_lossless)]
+                    Value::Integer(i) => Ok(i as Self),
+                    Value::Float(f) => Ok(f as Self),
+                    Value::String(s) => s.parse().map_err(|_e| {
+                        RealmError::new_cast_error(
+                            s,
+                            format!(
+                                "Cannot cast string to {}",
+                                stringify!($type)
+                            )
+                            .to_string(),
+                        )
+                    }),
+                    Value::Array(_) => Err(RealmError::new_cast_error(
+                        "array".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                    Value::Table(_) => Err(RealmError::new_cast_error(
+                        "table".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                }
+            }
         }
-    }
+    };
 }
 
-impl TryFrom<Value> for f64 {
-    type Error = RealmError;
+macro_rules! impl_try_from_value_for_float {
+    ($type:ty) => {
+        impl TryFrom<Value> for $type {
+            type Error = RealmError;
 
-    fn try_from(value: Value) -> Result<Self, Self::Error> {
-        match value {
-            Value::Null => Ok(0.0),
-            Value::Boolean(_) => Err(RealmError::new_cast_error(
-                "boolean".to_string(),
-                "f64".to_string(),
-            )),
-            Value::Integer(i) => Ok(i as Self),
-            Value::Float(f) => Ok(f),
-            Value::String(s) => s.parse().map_err(|_e| {
-                RealmError::new_cast_error(
-                    s,
-                    "Cannot cast string to f64".to_string(),
-                )
-            }),
-            Value::Array(_) => Err(RealmError::new_cast_error(
-                "array".to_string(),
-                "f64".to_string(),
-            )),
-            Value::Table(_) => Err(RealmError::new_cast_error(
-                "table".to_string(),
-                "f64".to_string(),
-            )),
+            fn try_from(value: Value) -> Result<Self, Self::Error> {
+                match value {
+                    Value::Null => Ok(0.0 as Self),
+                    Value::Boolean(b) => Err(RealmError::new_cast_error(
+                        b.to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                    Value::Integer(i) => Ok(i as Self),
+                    Value::Float(f) => Ok(f as Self),
+                    Value::String(s) => s.parse().map_err(|_e| {
+                        RealmError::new_cast_error(
+                            s,
+                            format!(
+                                "Cannot cast string to {}",
+                                stringify!($type)
+                            )
+                            .to_string(),
+                        )
+                    }),
+                    Value::Array(_) => Err(RealmError::new_cast_error(
+                        "array".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                    Value::Table(_) => Err(RealmError::new_cast_error(
+                        "table".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                }
+            }
         }
-    }
+    };
 }
 
-impl TryFrom<Value> for u64 {
-    type Error = RealmError;
+macro_rules! impl_try_from_value_for_uinteger {
+    ($type:ty) => {
+        impl TryFrom<Value> for $type {
+            type Error = RealmError;
 
-    fn try_from(value: Value) -> Result<Self, Self::Error> {
-        match value {
-            Value::Null => Ok(0),
-            Value::Boolean(b) => Ok(b.into()),
-            Value::Integer(i) => Self::try_from(i).map_err(|_e| {
-                RealmError::new_cast_error(
-                    i.to_string(),
-                    "Cannot cast i64 to u64".to_string(),
-                )
-            }),
-            Value::Float(f) => Ok(f as Self),
-            Value::String(s) => s.parse().map_err(|_e| {
-                RealmError::new_cast_error(
-                    s,
-                    "Cannot cast string to u64".to_string(),
-                )
-            }),
-            Value::Array(_) => Err(RealmError::new_cast_error(
-                "array".to_string(),
-                "u64".to_string(),
-            )),
-            Value::Table(_) => Err(RealmError::new_cast_error(
-                "table".to_string(),
-                "u64".to_string(),
-            )),
+            fn try_from(value: Value) -> Result<Self, Self::Error> {
+                match value {
+                    Value::Null => Ok(0 as Self),
+                    Value::Boolean(b) => Ok(b.into()),
+                    Value::Integer(i) => Ok(i as Self),
+                    Value::Float(f) => Ok(f as Self),
+                    Value::String(s) => s.parse().map_err(|_e| {
+                        RealmError::new_cast_error(
+                            s,
+                            format!(
+                                "Cannot cast string to {}",
+                                stringify!($type)
+                            )
+                            .to_string(),
+                        )
+                    }),
+                    Value::Array(_) => Err(RealmError::new_cast_error(
+                        "array".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                    Value::Table(_) => Err(RealmError::new_cast_error(
+                        "table".to_string(),
+                        stringify!($type).to_string(),
+                    )),
+                }
+            }
         }
-    }
+    };
 }
 
 impl TryFrom<Value> for bool {
@@ -204,6 +209,81 @@ impl TryFrom<Array> for Table {
             .collect())
     }
 }
+
+impl<T: TryFrom<Value, Error = RealmError>> TryFrom<Value> for Vec<T> {
+    type Error = RealmError;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(vec![T::try_from(Value::Boolean(b))?]),
+            Value::Integer(i) => Ok(vec![T::try_from(Value::Integer(i))?]),
+            Value::Float(f) => Ok(vec![T::try_from(Value::Float(f))?]),
+            Value::String(s) => Ok(vec![T::try_from(Value::String(s))?]),
+            Value::Array(a) => {
+                let mut vec = Self::new();
+                for item in a {
+                    vec.push(T::try_from(item)?);
+                }
+                Ok(vec)
+            }
+            Value::Table(t) => {
+                let mut vec = Self::new();
+                for (_, v) in t {
+                    vec.push(T::try_from(v)?);
+                }
+                Ok(vec)
+            }
+        }
+    }
+}
+
+impl<K, V> TryFrom<Value> for Map<K, V>
+where
+    K: std::cmp::Eq + std::hash::Hash + std::convert::From<String>,
+    V: TryFrom<Value, Error = RealmError>,
+{
+    type Error = RealmError;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Array(a) => {
+                let mut map = Self::new();
+                for (index, val) in a.into_iter().enumerate() {
+                    let key: K = index.to_string().into();
+                    let value = V::try_from(val)?;
+                    map.insert(key, value);
+                }
+                Ok(map)
+            }
+            Value::Table(t) => t
+                .into_iter()
+                .map(|(k, v)| Ok((k.into(), V::try_from(v)?)))
+                .collect(),
+            _ => {
+                let key: K = "0".to_string().into();
+                let value = V::try_from(value)?;
+                Ok(Self::from_iter(vec![(key, value)]))
+            }
+        }
+    }
+}
+
+impl_try_from_value_for_integer!(i8);
+impl_try_from_value_for_integer!(i16);
+impl_try_from_value_for_integer!(i32);
+impl_try_from_value_for_integer!(i64);
+impl_try_from_value_for_integer!(i128);
+
+impl_try_from_value_for_float!(f32);
+impl_try_from_value_for_float!(f64);
+
+impl_try_from_value_for_uinteger!(u8);
+impl_try_from_value_for_uinteger!(u16);
+impl_try_from_value_for_uinteger!(u32);
+impl_try_from_value_for_uinteger!(u64);
+impl_try_from_value_for_uinteger!(u128);
 
 #[cfg(test)]
 mod tests {
@@ -365,6 +445,80 @@ mod tests {
         assert_eq!(
             Table::try_from(Value::Table(Map::default())).unwrap(),
             Map::default()
+        );
+    }
+
+    #[test]
+    fn test_vec_conversion() {
+        assert_eq!(
+            Vec::<i64>::try_from(Value::Null).unwrap(),
+            vec![] as Vec<i64>
+        );
+        assert_eq!(
+            Vec::<i64>::try_from(Value::Boolean(true)).unwrap(),
+            vec![1]
+        );
+        assert_eq!(Vec::<i64>::try_from(Value::Integer(42)).unwrap(), vec![42]);
+        assert_eq!(Vec::<i64>::try_from(Value::Float(0.618)).unwrap(), vec![0]);
+        assert_eq!(
+            Vec::<i64>::try_from(Value::String("42".to_string())).unwrap(),
+            vec![42]
+        );
+        assert_eq!(
+            Vec::<i64>::try_from(Value::Array(vec![
+                Value::Integer(42),
+                Value::Integer(43),
+                Value::Integer(44)
+            ]))
+            .unwrap(),
+            vec![42, 43, 44]
+        );
+        assert!(Vec::<i64>::try_from(Value::Table(Map::default())).is_ok());
+    }
+
+    #[test]
+    fn test_map_conversion() {
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Null).unwrap(),
+            Map::default()
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Boolean(true)).unwrap(),
+            Map::from([("0".to_string(), 1)])
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Integer(42)).unwrap(),
+            Map::from([("0".to_string(), 42)])
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Float(0.618)).unwrap(),
+            Map::from([("0".to_string(), 0)])
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::String("42".to_string()))
+                .unwrap(),
+            Map::from([("0".to_string(), 42)])
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Array(vec![
+                Value::Integer(42),
+                Value::Integer(43),
+                Value::Integer(44)
+            ]))
+            .unwrap(),
+            Map::from([
+                ("0".to_string(), 42),
+                ("1".to_string(), 43),
+                ("2".to_string(), 44)
+            ])
+        );
+        assert_eq!(
+            Map::<String, i64>::try_from(Value::Table(Map::from([(
+                "a".to_string(),
+                Value::Integer(42)
+            )])))
+            .unwrap(),
+            Map::from([("a".to_string(), 42)])
         );
     }
 }
