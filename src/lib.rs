@@ -1,7 +1,6 @@
 mod adaptor;
 mod errors;
 mod map;
-mod parser;
 mod realm;
 mod value;
 
@@ -29,10 +28,9 @@ pub use adaptor::source::env::EnvSource;
 pub use adaptor::source::file::FileSource;
 #[cfg(feature = "string")]
 pub use adaptor::source::string::StringSource;
-pub use adaptor::Adaptor;
+pub use adaptor::{parser::Parser, Adaptor};
 use errors::RealmError;
 pub use errors::RealmResult;
 use map::Map;
-pub use parser::Parser;
 pub use realm::Realm;
 pub use value::Value;

@@ -5,6 +5,7 @@ use source::Source;
 use crate::{errors::RealmError, value::Value};
 
 pub mod format;
+pub mod parser;
 pub mod source;
 
 pub struct Adaptor {

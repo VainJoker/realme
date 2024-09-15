@@ -1,4 +1,4 @@
-use crate::{errors::RealmError, parser::Parser};
+use crate::{Parser, RealmError};
 
 #[derive(Debug)]
 pub struct JsonParser;
