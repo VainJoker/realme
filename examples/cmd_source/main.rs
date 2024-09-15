@@ -1,9 +1,10 @@
-use clap::Parser;
-use realm::{Adaptor, CmdParser, CmdSource, Realm};
 use serde::Deserialize;
+#[cfg(feature = "cmd")]
+use clap::Parser;
+#[cfg(feature = "cmd")]
+use realm::{Adaptor, CmdParser, CmdSource, Realm};
 
 // cargo run --example cmd_source -- -c "age=30,name.first=John,name.last=Doe,skills=[Go Rust; Python; Bash Scripting],nested_array=[[12]; [3; four; [5; 6]]],extra=and.and,email=john.doe@example.com,address.city=New York"
-
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct User {
@@ -26,6 +27,7 @@ struct Name {
 struct Address {
     city: String,
 }
+#[cfg(feature = "cmd")]
 #[allow(dead_code)]
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
@@ -43,12 +45,15 @@ struct Args {
 
 // Of course, you can use JsonParser or other parser instead of CmdParser
 // cargo run --example cmd_source -- -c '{\"age\":30,\"name\":{\"first\":\"John\",\"last\":\"Doe\"}}'
+#[cfg(feature = "cmd")]
 fn main() {
     let args = Args::parse();
    
     let realm = Realm::builder()
     .load(Adaptor::new(
-        CmdSource::<CmdParser,String>::new(args.config)
+        Box::new(
+            CmdSource::<CmdParser,String>::new(args.config)
+        )
     ))
     .build()
     .expect("Building configuration object");
@@ -57,4 +62,9 @@ fn main() {
     let user = realm.try_deserialize::<User>().unwrap();
     println!("{user:#?}");
 
+}
+
+#[cfg(not(feature = "cmd"))]
+fn main() {
+    println!("cmd feature is not enabled");
 }

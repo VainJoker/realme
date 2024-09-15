@@ -13,8 +13,8 @@ pub trait Source {
 
 #[derive(Debug)]
 pub enum SourceType {
-    Str,
     Env,
+    Str,
     Cmd,
-    Override,
+    Set,
 }

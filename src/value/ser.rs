@@ -125,7 +125,7 @@ impl Serializer for ValueSerializer {
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
-        Err(ser::Error::custom("unit type not supported"))
+        Ok(Value::Null)
     }
 
     fn serialize_unit_struct(

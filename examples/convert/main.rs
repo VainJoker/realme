@@ -1,10 +1,7 @@
 #[cfg(feature = "toml")]
-
-use realm::Realm;
-#[cfg(feature = "toml")]
 use serde::{Serialize, Deserialize};
+
 #[cfg(feature = "toml")]
-// 定义一个示例结构体
 #[derive(Debug, Serialize, Deserialize)]
 struct Person {
     name: String,
@@ -19,9 +16,8 @@ fn main() {
         age = 30
         birthday = 1993-01-01T00:00:00Z
     };
-        
 
-    let person_realm = Realm::try_serialize(&person_toml).unwrap(); 
+    let person_realm = realm::Realm::try_serialize(&person_toml).unwrap(); 
     println!("{person_realm:#?}");
     let person: Person = person_realm.try_deserialize().unwrap();
     println!("{person:#?}");

@@ -5,7 +5,7 @@ use super::{Source, SourceType};
 use crate::{errors::RealmError, parser::Parser, value::Value};
 
 #[derive(Debug)]
-pub struct EnvSource<'a, T, U> {
+pub struct EnvSource<'a, T, U = &'a str> {
     prefix: U,
     _marker: PhantomData<&'a T>,
 }

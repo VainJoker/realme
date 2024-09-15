@@ -1,24 +1,22 @@
-
 #[cfg(feature = "toml")]
-use realm::{TomlParser, StringSource, Adaptor,   Realm};
+use realm::{TomlParser, StringSource, Adaptor,Realm};
 
 #[cfg(feature = "toml")]
 fn main() {
-    const CONFIGURATION1: &str = r#"
-    key1 = "value1"
-    "#;
+    const CONFIGURATION1: &str = r#"key1 = "value""#;
 
-    let config = Realm::builder()
+    let realm = Realm::builder()
     .load(
         Adaptor::new(
-            StringSource::<TomlParser>::new(
-                CONFIGURATION1
-            ))
-                )
+            Box::new(
+                StringSource::<TomlParser>::new(
+                    CONFIGURATION1
+            )))
+        )
     .build()
     .expect("Building configuration object");
 
-    let value :String = config
+    let value :String = realm
         .get("key1")
         .expect("Accessing configuration object")
         .try_into().unwrap();

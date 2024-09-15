@@ -7,15 +7,16 @@ Realm is a Rust library for flexible configuration management. It is designed to
 
 - [x] Supports multiple configuration formats
     - [x] TOML
-    - [ ] JSON
-    - [ ] JSON5
-    - [ ] YAML
-    - [ ] RON
+    - [x] JSON
+    - [x] JSON5
+    - [x] YAML
+    - [x] RON
+    - [x] INI
 - [x] Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
 - [x] Custom parser support and flexible adaptor system for different data sources
 - [ ] Setting defaults and set explicit values override
-- [ ] Reading from environment variables
-- [ ] Reading from command line flags
+- [x] Reading from environment variables
+- [x] Reading from command line flags
 - [ ] Live watching and re-reading of config files
 
 
@@ -35,28 +36,28 @@ realm = "0.1.0"
 Here's a simple example of how to use Realm:
 
 ```rust
-use realm::{adaptor::{format::toml::TomlParser, source::StringSource, Adaptor}, Realm};
+use realm::{TomlParser, StringSource, Adaptor,Realm};
 
 fn main() {
-    const CONFIGURATION1: &str = r#"
-    key = "value"
-    "#;
+    const CONFIGURATION1: &str = r#"key1 = "value""#;
 
-    let config = Realm::builder()
+    let realm = Realm::builder()
     .load(
         Adaptor::new(
-            Box::new(StringSource::<TomlParser>::new(
-                CONFIGURATION1)))
-                )
+            Box::new(
+                StringSource::<TomlParser>::new(
+                    CONFIGURATION1
+            )))
+        )
     .build()
     .expect("Building configuration object");
 
     let value :String = realm
-        .get("key")
+        .get("key1")
         .expect("Accessing configuration object")
-        .into();
+        .try_into().unwrap();
 
-    println!("'key' Config element is: '{value:?}'");
+    println!("'key1' Config element is: '{value:?}'");
 }
 ```
 

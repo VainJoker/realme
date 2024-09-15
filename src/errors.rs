@@ -26,15 +26,11 @@ pub enum RealmError {
 }
 
 impl RealmError {
-    pub const fn new_cast_error(origin: String, cause: String) -> Self {
+    pub fn new_cast_error(origin: String, cause: String) -> Self {
         Self::InvalidCast(CastError::new(origin, cause))
     }
 
-    pub const fn new_parse_error(
-        from: String,
-        to: String,
-        cause: String,
-    ) -> Self {
+    pub fn new_parse_error(from: String, to: String, cause: String) -> Self {
         Self::ParseError(ParseError::new(from, to, cause))
     }
 
@@ -50,14 +46,15 @@ pub struct CastError {
 }
 
 impl CastError {
-    pub const fn new(origin: String, cause: String) -> Self {
+    pub fn new(origin: String, cause: String) -> Self {
+        tracing::error!("Cast error: {}, error: {}", origin, cause);
         Self { origin, cause }
     }
 }
 
 impl Display for CastError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Cast from {} , error: {}", self.origin, self.cause)
+        write!(f, "Cast from {}, error: {}", self.origin, self.cause)
     }
 }
 
@@ -79,7 +76,8 @@ impl Display for ParseError {
 }
 
 impl ParseError {
-    pub const fn new(from: String, to: String, cause: String) -> Self {
+    pub fn new(from: String, to: String, cause: String) -> Self {
+        tracing::error!("Parse error: {} to {}, error: {}", from, to, cause);
         Self { from, to, cause }
     }
 }
@@ -104,6 +102,7 @@ impl Display for DeserializeError {
 
 impl From<DeserializeError> for RealmError {
     fn from(value: DeserializeError) -> Self {
+        tracing::error!("Deserialize error: {}", value);
         Self::DeserializeError(value)
     }
 }
@@ -128,6 +127,7 @@ impl Display for SerializeError {
 
 impl From<SerializeError> for RealmError {
     fn from(value: SerializeError) -> Self {
+        tracing::error!("Serialize error: {}", value);
         Self::SerializeError(value)
     }
 }

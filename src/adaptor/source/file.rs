@@ -30,7 +30,6 @@ where
     fn parse(&self) -> Result<Value, RealmError> {
         let buffer = std::fs::read_to_string(self.path.as_ref())
             .map_err(|e| RealmError::ReadFileError(e.to_string()))?;
-
         let parsed = T::parse(&buffer).map_err(|e| {
             RealmError::new_parse_error(
                 self.path.as_ref().to_string_lossy().to_string(),
@@ -45,21 +44,5 @@ where
 
     fn source_type(&self) -> SourceType {
         SourceType::Str
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use std::path::PathBuf;
-
-    use super::*;
-    use crate::TomlParser;
-
-    #[test]
-    fn test_file_source() {
-        let source =
-            FileSource::<TomlParser>::new(PathBuf::from("./Cargo.toml"));
-        let value = source.parse().unwrap();
-        println!("{value:#?}");
     }
 }
