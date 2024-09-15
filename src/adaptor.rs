@@ -7,18 +7,18 @@ use crate::{errors::RealmError, value::Value};
 pub mod format;
 pub mod source;
 
-pub struct Adaptor<T: Source> {
-    source: T,
+pub struct Adaptor {
+    source: Box<dyn Source>,
 }
 
-impl<T: Source> std::fmt::Debug for Adaptor<T> {
+impl std::fmt::Debug for Adaptor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "Adaptor {{ source: {:?} }}", self.source.source_type())
     }
 }
 
-impl<T: Source> Adaptor<T> {
-    pub const fn new(source: T) -> Self {
+impl Adaptor {
+    pub const fn new(source: Box<dyn Source>) -> Self {
         Self { source }
     }
 

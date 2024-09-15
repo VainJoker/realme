@@ -2,5 +2,15 @@
 pub mod cmd;
 #[cfg(feature = "env")]
 pub mod env;
+#[cfg(feature = "ini")]
+pub mod ini;
+#[cfg(feature = "json")]
+pub mod json;
+#[cfg(feature = "json5")]
+pub mod json5;
+#[cfg(feature = "ron")]
+pub mod ron;
 #[cfg(feature = "toml")]
 pub mod toml;
+#[cfg(feature = "yaml")]
+pub mod yaml;

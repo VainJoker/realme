@@ -1,19 +1,18 @@
-use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
-use realm::{TomlParser, StringSource, Adaptor,   Realm};
+#[cfg(feature = "toml")]
+use realm::{TomlParser, StringSource, Adaptor,Realm};
 
+#[cfg(feature = "toml")]
 fn main() {
 
-    const CONFIGURATION1: &str = "key1=value1";
-
-    tracing_subscriber::registry()
-        .with(fmt::layer())
-        .init();
+    const CONFIGURATION1: &str = "key1=\"value1\"";
 
     let config = Realm::builder()
     .load(
         Adaptor::new(
-            StringSource::<TomlParser>::new(
+            Box::new(
+                StringSource::<TomlParser>::new(
                 CONFIGURATION1)))
+    )
     .build()
     .expect("Building configuration object");
 
@@ -23,4 +22,9 @@ fn main() {
         .try_into().unwrap();
 
     println!("'key1' Config element is: '{value:?}'");
+}
+
+#[cfg(not(feature = "toml"))]
+fn main() {
+    println!("toml feature is not enabled");
 }

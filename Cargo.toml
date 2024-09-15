@@ -12,7 +12,7 @@ exclude = [
 ]
 
 [features]
-default = ["file","string","toml", "json", "env", "cmd", "tracing"]
+default = ["file","string","toml", "json", "yaml","json5", "ron", "ini", "env", "cmd", "tracing"]
 file = []
 string = []
 env = []
@@ -20,12 +20,18 @@ cmd = ["dep:clap","dep:nom"]
 toml = ["dep:toml"]
 json = ["dep:serde_json"]
 yaml = ["dep:serde_yaml2"]
+json5 = ["dep:serde_json5"]
+ron = ["dep:ron"]
+ini = ["dep:rust-ini"]
 tracing = ["dep:tracing"]
 
 [dependencies]
 thiserror = "1.0.42"
 serde = { version = "1.0.182", features = ["derive"] }
 serde_json = { version = "1.0", optional = true }
+serde_json5 = {version = "0.1.0", optional = true}
+ron = {version = "0.8.1", optional = true}
+rust-ini  = {version = "0.21.0", optional = true}
 toml = { version = "0.8.19", optional = true }
 serde_yaml2 = { version = "0.1.2", optional = true }
 clap = { version = "4.5.17", features = ["derive"], optional = true }

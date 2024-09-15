@@ -87,7 +87,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
         let mut map = Map::new();
 
         while let Some((key, value)) = access.next_entry()? {
-            eprintln!("key: {key}, value: {value:#?}");
             map.insert(key, value);
         }
 
@@ -110,7 +109,11 @@ impl<'de> serde::Deserializer<'de> for Value {
             Self::Float(f) => visitor.visit_f64(f),
             Self::Array(a) => visitor.visit_seq(SeqDeserializer::new(a)),
             Self::Table(t) => visitor.visit_map(MapDeserializer::new(t)),
-            _ => Err(de::Error::custom("unsupported type")),
+            _ => Err(de::Error::custom(format!(
+                "unsupported type: {}, value: {:?}",
+                self.value_type(),
+                self
+            ))),
         }
     }
 
@@ -234,11 +237,14 @@ impl<'de> serde::Deserializer<'de> for Value {
         visitor.visit_f64(f)
     }
 
-    fn deserialize_char<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_char<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(de::Error::custom("unsupported type"))
+        let s: String = self
+            .try_into()
+            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        visitor.visit_str(&s)
     }
 
     fn deserialize_string<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -327,15 +333,15 @@ impl<'de> serde::Deserializer<'de> for Value {
     fn deserialize_tuple<V>(
         self,
         _len: usize,
-        _visitor: V,
+        visitor: V,
     ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(de::Error::custom(format!(
-            "unsupported type: {}",
-            self.value_type()
-        )))
+        let seq = self
+            .try_into()
+            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        visitor.visit_seq(SeqDeserializer::new(seq))
     }
 
     fn deserialize_tuple_struct<V>(
@@ -348,8 +354,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         V: Visitor<'de>,
     {
         Err(de::Error::custom(format!(
-            "unsupported type: {}",
-            self.value_type()
+            "unsupported type: {}, value: {:?}",
+            self.value_type(),
+            self
         )))
     }
 
@@ -396,8 +403,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         V: Visitor<'de>,
     {
         Err(de::Error::custom(format!(
-            "unsupported type: {}",
-            self.value_type()
+            "unsupported type: {}, value: {:?}",
+            self.value_type(),
+            self
         )))
     }
 
@@ -426,8 +434,9 @@ impl<'de> serde::Deserializer<'de> for Value {
         V: Visitor<'de>,
     {
         Err(de::Error::custom(format!(
-            "unsupported type: {}",
-            self.value_type()
+            "unsupported type: {}, value: {:?}",
+            self.value_type(),
+            self
         )))
     }
 }
@@ -638,5 +647,19 @@ mod tests {
         let value = Value::Null;
         let result: Option<String> = value.try_deserialize().unwrap();
         assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_deserialize_char() {
+        let value = Value::String("a".to_string());
+        let result: char = value.try_deserialize().unwrap();
+        assert_eq!(result, 'a');
+    }
+
+    #[test]
+    fn test_deserialize_tuple() {
+        let value = Value::Array(vec![Value::Integer(1), Value::Integer(2)]);
+        let result: (i64, i64) = value.try_deserialize().unwrap();
+        assert_eq!(result, (1, 2));
     }
 }

@@ -1,15 +1,10 @@
-// use builder::RealmBuilder;
 use std::fmt::Debug;
 
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::{
-    adaptor::source::{Source, SourceType},
-    value::Value,
-    Adaptor, Map, RealmError,
+    adaptor::source::SourceType, value::Value, Adaptor, Map, RealmError,
 };
-
-// mod builder;
 
 #[derive(Debug, Deserialize)]
 pub struct Realm {
@@ -21,7 +16,7 @@ impl Realm {
         Self { cache: value }
     }
 
-    pub const fn builder<T: Source + Debug>() -> RealmBuilder<T> {
+    pub fn builder() -> RealmBuilder {
         RealmBuilder::new()
     }
 
@@ -42,73 +37,103 @@ impl Realm {
     }
 }
 
-#[derive(Debug)]
-pub struct RealmBuilder<T: Source + Debug> {
-    r#str: Vec<Adaptor<T>>,
-    r#env: Vec<Adaptor<T>>,
-    r#cmd: Vec<Adaptor<T>>,
-    r#override: Vec<Adaptor<T>>,
+#[derive(Debug, Default)]
+pub struct RealmBuilder {
+    env: Vec<Adaptor>,
+    str: Vec<Adaptor>,
+    cmd: Vec<Adaptor>,
+    set: Vec<Adaptor>,
 }
 
-impl<T: Source + Debug> Default for RealmBuilder<T> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl<T: Source + Debug> RealmBuilder<T> {
-    pub const fn new() -> Self {
-        Self {
-            r#str: Vec::new(),
-            r#env: Vec::new(),
-            r#cmd: Vec::new(),
-            r#override: Vec::new(),
-        }
+impl RealmBuilder {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     #[must_use]
-    pub fn load(mut self, adaptor: Adaptor<T>) -> Self {
+    pub fn load(mut self, adaptor: Adaptor) -> Self {
         match adaptor.source_type() {
-            SourceType::Str => self.str.push(adaptor),
             SourceType::Env => self.env.push(adaptor),
+            SourceType::Str => self.str.push(adaptor),
             SourceType::Cmd => self.cmd.push(adaptor),
-            SourceType::Override => {
-                // TODO: add log
-            }
+            SourceType::Set => self.set.push(adaptor),
         }
         self
     }
 
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn build(&self) -> Result<Realm, RealmError> {
-        let mut cache = Map::new();
-        let all_adaptors = self
-            .str
-            .iter()
-            .chain(self.env.iter())
-            .chain(self.cmd.iter())
-            .chain(self.r#override.iter());
+        let mut cache = RealmCache::new();
 
-        for adaptor in all_adaptors {
-            tracing::trace!("adaptor: {:?}", adaptor);
-            match adaptor.parse() {
-                Ok(Value::Table(table)) => {
-                    for (k, v) in table {
-                        cache.insert(k, v);
-                    }
-                }
-                Err(e) => {
-                    return Err(RealmError::new_build_error(e.to_string()));
-                }
-                Ok(value) => {
-                    tracing::warn!(
-                        "adaptor parse result is not a table: {value}"
-                    );
-                }
+        for adaptor in &self.env {
+            cache.handle_adaptor(adaptor, true)?;
+        }
+        println!("{:?}", cache.env);
+        let all_adaptors = [&self.str, &self.cmd, &self.set];
+        for adaptors in &all_adaptors {
+            for adaptor in *adaptors {
+                cache.handle_adaptor(adaptor, false)?;
             }
         }
+        println!("{:?}", cache.cache);
         Ok(Realm {
-            cache: Value::Table(cache),
+            cache: Value::Table(cache.cache),
         })
+    }
+}
+
+struct RealmCache {
+    env: Map<String, Value>,
+    cache: Map<String, Value>,
+}
+
+impl RealmCache {
+    fn new() -> Self {
+        Self {
+            env: Map::new(),
+            cache: Map::new(),
+        }
+    }
+
+    fn handle_adaptor(
+        &mut self,
+        adaptor: &Adaptor,
+        env_flag: bool,
+    ) -> Result<(), RealmError> {
+        match adaptor.parse() {
+            Ok(Value::Table(table)) => {
+                for (k, v) in table {
+                    if env_flag {
+                        self.cache.insert(k.clone(), v.clone());
+                        self.env.insert(k, v);
+                        continue;
+                    }
+                    match v {
+                        Value::String(s) if s == "{{env}}" => {
+                            if let Some(env_value) = self.cache.get(&k) {
+                                self.env.insert(k, env_value.clone());
+                            } else {
+                                return Err(RealmError::new_build_error(
+                                    format!(
+                                        "replace {k} with env value failed"
+                                    ),
+                                ));
+                            }
+                        }
+                        _ => {
+                            self.cache.insert(k, v);
+                        }
+                    }
+                }
+            }
+            Err(e) => {
+                return Err(RealmError::new_build_error(e.to_string()));
+            }
+            Ok(value) => {
+                return Err(RealmError::new_build_error(format!(
+                    "adaptor parse result is not a table: {value}"
+                )));
+            }
+        }
+        Ok(())
     }
 }

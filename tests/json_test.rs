@@ -1,13 +1,14 @@
-#![cfg(feature = "toml")]
+#![cfg(feature = "json")]
 
-use std::path::PathBuf;
+use std::{collections::HashMap, path::PathBuf};
 
-use realm::{Adaptor, FileSource, Realm, TomlParser};
+use realm::{Adaptor, FileSource, JsonParser, Realm};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct MyConfig {
     pub owner: Owner,
+    pub empty: HashMap<String, String>,
     pub database: Database,
     pub servers: Servers,
     pub products: Products,
@@ -94,21 +95,21 @@ pub struct Expression {
 }
 
 #[test]
-fn toml_parse() {
+fn json_parse() {
     let realm = Realm::builder()
-        .load(Adaptor::new(Box::new(FileSource::<TomlParser>::new(
-            PathBuf::from("./tests/source/test.toml"),
+        .load(Adaptor::new(Box::new(FileSource::<JsonParser>::new(
+            PathBuf::from("./tests/source/test.json"),
         ))))
         .build()
         .expect("Building configuration object");
 
-    let my_config: MyConfig = realm.try_deserialize().unwrap();
-
+    let config = realm.try_deserialize::<MyConfig>().unwrap();
     let expected = MyConfig {
         owner: Owner {
             name: "Tom Preston-Werner".to_string(),
             dob: "1979-05-27T07:32:00Z".to_string(),
         },
+        empty: HashMap::new(),
         database: Database {
             server: "192.168.1.1".to_string(),
             ports: vec![8001, 8002, 8003],
@@ -171,5 +172,5 @@ fn toml_parse() {
         ],
     };
 
-    assert_eq!(my_config, expected);
+    assert_eq!(config, expected);
 }
