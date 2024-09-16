@@ -1,15 +1,15 @@
-use crate::{Adaptor, Map, RealmError, Value};
+use crate::{Adaptor, Map, RealmeError, Value};
 
 /// A cache system for storing environment and other values.
-pub struct RealmCache {
+pub struct RealmeCache {
     /// Environment-specific configurations.
     pub env: Map<String, Value>,
     /// General cache for values.
     pub cache: Map<String, Value>,
 }
 
-impl RealmCache {
-    /// Constructs a new `RealmCache`.
+impl RealmeCache {
+    /// Constructs a new `RealmeCache`.
     pub fn new() -> Self {
         Self {
             env: Map::new(),
@@ -25,13 +25,13 @@ impl RealmCache {
     /// * `env_flag` - A flag to determine if the environment should be updated.
     ///
     /// # Errors
-    /// Returns `RealmError` if the adaptor cannot be parsed or if the expected
+    /// Returns `RealmeError` if the adaptor cannot be parsed or if the expected
     /// environment value is missing.
     pub fn handle_adaptor(
         &mut self,
         adaptor: &Adaptor,
         env_flag: bool,
-    ) -> Result<(), RealmError> {
+    ) -> Result<(), RealmeError> {
         match adaptor.parse() {
             Ok(Value::Table(table)) => {
                 for (k, v) in table {
@@ -45,7 +45,7 @@ impl RealmCache {
                             if let Some(env_value) = self.cache.get(&k) {
                                 self.env.insert(k, env_value.clone());
                             } else {
-                                return Err(RealmError::new_build_error(
+                                return Err(RealmeError::new_build_error(
                                     format!(
                                         "replace {k} with env value failed"
                                     ),
@@ -59,10 +59,10 @@ impl RealmCache {
                 }
             }
             Err(e) => {
-                return Err(RealmError::new_build_error(e.to_string()));
+                return Err(RealmeError::new_build_error(e.to_string()));
             }
             Ok(value) => {
-                return Err(RealmError::new_build_error(format!(
+                return Err(RealmeError::new_build_error(format!(
                     "adaptor parse result is not a table: {value}"
                 )));
             }

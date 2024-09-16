@@ -2,7 +2,7 @@
 use std::marker::PhantomData;
 
 use super::{Source, SourceType};
-use crate::{Parser, RealmError, Value};
+use crate::{Parser, RealmeError, Value};
 
 /// Represents a source for environment variables with a specific prefix.
 ///
@@ -13,7 +13,7 @@ use crate::{Parser, RealmError, Value};
 /// # Examples
 ///
 /// ```ignore
-/// use realm::{EnvParser, EnvSource, Source};
+/// use realme::{EnvParser, EnvSource, Source};
 ///
 /// let env_source = EnvSource::<EnvParser>::new("MYAPP_").unwrap();
 /// let result = env_source.parse();
@@ -44,7 +44,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use realm::{EnvParser, EnvSource};
+    /// use realme::{EnvParser, EnvSource};
     ///
     /// let env_source = EnvSource::<EnvParser>::new("MYAPP_");
     /// ```
@@ -67,12 +67,12 @@ where
     /// # Returns
     ///
     /// * `Ok(Value)` if parsing is successful.
-    /// * `Err(RealmError)` if parsing fails.
+    /// * `Err(RealmeError)` if parsing fails.
     ///
     /// # Examples
     ///
     /// ```ignore
-    /// use realm::{EnvParser, EnvSource, Parser};
+    /// use realme::{EnvParser, EnvSource, Parser};
     ///
     /// let env_source = EnvSource::<EnvParser>::new("MYAPP_");
     /// let result = env_source.parse();
@@ -81,9 +81,9 @@ where
     ///     Err(e) => println!("Error parsing environment variables: {:?}", e),
     /// }
     /// ```
-    fn parse(&self) -> Result<Value, RealmError> {
+    fn parse(&self) -> Result<Value, RealmeError> {
         Value::try_serialize(&T::parse(self.prefix.clone()).map_err(|_e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 self.prefix.as_ref().to_string(),
                 "env".to_string(),
                 "parse source data failed".to_string(),

@@ -2,7 +2,7 @@
 
 use std::{collections::HashMap, path::PathBuf};
 
-use realm::{Adaptor, FileSource, Json5Parser, Realm};
+use realme::{Adaptor, FileSource, Json5Parser, Realme};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -96,14 +96,14 @@ pub struct Expression {
 
 #[test]
 fn json5_parse() {
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(FileSource::<Json5Parser>::new(
             PathBuf::from("./tests/source/test.json5"),
         ))))
         .build()
         .expect("Building configuration object");
 
-    let config = realm.try_deserialize::<MyConfig>().unwrap();
+    let config = realme.try_deserialize::<MyConfig>().unwrap();
     let expected = MyConfig {
         owner: Owner {
             name: "Tom Preston-Werner".to_string(),

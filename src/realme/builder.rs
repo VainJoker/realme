@@ -1,20 +1,20 @@
-use super::{cache::RealmCache, Realm};
-use crate::{adaptor::source::SourceType, Adaptor, RealmError, Value};
+use super::{cache::RealmeCache, Realme};
+use crate::{adaptor::source::SourceType, Adaptor, RealmeError, Value};
 
-/// A builder for creating a `Realm` instance.
+/// A builder for creating a `Realme` instance.
 ///
-/// This struct collects adaptors from various sources and constructs a `Realm`
+/// This struct collects adaptors from various sources and constructs a `Realme`
 /// with a configured environment.
 #[derive(Debug, Default)]
-pub struct RealmBuilder {
+pub struct RealmeBuilder {
     env: Vec<Adaptor>,
     str: Vec<Adaptor>,
     cmd: Vec<Adaptor>,
     set: Vec<Adaptor>,
 }
 
-impl RealmBuilder {
-    /// Creates a new `RealmBuilder` instance with default values.
+impl RealmeBuilder {
+    /// Creates a new `RealmeBuilder` instance with default values.
     pub fn new() -> Self {
         Self::default()
     }
@@ -32,7 +32,7 @@ impl RealmBuilder {
     ///
     /// ```ignore
     /// let adaptor = Adaptor::new(...);
-    /// let builder = RealmBuilder::new().load(adaptor);
+    /// let builder = RealmeBuilder::new().load(adaptor);
     /// ```
     #[must_use]
     pub fn load(mut self, adaptor: Adaptor) -> Self {
@@ -45,26 +45,26 @@ impl RealmBuilder {
         self
     }
 
-    /// Constructs the `Realm` from the added adaptors.
+    /// Constructs the `Realme` from the added adaptors.
     ///
-    /// This method attempts to build the `Realm` using the adaptors provided
-    /// through the `load` method. It initializes a `RealmCache` and
+    /// This method attempts to build the `Realme` using the adaptors provided
+    /// through the `load` method. It initializes a `RealmeCache` and
     /// populates it with the adaptors' data.
     ///
     /// # Returns
     ///
-    /// A `Result` which is `Ok` if the `Realm` was successfully created, or an
-    /// `Err` containing a `RealmError` if an error occurred during the
+    /// A `Result` which is `Ok` if the `Realme` was successfully created, or an
+    /// `Err` containing a `RealmeError` if an error occurred during the
     /// building process.
     ///
     /// # Examples
     ///
     /// ```ignore
-    /// let builder = RealmBuilder::new().load(adaptor);
-    /// let realm = builder.build().expect("Failed to build Realm");
+    /// let builder = RealmeBuilder::new().load(adaptor);
+    /// let realme = builder.build().expect("Failed to build Realme");
     /// ```
-    pub fn build(&self) -> Result<Realm, RealmError> {
-        let mut cache = RealmCache::new();
+    pub fn build(&self) -> Result<Realme, RealmeError> {
+        let mut cache = RealmeCache::new();
 
         for adaptor in &self.env {
             cache.handle_adaptor(adaptor, true)?;
@@ -75,7 +75,7 @@ impl RealmBuilder {
                 cache.handle_adaptor(adaptor, false)?;
             }
         }
-        Ok(Realm {
+        Ok(Realme {
             cache: Value::Table(cache.cache),
         })
     }

@@ -2,7 +2,7 @@
 use std::marker::PhantomData;
 
 use super::{Source, SourceType};
-use crate::{Parser, RealmError, Value};
+use crate::{Parser, RealmeError, Value};
 
 /// A source that parses command output into a `Value`.
 ///
@@ -12,7 +12,7 @@ use crate::{Parser, RealmError, Value};
 /// # Examples
 ///
 /// ```ignore
-/// use realm::{CmdParser, CmdSource, Parser};
+/// use realme::{CmdParser, CmdSource, Parser};
 ///
 /// let cmd_source = CmdSource::<CmdParser>::new("foo=bar");
 /// let result = cmd_source.parse();
@@ -43,7 +43,7 @@ impl<'a, T, U> CmdSource<'a, T, U> {
     /// # Examples
     ///
     /// ```ignore
-    /// use realm::{CmdParser, CmdSource, Parser};
+    /// use realme::{CmdParser, CmdSource, Parser};
     ///
     /// let cmd_source = CmdSource::<CmdParser, _>::new("foo=bar");
     /// ```
@@ -68,12 +68,12 @@ where
     ///
     /// # Returns
     ///
-    /// A `Result` containing either the parsed `Value` or a `RealmError`.
+    /// A `Result` containing either the parsed `Value` or a `RealmeError`.
     ///
     /// # Examples
     ///
     /// ```ignore
-    /// use realm::{CmdParser, CmdSource};
+    /// use realme::{CmdParser, CmdSource};
     ///
     /// let cmd_source = CmdSource::<CmdParser>::new("foo=bar");
     /// let result = cmd_source.parse();
@@ -82,10 +82,10 @@ where
     ///     Err(e) => eprintln!("Error parsing command output: {:?}", e),
     /// }
     /// ```
-    fn parse(&self) -> Result<Value, RealmError> {
+    fn parse(&self) -> Result<Value, RealmeError> {
         T::parse(self.options.clone())
             .map_err(|e| {
-                RealmError::new_parse_error(
+                RealmeError::new_parse_error(
                     self.options.as_ref().to_string(),
                     "cmd".to_string(),
                     e.to_string(),

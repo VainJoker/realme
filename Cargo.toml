@@ -1,6 +1,6 @@
 [package]
-name = "realm"
-version = "0.1.0"
+name = "realme"
+version = "0.1.1"
 edition = "2021"
 authors = ["Jasper 张汉杰 <vainjoker@tuta.io>"]
 readme = "README.md"
@@ -10,6 +10,7 @@ exclude = [
   "Makefile.toml",
   "CHANGELOG.md",
 ]
+description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
 default = ["file","string","toml", "json", "yaml","json5", "ron", "ini", "env", "cmd", "tracing"]

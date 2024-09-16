@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use realm::{Adaptor, FileSource, Realm, YamlParser};
+use realme::{Adaptor, FileSource, Realme, YamlParser};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -96,14 +96,14 @@ pub struct Expression {
 
 #[test]
 fn yaml_parse() {
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(FileSource::<YamlParser>::new(
             PathBuf::from("./tests/source/test.yaml"),
         ))))
         .build()
         .expect("Building configuration object");
 
-    let config = realm.try_deserialize::<MyConfig>().unwrap();
+    let config = realme.try_deserialize::<MyConfig>().unwrap();
     let expected = MyConfig {
         owner: Owner {
             name: "Tom Preston-Werner".to_string(),

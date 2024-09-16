@@ -17,9 +17,9 @@ fn main() {
         birthday = 1993-01-01T00:00:00Z
     };
 
-    let person_realm = realm::Realm::try_serialize(&person_toml).unwrap();
-    println!("{person_realm:#?}");
-    let person: Person = person_realm.try_deserialize().unwrap();
+    let person_realme = realme::Realme::try_serialize(&person_toml).unwrap();
+    println!("{person_realme:#?}");
+    let person: Person = person_realme.try_deserialize().unwrap();
     println!("{person:#?}");
 }
 

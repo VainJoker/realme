@@ -124,9 +124,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let s: String = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let s: String = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_str(&s)
     }
 
@@ -134,9 +134,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let i: i64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let i: i64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_i64(i)
     }
 
@@ -144,9 +144,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let i: bool = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let i: bool = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_bool(i)
     }
 
@@ -154,9 +154,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let i: i64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let i: i64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_i8(i as i8)
     }
 
@@ -164,9 +164,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let i: i64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let i: i64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_i16(i as i16)
     }
 
@@ -174,9 +174,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let i: i64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let i: i64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_i32(i as i32)
     }
 
@@ -184,9 +184,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let u: u64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let u: u64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_u8(u as u8)
     }
 
@@ -194,9 +194,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let u: u64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let u: u64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_u16(u as u16)
     }
 
@@ -204,9 +204,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let u: u64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let u: u64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_u32(u as u32)
     }
 
@@ -214,9 +214,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let u: u64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let u: u64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_u64(u)
     }
 
@@ -224,9 +224,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let f: f64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let f: f64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_f32(f as f32)
     }
 
@@ -234,9 +234,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let f: f64 = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let f: f64 = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_f64(f)
     }
 
@@ -244,9 +244,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let s: String = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let s: String = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_str(&s)
     }
 
@@ -254,9 +254,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let s: String = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let s: String = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_str(&s)
     }
 
@@ -264,9 +264,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let s: String = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let s: String = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_str(&s)
     }
 
@@ -277,9 +277,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let s: String = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let s: String = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_str(&s)
     }
 
@@ -327,9 +327,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let seq = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let seq = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_seq(SeqDeserializer::new(seq))
     }
 
@@ -341,9 +341,9 @@ impl<'de> serde::Deserializer<'de> for Value {
     where
         V: Visitor<'de>,
     {
-        let seq = self
-            .try_into()
-            .map_err(|e: crate::RealmError| de::Error::custom(e.to_string()))?;
+        let seq = self.try_into().map_err(|e: crate::RealmeError| {
+            de::Error::custom(e.to_string())
+        })?;
         visitor.visit_seq(SeqDeserializer::new(seq))
     }
 
@@ -542,7 +542,7 @@ impl SeqDeserializer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::errors::RealmError;
+    use crate::errors::RealmeError;
 
     #[test]
     fn test_deserialize_string() {
@@ -561,7 +561,7 @@ mod tests {
     #[test]
     fn test_deserialize_string_to_integer_but_should_failed() {
         let value = Value::String("test".to_string());
-        let result: Result<i64, RealmError> = value.try_deserialize();
+        let result: Result<i64, RealmeError> = value.try_deserialize();
         assert!(result.is_err());
     }
 

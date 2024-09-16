@@ -1,11 +1,11 @@
 #[cfg(feature = "toml")]
-use realm::{Adaptor, Realm, StringSource, TomlParser};
+use realme::{Adaptor, Realme, StringSource, TomlParser};
 
 #[cfg(feature = "toml")]
 fn main() {
     const CONFIGURATION1: &str = "key1=\"value1\"";
 
-    let config = Realm::builder()
+    let config = Realme::builder()
         .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
             CONFIGURATION1,
         ))))

@@ -2,14 +2,14 @@
 ///
 /// This struct implements the `Parser` trait for parsing JSON5 strings
 /// into `Value` objects.
-use crate::{Parser, RealmError, Value};
+use crate::{Parser, RealmeError, Value};
 
 #[derive(Debug)]
 pub struct Json5Parser;
 
 impl<T: AsRef<str>> Parser<T> for Json5Parser {
     type Item = Value;
-    type Error = RealmError;
+    type Error = RealmeError;
 
     /// Parses a JSON5 string into a `Value` object.
     ///
@@ -20,15 +20,15 @@ impl<T: AsRef<str>> Parser<T> for Json5Parser {
     /// # Returns
     ///
     /// * `Result<Self::Item, Self::Error>` - A `Result` containing either the
-    ///   parsed `Value` or a `RealmError`.
+    ///   parsed `Value` or a `RealmeError`.
     ///
     /// # Errors
     ///
-    /// Returns a `RealmError` if the input cannot be parsed as valid JSON5.
+    /// Returns a `RealmeError` if the input cannot be parsed as valid JSON5.
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         serde_json5::from_str(args).map_err(|e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 args.to_string(),
                 "json5".to_string(),
                 e.to_string(),

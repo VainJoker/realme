@@ -1,6 +1,6 @@
 #[cfg(feature = "toml")]
-use realm::{Adaptor, Realm, StringSource, TomlParser};
-use realm::{EnvParser, EnvSource};
+use realme::{Adaptor, Realme, StringSource, TomlParser};
+use realme::{EnvParser, EnvSource};
 use serde::Deserialize;
 
 #[allow(dead_code)]
@@ -19,7 +19,7 @@ fn main() {
     like="like"
     "#;
 
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
             CONFIGURATION1,
         ))))
@@ -28,9 +28,9 @@ fn main() {
         ))))
         .build();
 
-    match realm {
-        Ok(realm) => {
-            let config: Config = realm.try_deserialize().unwrap();
+    match realme {
+        Ok(realme) => {
+            let config: Config = realme.try_deserialize().unwrap();
             println!("{config:?}");
         }
         Err(e) => {

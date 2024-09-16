@@ -1,10 +1,10 @@
 use super::{Array, Table, Value};
-use crate::{Map, RealmError};
+use crate::{Map, RealmeError};
 
 /// Attempts to convert a `Value` into a `String`.
 /// Returns an error if the `Value` is an `Array` or `Table`.
 impl TryFrom<Value> for String {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
@@ -13,11 +13,11 @@ impl TryFrom<Value> for String {
             Value::Integer(i) => Ok(i.to_string()),
             Value::Float(f) => Ok(f.to_string()),
             Value::String(s) => Ok(s),
-            Value::Array(_) => Err(RealmError::new_cast_error(
+            Value::Array(_) => Err(RealmeError::new_cast_error(
                 "array".to_string(),
                 "string".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::new_cast_error(
+            Value::Table(_) => Err(RealmeError::new_cast_error(
                 "table".to_string(),
                 "string".to_string(),
             )),
@@ -31,7 +31,7 @@ impl TryFrom<Value> for String {
 macro_rules! impl_try_from_value_for_integer {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
-            type Error = RealmError;
+            type Error = RealmeError;
 
             fn try_from(value: Value) -> Result<Self, Self::Error> {
                 match value {
@@ -41,7 +41,7 @@ macro_rules! impl_try_from_value_for_integer {
                     Value::Integer(i) => Ok(i as Self),
                     Value::Float(f) => Ok(f as Self),
                     Value::String(s) => s.parse().map_err(|_e| {
-                        RealmError::new_cast_error(
+                        RealmeError::new_cast_error(
                             s,
                             format!(
                                 "Cannot cast string to {}",
@@ -50,11 +50,11 @@ macro_rules! impl_try_from_value_for_integer {
                             .to_string(),
                         )
                     }),
-                    Value::Array(_) => Err(RealmError::new_cast_error(
+                    Value::Array(_) => Err(RealmeError::new_cast_error(
                         "array".to_string(),
                         stringify!($type).to_string(),
                     )),
-                    Value::Table(_) => Err(RealmError::new_cast_error(
+                    Value::Table(_) => Err(RealmeError::new_cast_error(
                         "table".to_string(),
                         stringify!($type).to_string(),
                     )),
@@ -70,19 +70,19 @@ macro_rules! impl_try_from_value_for_integer {
 macro_rules! impl_try_from_value_for_float {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
-            type Error = RealmError;
+            type Error = RealmeError;
 
             fn try_from(value: Value) -> Result<Self, Self::Error> {
                 match value {
                     Value::Null => Ok(0.0 as Self),
-                    Value::Boolean(b) => Err(RealmError::new_cast_error(
+                    Value::Boolean(b) => Err(RealmeError::new_cast_error(
                         b.to_string(),
                         stringify!($type).to_string(),
                     )),
                     Value::Integer(i) => Ok(i as Self),
                     Value::Float(f) => Ok(f as Self),
                     Value::String(s) => s.parse().map_err(|_e| {
-                        RealmError::new_cast_error(
+                        RealmeError::new_cast_error(
                             s,
                             format!(
                                 "Cannot cast string to {}",
@@ -91,11 +91,11 @@ macro_rules! impl_try_from_value_for_float {
                             .to_string(),
                         )
                     }),
-                    Value::Array(_) => Err(RealmError::new_cast_error(
+                    Value::Array(_) => Err(RealmeError::new_cast_error(
                         "array".to_string(),
                         stringify!($type).to_string(),
                     )),
-                    Value::Table(_) => Err(RealmError::new_cast_error(
+                    Value::Table(_) => Err(RealmeError::new_cast_error(
                         "table".to_string(),
                         stringify!($type).to_string(),
                     )),
@@ -111,7 +111,7 @@ macro_rules! impl_try_from_value_for_float {
 macro_rules! impl_try_from_value_for_uinteger {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
-            type Error = RealmError;
+            type Error = RealmeError;
 
             fn try_from(value: Value) -> Result<Self, Self::Error> {
                 match value {
@@ -120,7 +120,7 @@ macro_rules! impl_try_from_value_for_uinteger {
                     Value::Integer(i) => Ok(i as Self),
                     Value::Float(f) => Ok(f as Self),
                     Value::String(s) => s.parse().map_err(|_e| {
-                        RealmError::new_cast_error(
+                        RealmeError::new_cast_error(
                             s,
                             format!(
                                 "Cannot cast string to {}",
@@ -129,11 +129,11 @@ macro_rules! impl_try_from_value_for_uinteger {
                             .to_string(),
                         )
                     }),
-                    Value::Array(_) => Err(RealmError::new_cast_error(
+                    Value::Array(_) => Err(RealmeError::new_cast_error(
                         "array".to_string(),
                         stringify!($type).to_string(),
                     )),
-                    Value::Table(_) => Err(RealmError::new_cast_error(
+                    Value::Table(_) => Err(RealmeError::new_cast_error(
                         "table".to_string(),
                         stringify!($type).to_string(),
                     )),
@@ -147,7 +147,7 @@ macro_rules! impl_try_from_value_for_uinteger {
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
 impl TryFrom<Value> for bool {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
@@ -158,16 +158,16 @@ impl TryFrom<Value> for bool {
             Value::String(s) => match s.as_str() {
                 "true" | "1" | "yes" | "on" => Ok(true),
                 "false" | "0" | "no" | "off" => Ok(false),
-                _ => Err(RealmError::new_cast_error(
+                _ => Err(RealmeError::new_cast_error(
                     s,
                     "Cannot cast string to bool".to_string(),
                 )),
             },
-            Value::Array(_) => Err(RealmError::new_cast_error(
+            Value::Array(_) => Err(RealmeError::new_cast_error(
                 "array".to_string(),
                 "bool".to_string(),
             )),
-            Value::Table(_) => Err(RealmError::new_cast_error(
+            Value::Table(_) => Err(RealmeError::new_cast_error(
                 "table".to_string(),
                 "bool".to_string(),
             )),
@@ -179,7 +179,7 @@ impl TryFrom<Value> for bool {
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
 impl TryFrom<Value> for Array {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
@@ -198,7 +198,7 @@ impl TryFrom<Value> for Array {
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
 impl TryFrom<Value> for Table {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
@@ -213,7 +213,7 @@ impl TryFrom<Value> for Table {
 /// Attempts to convert a `Table` into an `Array`.
 /// Converts each value in the table into an element of the array.
 impl TryFrom<Table> for Array {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Table) -> Result<Self, Self::Error> {
         Ok(value.into_iter().map(|(_, v)| v).collect())
@@ -224,7 +224,7 @@ impl TryFrom<Table> for Array {
 /// Converts each element of the array into a key-value pair in the table, with
 /// the key as the index.
 impl TryFrom<Array> for Table {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Array) -> Result<Self, Self::Error> {
         Ok(value
@@ -238,8 +238,8 @@ impl TryFrom<Array> for Table {
 /// Attempts to convert a `Value` into a `Vec<T>`, where `T` implements
 /// `TryFrom<Value>`. Handles conversion from all `Value` variants, with
 /// specific errors for non-convertible types.
-impl<T: TryFrom<Value, Error = RealmError>> TryFrom<Value> for Vec<T> {
-    type Error = RealmError;
+impl<T: TryFrom<Value, Error = RealmeError>> TryFrom<Value> for Vec<T> {
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
@@ -272,9 +272,9 @@ impl<T: TryFrom<Value, Error = RealmError>> TryFrom<Value> for Vec<T> {
 impl<K, V> TryFrom<Value> for Map<K, V>
 where
     K: std::cmp::Eq + std::hash::Hash + std::convert::From<String>,
-    V: TryFrom<Value, Error = RealmError>,
+    V: TryFrom<Value, Error = RealmeError>,
 {
-    type Error = RealmError;
+    type Error = RealmeError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {

@@ -1,7 +1,7 @@
 #[cfg(feature = "cmd")]
 use clap::Parser;
 #[cfg(feature = "cmd")]
-use realm::{Adaptor, CmdParser, CmdSource, Realm};
+use realme::{Adaptor, CmdParser, CmdSource, Realme};
 use serde::Deserialize;
 
 // cargo run --example cmd_source -- -c
@@ -56,15 +56,15 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(CmdSource::<CmdParser, String>::new(
             args.config,
         ))))
         .build()
         .expect("Building configuration object");
-    println!("{realm:?}");
+    println!("{realme:?}");
 
-    let user = realm.try_deserialize::<User>().unwrap();
+    let user = realme.try_deserialize::<User>().unwrap();
     println!("{user:#?}");
 }
 

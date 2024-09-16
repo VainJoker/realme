@@ -2,11 +2,11 @@ use std::fmt::Display;
 
 use thiserror::Error;
 
-pub type RealmResult<T> = Result<T, RealmError>;
+pub type RealmeResult<T> = Result<T, RealmeError>;
 
-/// Represents all possible errors that can occur in the Realm library.
+/// Represents all possible errors that can occur in the Realme library.
 #[derive(Error, Debug)]
-pub enum RealmError {
+pub enum RealmeError {
     #[error(transparent)]
     InvalidCast(CastError),
     #[error(transparent)]
@@ -28,7 +28,7 @@ pub enum RealmError {
     Unknown(String),
 }
 
-impl RealmError {
+impl RealmeError {
     /// Creates a new `InvalidCast` error.
     pub fn new_cast_error(origin: String, cause: String) -> Self {
         Self::InvalidCast(CastError::new(origin, cause))
@@ -45,7 +45,7 @@ impl RealmError {
     }
 }
 
-/// Error type for casting operations within Realm.
+/// Error type for casting operations within Realme.
 #[derive(Debug, Error)]
 pub struct CastError {
     origin: String,
@@ -65,7 +65,7 @@ impl Display for CastError {
     }
 }
 
-/// Error type for parsing operations within Realm.
+/// Error type for parsing operations within Realme.
 #[derive(Debug, Error)]
 pub struct ParseError {
     from: String,
@@ -90,7 +90,7 @@ impl ParseError {
     }
 }
 
-/// Error type for deserialization operations within Realm.
+/// Error type for deserialization operations within Realme.
 #[derive(Debug, Error)]
 pub struct DeserializeError(String);
 
@@ -109,14 +109,14 @@ impl Display for DeserializeError {
     }
 }
 
-impl From<DeserializeError> for RealmError {
+impl From<DeserializeError> for RealmeError {
     fn from(value: DeserializeError) -> Self {
         tracing::error!("Deserialize error: {}", value);
         Self::DeserializeError(value)
     }
 }
 
-/// Error type for serialization operations within Realm.
+/// Error type for serialization operations within Realme.
 #[derive(Debug, Error)]
 pub struct SerializeError(String);
 
@@ -135,7 +135,7 @@ impl Display for SerializeError {
     }
 }
 
-impl From<SerializeError> for RealmError {
+impl From<SerializeError> for RealmeError {
     fn from(value: SerializeError) -> Self {
         tracing::error!("Serialize error: {}", value);
         Self::SerializeError(value)

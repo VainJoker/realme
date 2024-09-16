@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{RealmError, RealmResult};
+use crate::{RealmeError, RealmeResult};
 
 /// Represents an expression in a custom language.
 ///
@@ -38,10 +38,10 @@ impl FromStr for Expression {
     /// Parses a string into an `Expression`.
     ///
     /// This parser supports nested and indexed expressions.
-    /// Errors are returned as `RealmError`.
-    type Err = RealmError;
+    /// Errors are returned as `RealmeError`.
+    type Err = RealmeError;
 
-    fn from_str(s: &str) -> RealmResult<Self> {
+    fn from_str(s: &str) -> RealmeResult<Self> {
         let mut chars = s.chars().peekable();
         let mut current = String::new();
         let mut stack = Vec::new();
@@ -65,10 +65,12 @@ impl FromStr for Expression {
                 }
                 ']' => {
                     let identifier = sub_stack.pop().ok_or_else(|| {
-                        RealmError::ExprError("Unmatched ']' found".to_string())
+                        RealmeError::ExprError(
+                            "Unmatched ']' found".to_string(),
+                        )
                     })?;
                     let index = current.parse::<isize>().map_err(|e| {
-                        RealmError::ExprError(format!(
+                        RealmeError::ExprError(format!(
                             "Invalid number format for subscript: {e}"
                         ))
                     })?;

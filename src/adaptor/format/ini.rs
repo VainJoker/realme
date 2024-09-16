@@ -1,4 +1,4 @@
-use crate::{Map, Parser, RealmError, Value};
+use crate::{Map, Parser, RealmeError, Value};
 
 /// A parser for INI format configuration files.
 #[derive(Debug)]
@@ -6,7 +6,7 @@ pub struct IniParser;
 
 impl<T: AsRef<str>> Parser<T> for IniParser {
     type Item = Value;
-    type Error = RealmError;
+    type Error = RealmeError;
 
     /// Parses an INI format string into a `Value::Table`.
     ///
@@ -23,7 +23,7 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     /// * `Result<Self::Item, Self::Error>` - A `Result` containing either:
     ///   - `Ok(Value::Table(map))` where `map` is a `Map` representing the
     ///     parsed INI structure.
-    ///   - `Err(RealmError)` if an error occurs during parsing.
+    ///   - `Err(RealmeError)` if an error occurs during parsing.
     ///
     /// # Errors
     ///
@@ -33,7 +33,7 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     /// # Examples
     ///
     /// ```
-    /// use realm::{IniParser, Parser, Value};
+    /// use realme::{IniParser, Parser, Value};
     ///
     /// let ini_str = r#"
     /// [section1]
@@ -50,7 +50,7 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         let i = ini::Ini::load_from_str(args).map_err(|e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 args.to_string(),
                 "ini".to_string(),
                 e.to_string(),

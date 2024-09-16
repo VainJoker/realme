@@ -48,7 +48,7 @@ trim = true
 # postprocessors
 postprocessors = [
   # TODO replace repository URL
-  { pattern = '<REPO>', replace = "https://github.com/vainjoker/realm" },
+  { pattern = '<REPO>', replace = "https://github.com/vainjoker/realme" },
   # Check typos with https://github.com/crate-ci/typos
   # If the spelling is incorrect, it will be automatically fixed.
   { pattern = '.*', replace_command = 'typos --write-changes -' },

@@ -1,7 +1,7 @@
 #![cfg(feature = "ini")]
 use std::path::PathBuf;
 
-use realm::{Adaptor, FileSource, IniParser, Realm};
+use realme::{Adaptor, FileSource, IniParser, Realme};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -26,13 +26,13 @@ pub struct Database {
 
 #[test]
 fn ini_parse() {
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(FileSource::<IniParser>::new(
             PathBuf::from("./tests/source/test.ini"),
         ))))
         .build()
         .expect("Building configuration object");
-    let config = realm.try_deserialize::<MyConfig>().unwrap();
+    let config = realme.try_deserialize::<MyConfig>().unwrap();
     let expected = MyConfig {
         owner: Owner {
             name: "Tom Preston-Werner".to_string(),

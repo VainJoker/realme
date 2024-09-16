@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use realm::{Adaptor, FileSource, Realm, TomlParser};
+use realme::{Adaptor, FileSource, Realme, TomlParser};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -95,14 +95,14 @@ pub struct Expression {
 
 #[test]
 fn toml_parse() {
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(FileSource::<TomlParser>::new(
             PathBuf::from("./tests/source/test.toml"),
         ))))
         .build()
         .expect("Building configuration object");
 
-    let my_config: MyConfig = realm.try_deserialize().unwrap();
+    let my_config: MyConfig = realme.try_deserialize().unwrap();
 
     let expected = MyConfig {
         owner: Owner {

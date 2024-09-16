@@ -1,4 +1,4 @@
-use crate::{Map, Parser, RealmError, Value};
+use crate::{Map, Parser, RealmeError, Value};
 
 /// A parser for environment variables.
 #[derive(Debug)]
@@ -6,7 +6,7 @@ pub struct EnvParser;
 
 impl<T: AsRef<str>> Parser<T> for EnvParser {
     type Item = Value;
-    type Error = RealmError;
+    type Error = RealmeError;
 
     /// Parses environment variables based on a given prefix.
     ///
@@ -24,13 +24,13 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     /// * `Result<Self::Item, Self::Error>` - A `Result` containing either:
     ///   - `Ok(Value::Table(map))` where `map` is a `Map` of filtered and
     ///     processed environment variables.
-    ///   - `Err(RealmError)` if an error occurs during parsing (note: this
+    ///   - `Err(RealmeError)` if an error occurs during parsing (note: this
     ///     implementation always returns `Ok`).
     ///
     /// # Examples
     ///
     /// ```
-    /// use realm::{EnvParser, Parser};
+    /// use realme::{EnvParser, Parser};
     ///
     /// // Assuming environment variables: APP_NAME=MyApp, APP_VERSION=1.0
     /// let result = EnvParser::parse("APP_");

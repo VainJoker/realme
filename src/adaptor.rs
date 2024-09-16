@@ -2,7 +2,7 @@ use std::fmt::Formatter;
 
 use source::Source;
 
-use crate::{errors::RealmError, value::Value};
+use crate::{errors::RealmeError, value::Value};
 
 pub mod format;
 pub mod parser;
@@ -35,8 +35,8 @@ impl Adaptor {
     /// # Returns
     ///
     /// Returns a `Result` containing either the parsed `Value` or a
-    /// `RealmError`.
-    pub fn parse(&self) -> Result<Value, RealmError> {
+    /// `RealmeError`.
+    pub fn parse(&self) -> Result<Value, RealmeError> {
         self.source.parse()
     }
 

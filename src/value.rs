@@ -9,7 +9,7 @@ use expr::Expression;
 use ser::ValueSerializer;
 use serde::{Deserialize, Serialize};
 
-use crate::{map::Map, RealmResult};
+use crate::{map::Map, RealmeResult};
 
 pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;
@@ -47,7 +47,7 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::{Table, Value};
+    /// use realme::{Table, Value};
     ///
     /// let value = Value::Table(Table::from_iter(vec![(
     ///     "a".to_string(),
@@ -116,7 +116,7 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::{Table, Value};
+    /// use realme::{Table, Value};
     ///
     /// let mut value = Value::Table(Table::new());
     /// value.set(
@@ -199,13 +199,13 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::Value;
+    /// use realme::Value;
     ///
     /// let value = Value::String("example".to_string());
     /// let result: String = value.try_deserialize().unwrap();
     /// assert_eq!(result, "example");
     /// ```
-    pub fn try_deserialize<'de, T: Deserialize<'de>>(self) -> RealmResult<T> {
+    pub fn try_deserialize<'de, T: Deserialize<'de>>(self) -> RealmeResult<T> {
         T::deserialize(self).map_err(std::convert::Into::into)
     }
 
@@ -214,13 +214,13 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::Value;
+    /// use realme::Value;
     ///
     /// let value = "example";
     /// let serialized = Value::try_serialize(&value).unwrap();
     /// assert_eq!(serialized, Value::String("example".to_string()));
     /// ```
-    pub fn try_serialize<T: Serialize>(from: &T) -> RealmResult<Self> {
+    pub fn try_serialize<T: Serialize>(from: &T) -> RealmeResult<Self> {
         from.serialize(ValueSerializer)
             .map_err(std::convert::Into::into)
     }
@@ -230,7 +230,7 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::Value;
+    /// use realme::Value;
     ///
     /// let value = Value::Integer(42);
     /// assert_eq!(value.value_type(), "integer");
@@ -252,7 +252,7 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realm::{Table, Value};
+    /// use realme::{Table, Value};
     ///
     /// let mut value = Value::Table(Table::new());
     /// assert!(value.as_table_mut().is_some());

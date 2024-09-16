@@ -1,7 +1,8 @@
-# Realm
+# Realme
 
-Realm is a Rust library for flexible configuration management. It is designed to work within an application, and can handle all types of configuration needs and formats. 
+The name "Realme" is a play on "Realm" and "me," emphasizing its role in managing your application's configuration realm. 
 
+Realme is a flexible and extensible configuration management library for Rust. It simplifies the process of loading and managing configuration settings from various sources. Designed to work within an application, Realme can handle all types of configuration needs and formats.
 
 ## Features
 
@@ -14,7 +15,7 @@ Realm is a Rust library for flexible configuration management. It is designed to
     - [x] INI
 - [x] Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
 - [x] Custom parser support and flexible adaptor system for different data sources
-- [ ] Setting defaults and set explicit values override
+- [x] Setting defaults and set explicit values override
 - [x] Reading from environment variables
 - [x] Reading from command line flags
 - [ ] Live watching and re-reading of config files
@@ -27,21 +28,21 @@ Add this to your `Cargo.toml`:
 ```
 toml
 [dependencies]
-realm = "0.1.0"
+realme = "0.1.0"
 ```
 
 
 ## Usage
 
-Here's a simple example of how to use Realm:
+Here's a simple example of how to use Realme:
 
 ```rust
-use realm::{TomlParser, StringSource, Adaptor,Realm};
+use realme::{TomlParser, StringSource, Adaptor,Realme};
 
 fn main() {
     const CONFIGURATION1: &str = r#"key1 = "value""#;
 
-    let realm = Realm::builder()
+    let realme = Realme::builder()
     .load(
         Adaptor::new(
             Box::new(
@@ -52,7 +53,7 @@ fn main() {
     .build()
     .expect("Building configuration object");
 
-    let value :String = realm
+    let value :String = realme
         .get("key1")
         .expect("Accessing configuration object")
         .try_into().unwrap();

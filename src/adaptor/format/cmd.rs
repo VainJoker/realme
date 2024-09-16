@@ -8,7 +8,7 @@ use nom::{
     IResult,
 };
 
-use crate::{Map, Parser, RealmError, Value};
+use crate::{Map, Parser, RealmeError, Value};
 
 /// A parser for command-line style key-value pairs.
 #[derive(Debug, Default)]
@@ -144,7 +144,7 @@ impl CmdParser {
 
 impl<T: AsRef<str>> Parser<T> for CmdParser {
     type Item = Value;
-    type Error = RealmError;
+    type Error = RealmeError;
 
     /// Parses the input string into a `Value` item.
     ///
@@ -154,12 +154,12 @@ impl<T: AsRef<str>> Parser<T> for CmdParser {
     ///
     /// # Returns
     ///
-    /// * `Result` - A result containing the parsed `Value` or a `RealmError`.
+    /// * `Result` - A result containing the parsed `Value` or a `RealmeError`.
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         match Self::parse_cmd(args) {
             Ok((_, map)) => Ok(Value::Table(map)),
-            Err(_) => Err(RealmError::new_parse_error(
+            Err(_) => Err(RealmeError::new_parse_error(
                 args.to_string(),
                 "cmd".to_string(),
                 "Failed to parse".to_string(),

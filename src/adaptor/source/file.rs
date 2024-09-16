@@ -5,7 +5,7 @@ use std::{
 };
 
 use super::{Source, SourceType};
-use crate::{Parser, RealmError, Value};
+use crate::{Parser, RealmeError, Value};
 
 /// Represents a source that reads configuration data from a file.
 ///
@@ -38,7 +38,7 @@ impl<U: AsRef<Path>, T> FileSource<T, U> {
     /// ```ignore
     /// use std::path::PathBuf;
     ///
-    /// use realm::{FileSource, TomlParser};
+    /// use realme::{FileSource, TomlParser};
     ///
     /// let file_source = FileSource::<TomlParser>::new(PathBuf::from(
     ///     "path/to/your/config.toml",
@@ -62,18 +62,18 @@ where
     /// # Returns
     ///
     /// * `Ok(Value)` - If the file is successfully read and parsed.
-    /// * `Err(RealmError)` - If there is an error reading the file or parsing
+    /// * `Err(RealmeError)` - If there is an error reading the file or parsing
     ///   its contents.
     ///
     /// # Errors
     ///
-    /// This method returns `Err(RealmError)` if the file cannot be read or if
+    /// This method returns `Err(RealmeError)` if the file cannot be read or if
     /// the parsing fails.
-    fn parse(&self) -> Result<Value, RealmError> {
+    fn parse(&self) -> Result<Value, RealmeError> {
         let buffer = std::fs::read_to_string(self.path.as_ref())
-            .map_err(|e| RealmError::ReadFileError(e.to_string()))?;
+            .map_err(|e| RealmeError::ReadFileError(e.to_string()))?;
         let parsed = T::parse(&buffer).map_err(|e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 self.path.as_ref().to_string_lossy().to_string(),
                 "file".to_string(),
                 e.to_string(),
@@ -81,7 +81,7 @@ where
         })?;
 
         Value::try_serialize(&parsed)
-            .map_err(|e| RealmError::BuildError(e.to_string()))
+            .map_err(|e| RealmeError::BuildError(e.to_string()))
     }
 
     /// Returns the source type of this `FileSource`.

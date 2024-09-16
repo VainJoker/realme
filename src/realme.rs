@@ -1,59 +1,59 @@
 use std::fmt::Debug;
 
-use builder::RealmBuilder;
+use builder::RealmeBuilder;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
-use crate::{RealmError, Value};
+use crate::{RealmeError, Value};
 
 mod builder;
 mod cache;
 
-/// Represents a configuration realm with a cache for storing configuration
+/// Represents a configuration realme with a cache for storing configuration
 /// values.
 #[derive(Debug, Deserialize)]
-pub struct Realm {
+pub struct Realme {
     cache: Value,
 }
 
-impl Realm {
-    /// Constructs a new `Realm` with the given initial cache value.
+impl Realme {
+    /// Constructs a new `Realme` with the given initial cache value.
     ///
     /// # Arguments
     ///
     /// * `value` - A `Value` that will be used as the initial cache for this
-    ///   realm.
+    ///   realme.
     ///
     /// # Examples
     ///
     /// ```rust
-    /// use realm::{Realm, Value};
+    /// use realme::{Realme, Value};
     ///
     /// let initial_value = Value::String("initial".to_string());
-    /// let realm = Realm::new(initial_value);
+    /// let realme = Realme::new(initial_value);
     /// ```
     pub const fn new(value: Value) -> Self {
         Self { cache: value }
     }
 
-    /// Creates a new `RealmBuilder` for constructing a `Realm`.
+    /// Creates a new `RealmeBuilder` for constructing a `Realme`.
     ///
     /// # Returns
     ///
-    /// Returns a `RealmBuilder` which can be used to configure and build a
-    /// `Realm`.
+    /// Returns a `RealmeBuilder` which can be used to configure and build a
+    /// `Realme`.
     ///
     /// # Examples
     ///
     /// ```rust
-    /// use realm::Realm;
+    /// use realme::Realme;
     ///
-    /// let builder = Realm::builder();
+    /// let builder = Realme::builder();
     /// ```
-    pub fn builder() -> RealmBuilder {
-        RealmBuilder::new()
+    pub fn builder() -> RealmeBuilder {
+        RealmeBuilder::new()
     }
 
-    /// Retrieves a value from the realm's cache based on the provided key.
+    /// Retrieves a value from the realme's cache based on the provided key.
     ///
     /// # Arguments
     ///
@@ -67,18 +67,18 @@ impl Realm {
     /// # Examples
     ///
     /// ```rust
-    /// use realm::{Realm, Value};
+    /// use realme::{Realme, Value};
     ///
-    /// let mut realm = Realm::new(Value::Table(Default::default()));
-    /// realm.set("key1", Value::String("value1".to_string()));
-    /// let value = realm.get("key1");
+    /// let mut realme = Realme::new(Value::Table(Default::default()));
+    /// realme.set("key1", Value::String("value1".to_string()));
+    /// let value = realme.get("key1");
     /// assert_eq!(value, Some(Value::String("value1".to_string())));
     /// ```
     pub fn get(&self, key: &str) -> Option<Value> {
         self.cache.get(key)
     }
 
-    /// Sets a value in the realm's cache for the specified key.
+    /// Sets a value in the realme's cache for the specified key.
     ///
     /// # Arguments
     ///
@@ -88,16 +88,16 @@ impl Realm {
     /// # Examples
     ///
     /// ```rust
-    /// use realm::{Realm, Value};
+    /// use realme::{Realme, Value};
     ///
-    /// let mut realm = Realm::new(Value::Table(Default::default()));
-    /// realm.set("key1", Value::String("value1".to_string()));
+    /// let mut realme = Realme::new(Value::Table(Default::default()));
+    /// realme.set("key1", Value::String("value1".to_string()));
     /// ```
     pub fn set(&mut self, key: &str, value: Value) {
         self.cache.set(key, value);
     }
 
-    /// Attempts to deserialize the realm's cache into a specified type.
+    /// Attempts to deserialize the realme's cache into a specified type.
     ///
     /// # Type Parameters
     ///
@@ -106,14 +106,14 @@ impl Realm {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<T, RealmError>` which is `Ok` containing the
-    /// deserialized type if successful, or an `Err` containing a `RealmError`
+    /// Returns a `Result<T, RealmeError>` which is `Ok` containing the
+    /// deserialized type if successful, or an `Err` containing a `RealmeError`
     /// if the operation fails.
     ///
     /// # Examples
     ///
     /// ```ignore
-    /// use realm::{Realm, Value, Adaptor, FileSource, TomlParser};
+    /// use realme::{Realme, Value, Adaptor, FileSource, TomlParser};
     /// use serde::Deserialize;
     ///
     /// #[derive(Deserialize, Debug, PartialEq)]
@@ -121,9 +121,9 @@ impl Realm {
     ///     key1: String,
     /// }
     ///
-    /// let mut realm = Realm::builder().load(Adaptor::new(Box::new(FileSource::<TomlParser>::new("file.toml".into())))).build().unwrap();
-    /// realm.set("key1", Value::String("value1".to_string()));
-    /// let config: Config = realm.try_deserialize().unwrap();
+    /// let mut realme = Realme::builder().load(Adaptor::new(Box::new(FileSource::<TomlParser>::new("file.toml".into())))).build().unwrap();
+    /// realme.set("key1", Value::String("value1".to_string()));
+    /// let config: Config = realme.try_deserialize().unwrap();
     /// assert_eq!(
     ///     config,
     ///     Config {
@@ -133,11 +133,11 @@ impl Realm {
     /// ```
     pub fn try_deserialize<T: DeserializeOwned>(
         &self,
-    ) -> Result<T, RealmError> {
+    ) -> Result<T, RealmeError> {
         self.cache.clone().try_deserialize()
     }
 
-    /// Attempts to serialize a given object into a new `Realm` instance.
+    /// Attempts to serialize a given object into a new `Realme` instance.
     ///
     /// # Arguments
     ///
@@ -150,14 +150,14 @@ impl Realm {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<Self, RealmError>` which is `Ok` containing a new
-    /// `Realm` instance if successful, or an `Err` containing a `RealmError` if
-    /// the operation fails.
+    /// Returns a `Result<Self, RealmeError>` which is `Ok` containing a new
+    /// `Realme` instance if successful, or an `Err` containing a `RealmeError`
+    /// if the operation fails.
     ///
     /// # Examples
     ///
     /// ```rust
-    /// use realm::Realm;
+    /// use realme::Realme;
     /// use serde::Serialize;
     ///
     /// #[derive(Serialize)]
@@ -168,9 +168,9 @@ impl Realm {
     /// let config = Config {
     ///     key1: "value1".to_string(),
     /// };
-    /// let realm = Realm::try_serialize(&config).unwrap();
+    /// let realme = Realme::try_serialize(&config).unwrap();
     /// ```
-    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmError> {
+    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmeError> {
         Ok(Self {
             cache: Value::try_serialize(from)?,
         })

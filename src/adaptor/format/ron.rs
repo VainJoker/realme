@@ -2,14 +2,14 @@
 ///
 /// This struct implements the `Parser` trait for parsing RON-formatted
 /// strings.
-use crate::{Parser, RealmError};
+use crate::{Parser, RealmeError};
 
 #[derive(Debug)]
 pub struct RonParser;
 
 impl<T: AsRef<str>> Parser<T> for RonParser {
     type Item = ron::Value;
-    type Error = RealmError;
+    type Error = RealmeError;
 
     /// Parses a RON-formatted string into a `ron::Value`.
     ///
@@ -20,7 +20,7 @@ impl<T: AsRef<str>> Parser<T> for RonParser {
     /// # Returns
     ///
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
-    ///   parsed `ron::Value` or a `RealmError`.
+    ///   parsed `ron::Value` or a `RealmeError`.
     ///
     /// # Errors
     ///
@@ -30,7 +30,7 @@ impl<T: AsRef<str>> Parser<T> for RonParser {
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         let v = ron::from_str(args).map_err(|e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 args.to_string(),
                 "ron".to_string(),
                 e.to_string(),

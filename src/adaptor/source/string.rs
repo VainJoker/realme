@@ -2,7 +2,7 @@
 use std::marker::PhantomData;
 
 use super::{Source, SourceType};
-use crate::{Parser, RealmError, Value};
+use crate::{Parser, RealmeError, Value};
 
 /// A `Source` implementation that reads from a string buffer.
 ///
@@ -13,7 +13,7 @@ use crate::{Parser, RealmError, Value};
 /// # Examples
 ///
 /// ```ignore
-/// use realm::{StringSource, TomlParser, Parser};
+/// use realme::{StringSource, TomlParser, Parser};
 ///
 /// const CONFIGURATION: &str = r#"key = "value""#;
 /// let source = StringSource::<TomlParser>::new(CONFIGURATION);
@@ -38,7 +38,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use realm::{StringSource, TomlParser};
+    /// use realme::{StringSource, TomlParser};
     ///
     /// const CONFIGURATION: &str = r#"key = "value""#;
     /// let source = StringSource::<TomlParser>::new(CONFIGURATION);
@@ -60,21 +60,21 @@ where
     /// value or an error.
     ///
     /// This method attempts to parse the buffer into a `Value` using the parser
-    /// `T`. If parsing fails, it wraps the error into a `RealmError`.
+    /// `T`. If parsing fails, it wraps the error into a `RealmeError`.
     ///
     /// # Examples
     ///
     /// ```ignore
-    /// use realm::{Source, StringSource, TomlParser};
+    /// use realme::{Source, StringSource, TomlParser};
     ///
     /// const CONFIGURATION: &str = r#"key = "value""#;
     /// let source = StringSource::<TomlParser>::new(CONFIGURATION);
     /// let parsed_value = source.parse().unwrap();
     /// assert!(parsed_value.is_some());
     /// ```
-    fn parse(&self) -> Result<Value, RealmError> {
+    fn parse(&self) -> Result<Value, RealmeError> {
         Value::try_serialize(&T::parse(self.buffer.clone()).map_err(|e| {
-            RealmError::new_parse_error(
+            RealmeError::new_parse_error(
                 self.buffer.as_ref().to_string(),
                 "string".to_string(),
                 e.to_string(),

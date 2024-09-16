@@ -1,14 +1,14 @@
-use realm::{Adaptor, Parser, Realm, StringSource};
+use realme::{Adaptor, Parser, Realme, StringSource};
 use serde::{Deserialize, Serialize};
 
-// for more complex example, see <https://github.com/vainjoker/realm/tree/main/src/adaptor/format/cmd.rs>
+// for more complex example, see <https://github.com/vainjoker/realme/tree/main/src/adaptor/format/cmd.rs>
 // which uses `nom` crate to parse command line arguments
-// and with a cmd example see <https://github.com/vainjoker/realm/tree/main/examples/cmd_source/main.rs>
+// and with a cmd example see <https://github.com/vainjoker/realme/tree/main/examples/cmd_source/main.rs>
 
 fn main() {
     const CONFIGURATION1: &str = "key1=value1";
 
-    let config = Realm::builder()
+    let config = Realme::builder()
         .load(Adaptor::new(Box::new(StringSource::<MyParser, &str>::new(
             CONFIGURATION1,
         ))))

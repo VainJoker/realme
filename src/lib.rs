@@ -1,7 +1,7 @@
 mod adaptor;
 mod errors;
 mod map;
-mod realm;
+mod realme;
 mod value;
 
 #[cfg(feature = "cmd")]
@@ -29,8 +29,8 @@ pub use adaptor::source::file::FileSource;
 #[cfg(feature = "string")]
 pub use adaptor::source::string::StringSource;
 pub use adaptor::{parser::Parser, Adaptor};
-use errors::RealmError;
-pub use errors::RealmResult;
+use errors::RealmeError;
+pub use errors::RealmeResult;
 use map::Map;
-pub use realm::Realm;
+pub use realme::Realme;
 pub use value::{Array, Table, Value};

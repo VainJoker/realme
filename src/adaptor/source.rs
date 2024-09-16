@@ -7,7 +7,7 @@ pub mod file;
 /// Module for string-related functionality
 pub mod string;
 
-use crate::{errors::RealmError, value::Value};
+use crate::{errors::RealmeError, value::Value};
 
 /// Trait representing a source of configuration or data
 pub trait Source {
@@ -15,8 +15,8 @@ pub trait Source {
     ///
     /// # Returns
     /// - `Ok(Value)` if parsing is successful
-    /// - `Err(RealmError)` if an error occurs during parsing
-    fn parse(&self) -> Result<Value, RealmError>;
+    /// - `Err(RealmeError)` if an error occurs during parsing
+    fn parse(&self) -> Result<Value, RealmeError>;
 
     /// Returns the type of the source
     ///

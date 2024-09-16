@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use realm::{Adaptor, FileSource, Realm, RonParser};
+use realme::{Adaptor, FileSource, Realme, RonParser};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -37,15 +37,15 @@ struct MyConfig {
 
 #[test]
 fn ron_parse() {
-    let realm = Realm::builder()
+    let realme = Realme::builder()
         .load(Adaptor::new(Box::new(FileSource::<RonParser>::new(
             PathBuf::from("./tests/source/test.ron"),
         ))))
         .build()
         .expect("Building configuration object");
 
-    // println!("{:#?}", realm);
-    let config = realm.try_deserialize::<MyConfig>().unwrap();
+    // println!("{:#?}", realme);
+    let config = realme.try_deserialize::<MyConfig>().unwrap();
     println!("{config:#?}");
     // let expected = MyConfig {
     //     debug: true,
