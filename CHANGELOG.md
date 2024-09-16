@@ -6,9 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
-- Add expression for get and set value - ([b310cac](https://github.com/vainjoker/realm/commit/b310cacc89056ed6e00b77e894adb3782b7a5de9))
-- Add expration for set and get value - ([49d6eec](https://github.com/vainjoker/realm/commit/49d6eec3e80ac7f8398820136416aea62828d2a0))
-- Add support for more parser - ([693e566](https://github.com/vainjoker/realm/commit/693e5660fd7599c29985bbb069dce4c4eca8a169))
+- Add expration for set and get value - ([609354e](https://github.com/vainjoker/realm/commit/609354e6dd5245fe2cdde5361d15114c1cbc8246))
+- Add support for more parser - ([311fcd5](https://github.com/vainjoker/realm/commit/311fcd503f0c957df1c1006840533893e80d9779))
 - Add tracing support - ([24d1af1](https://github.com/vainjoker/realm/commit/24d1af191bb94bbc5d39cd1b2321fbc60c6b8378))
 - Support load adaptor from cmd input - ([2c403d3](https://github.com/vainjoker/realm/commit/2c403d33aac99ace16bacbf6a8fd7d484371de9f))
 - Implement parser and cast error - ([89f2685](https://github.com/vainjoker/realm/commit/89f26853af813aa824e21a8163fd276a9319689b))
@@ -30,11 +29,12 @@ All notable changes to this project will be documented in this file.
 
 ### 🚜 Refactor
 
-- Refactor code structure - ([2117141](https://github.com/vainjoker/realm/commit/2117141504f62d59bc3a6792967ff1390715b2f6))
+- Refactor code structure - ([ed12c2a](https://github.com/vainjoker/realm/commit/ed12c2a5e9785a02701f55b3095622408556df16))
 - Repub all your needs - ([f2daff4](https://github.com/vainjoker/realm/commit/f2daff44ab618b41ad42081fc14c651f75ff9c7b))
 
 ### 📚 Documentation
 
+- Add rust docs - ([7a7912e](https://github.com/vainjoker/realm/commit/7a7912e26ac19181ad94b477393df2b0396036d8))
 - Add TODO.md - ([cc93326](https://github.com/vainjoker/realm/commit/cc93326bfb462b71c2dd34551d61b213fd29f5b0))
 - Add readme file for the project - ([cf57b8b](https://github.com/vainjoker/realm/commit/cf57b8b1a3aa2eb4f491d2bc97dccb19fa887a3d))
 
@@ -45,10 +45,6 @@ All notable changes to this project will be documented in this file.
 ### ✅ Testing
 
 - Add value module tests - ([97e28c3](https://github.com/vainjoker/realm/commit/97e28c307a440d6ee55c28c02841328e2d6f16d0))
-
-### ⚙️ Miscellaneous Tasks
-
-- Format examples - ([5e3999f](https://github.com/vainjoker/realm/commit/5e3999fa8ed90e0e7f9a635d3d6b07ae20d99408))
 
 ### Refator
 
