@@ -1,6 +1,8 @@
 use super::{Array, Table, Value};
 use crate::{Map, RealmError};
 
+/// Attempts to convert a `Value` into a `String`.
+/// Returns an error if the `Value` is an `Array` or `Table`.
 impl TryFrom<Value> for String {
     type Error = RealmError;
 
@@ -23,6 +25,9 @@ impl TryFrom<Value> for String {
     }
 }
 
+/// Macro to implement `TryFrom<Value>` for integer types.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 macro_rules! impl_try_from_value_for_integer {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
@@ -59,6 +64,9 @@ macro_rules! impl_try_from_value_for_integer {
     };
 }
 
+/// Macro to implement `TryFrom<Value>` for floating-point types.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 macro_rules! impl_try_from_value_for_float {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
@@ -97,6 +105,9 @@ macro_rules! impl_try_from_value_for_float {
     };
 }
 
+/// Macro to implement `TryFrom<Value>` for unsigned integer types.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 macro_rules! impl_try_from_value_for_uinteger {
     ($type:ty) => {
         impl TryFrom<Value> for $type {
@@ -132,6 +143,9 @@ macro_rules! impl_try_from_value_for_uinteger {
     };
 }
 
+/// Attempts to convert a `Value` into a `bool`.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 impl TryFrom<Value> for bool {
     type Error = RealmError;
 
@@ -161,6 +175,9 @@ impl TryFrom<Value> for bool {
     }
 }
 
+/// Attempts to convert a `Value` into an `Array`.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 impl TryFrom<Value> for Array {
     type Error = RealmError;
 
@@ -177,6 +194,9 @@ impl TryFrom<Value> for Array {
     }
 }
 
+/// Attempts to convert a `Value` into a `Table`.
+/// Handles conversion from all `Value` variants, with specific errors for
+/// non-convertible types.
 impl TryFrom<Value> for Table {
     type Error = RealmError;
 
@@ -190,6 +210,8 @@ impl TryFrom<Value> for Table {
     }
 }
 
+/// Attempts to convert a `Table` into an `Array`.
+/// Converts each value in the table into an element of the array.
 impl TryFrom<Table> for Array {
     type Error = RealmError;
 
@@ -198,6 +220,9 @@ impl TryFrom<Table> for Array {
     }
 }
 
+/// Attempts to convert an `Array` into a `Table`.
+/// Converts each element of the array into a key-value pair in the table, with
+/// the key as the index.
 impl TryFrom<Array> for Table {
     type Error = RealmError;
 
@@ -210,6 +235,9 @@ impl TryFrom<Array> for Table {
     }
 }
 
+/// Attempts to convert a `Value` into a `Vec<T>`, where `T` implements
+/// `TryFrom<Value>`. Handles conversion from all `Value` variants, with
+/// specific errors for non-convertible types.
 impl<T: TryFrom<Value, Error = RealmError>> TryFrom<Value> for Vec<T> {
     type Error = RealmError;
 
@@ -238,6 +266,9 @@ impl<T: TryFrom<Value, Error = RealmError>> TryFrom<Value> for Vec<T> {
     }
 }
 
+/// Attempts to convert a `Value` into a `Map<K, V>`, where `K` and `V`
+/// implement specific traits. Handles conversion from all `Value` variants,
+/// with specific errors for non-convertible types.
 impl<K, V> TryFrom<Value> for Map<K, V>
 where
     K: std::cmp::Eq + std::hash::Hash + std::convert::From<String>,

@@ -9,19 +9,14 @@ fn main() {
     const CONFIGURATION1: &str = "key1=value1";
 
     let config = Realm::builder()
-    .load(
-        Adaptor::new(
-            Box::new(
-                StringSource::<MyParser,&str>::new(
-                    CONFIGURATION1
-            ))
-        )
-    )
-    .build()
-    .expect("Building configuration object");
+        .load(Adaptor::new(Box::new(StringSource::<MyParser, &str>::new(
+            CONFIGURATION1,
+        ))))
+        .build()
+        .expect("Building configuration object");
 
     println!("{config:#?}");
-    let value :String = config
+    let value: String = config
         .get("key")
         .expect("Accessing configuration object")
         .try_into()
@@ -29,7 +24,9 @@ fn main() {
 
     println!("'key' Config element is: '{value:?}'");
 
-    let my_value: MyValue = config.try_deserialize().expect("Deserializing configuration object");
+    let my_value: MyValue = config
+        .try_deserialize()
+        .expect("Deserializing configuration object");
     println!("{my_value:#?}");
 }
 
@@ -37,9 +34,9 @@ fn main() {
 pub struct MyParser;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MyValue{
+pub struct MyValue {
     key: String,
-    value: String
+    value: String,
 }
 
 impl Parser<&str> for MyParser {
@@ -49,9 +46,9 @@ impl Parser<&str> for MyParser {
 
     fn parse(content: &str) -> Result<Self::Item, Self::Error> {
         let res: Vec<&str> = content.trim().split('=').collect();
-        Ok(MyValue{
+        Ok(MyValue {
             key: res[0].to_string(),
-            value: res[1].to_string()
+            value: res[1].to_string(),
         })
     }
 }

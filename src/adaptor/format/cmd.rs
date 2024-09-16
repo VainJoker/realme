@@ -10,14 +10,36 @@ use nom::{
 
 use crate::{Map, Parser, RealmError, Value};
 
+/// A parser for command-line style key-value pairs.
 #[derive(Debug, Default)]
 pub struct CmdParser;
 
 impl CmdParser {
+    /// Parses a key-value pair separated by an '=' character.
+    ///
+    /// # Arguments
+    ///
+    /// * `input` - A string slice that holds the input to be parsed.
+    ///
+    /// # Returns
+    ///
+    /// * `IResult` - A result containing the remaining input and a tuple of the
+    ///   parsed key and value.
     fn parse_pair(input: &str) -> IResult<&str, (String, Value)> {
         separated_pair(Self::parse_key, char('='), Self::parse_value)(input)
     }
 
+    /// Parses a key which can contain alphanumeric characters, dots, and
+    /// underscores.
+    ///
+    /// # Arguments
+    ///
+    /// * `input` - A string slice that holds the input to be parsed.
+    ///
+    /// # Returns
+    ///
+    /// * `IResult` - A result containing the remaining input and the parsed key
+    ///   as a string.
     fn parse_key(input: &str) -> IResult<&str, String> {
         map(
             take_while1(|c: char| c.is_alphanumeric() || c == '.' || c == '_'),
@@ -25,6 +47,17 @@ impl CmdParser {
         )(input)
     }
 
+    /// Parses a value which can be an array, a quoted string, or an unquoted
+    /// string.
+    ///
+    /// # Arguments
+    ///
+    /// * `input` - A string slice that holds the input to be parsed.
+    ///
+    /// # Returns
+    ///
+    /// * `IResult` - A result containing the remaining input and the parsed
+    ///   value.
     fn parse_value(input: &str) -> IResult<&str, Value> {
         alt((
             Self::parse_array,
@@ -40,8 +73,18 @@ impl CmdParser {
         ))(input)
     }
 
+    /// Parses an array of values separated by semicolons and enclosed in square
+    /// brackets.
+    ///
+    /// # Arguments
+    ///
+    /// * `input` - A string slice that holds the input to be parsed.
+    ///
+    /// # Returns
+    ///
+    /// * `IResult` - A result containing the remaining input and the parsed
+    ///   array as a `Value::Array`.
     fn parse_array(input: &str) -> IResult<&str, Value> {
-        // remove space
         let (input, _) = multispace0(input)?;
         delimited(
             char('['),
@@ -62,6 +105,16 @@ impl CmdParser {
         )(input)
     }
 
+    /// Parses a command string into a map of keys and values.
+    ///
+    /// # Arguments
+    ///
+    /// * `input` - A string slice that holds the input to be parsed.
+    ///
+    /// # Returns
+    ///
+    /// * `IResult` - A result containing the remaining input and the parsed
+    ///   map.
     fn parse_cmd(input: &str) -> IResult<&str, Map<String, Value>> {
         let (input, pairs) = separated_list0(
             terminated(char(','), multispace0),
@@ -93,6 +146,15 @@ impl<T: AsRef<str>> Parser<T> for CmdParser {
     type Item = Value;
     type Error = RealmError;
 
+    /// Parses the input string into a `Value` item.
+    ///
+    /// # Arguments
+    ///
+    /// * `args` - A generic type that can be converted to a string slice.
+    ///
+    /// # Returns
+    ///
+    /// * `Result` - A result containing the parsed `Value` or a `RealmError`.
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         match Self::parse_cmd(args) {

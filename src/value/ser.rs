@@ -10,6 +10,9 @@ use serde::{
 use super::Value;
 use crate::map::Map;
 
+pub struct ValueSerializer;
+
+/// Represents a generic serialization implementation for `Value`.
 impl Serialize for Value {
     fn serialize<S: Serializer>(
         &self,
@@ -39,8 +42,7 @@ impl Serialize for Value {
     }
 }
 
-pub struct ValueSerializer;
-
+/// A custom serializer that transforms various types into `Value`.
 impl Serializer for ValueSerializer {
     type Ok = Value;
     type Error = crate::errors::SerializeError;
@@ -221,11 +223,13 @@ impl Serializer for ValueSerializer {
 }
 
 // Implementations for each serializer
+/// Serializer for sequences, storing elements as `Value::Array`.
 pub struct SeqSerializer {
     elements: Vec<Value>,
 }
 
 impl SeqSerializer {
+    /// Constructs a new `SeqSerializer`.
     const fn new() -> Self {
         Self {
             elements: Vec::new(),
@@ -233,30 +237,38 @@ impl SeqSerializer {
     }
 }
 
+/// Serializer for tuples, currently not supported.
 pub struct TupleSerializer;
 impl TupleSerializer {
+    /// Constructs a new `TupleSerializer`.
     const fn new() -> Self {
         Self {}
     }
 }
+/// Serializer for tuple structs, currently not supported.
 pub struct TupleStructSerializer;
 impl TupleStructSerializer {
+    /// Constructs a new `TupleStructSerializer`.
     const fn new() -> Self {
         Self {}
     }
 }
+/// Serializer for tuple variants, currently not supported.
 pub struct TupleVariantSerializer;
 impl TupleVariantSerializer {
+    /// Constructs a new `TupleVariantSerializer`.
     const fn new() -> Self {
         Self {}
     }
 }
+/// Serializer for maps, converting key-value pairs into `Value::Table`.
 pub struct MapSerializer {
     map: Map<String, Value>,
     current_key: Option<String>,
 }
 
 impl MapSerializer {
+    /// Constructs a new `MapSerializer`.
     fn new() -> Self {
         Self {
             map: Map::new(),
@@ -265,20 +277,24 @@ impl MapSerializer {
     }
 }
 
+/// Serializer for structs, storing fields as `Value::Table` or special cases.
 pub struct StructSerializer {
     fields: Value,
 }
 
 impl StructSerializer {
+    /// Constructs a new `StructSerializer`.
     const fn new() -> Self {
         Self {
             fields: Value::Null,
         }
     }
 }
+/// Serializer for struct variants, currently not supported.
 pub struct StructVariantSerializer;
 
 impl StructVariantSerializer {
+    /// Constructs a new `StructVariantSerializer`.
     const fn new() -> Self {
         Self {}
     }

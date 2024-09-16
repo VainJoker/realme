@@ -7,7 +7,7 @@
 - [x] Default value support
 - [x] Support command-line arguments
 - [ ] Configuration export
-- [ ] Support getting configuration subtrees, nested reading config1.key1
+- [x] Support getting configuration subtrees, nested reading config1.key1
 - [ ] Support environment control, namespaces
 - [ ] Add functionality to read configurations from remote sources (such as etcd, Consul, or custom HTTP endpoints)
 - [x] Add tracing support

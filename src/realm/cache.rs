@@ -1,11 +1,15 @@
 use crate::{Adaptor, Map, RealmError, Value};
 
+/// A cache system for storing environment and other values.
 pub struct RealmCache {
+    /// Environment-specific configurations.
     pub env: Map<String, Value>,
+    /// General cache for values.
     pub cache: Map<String, Value>,
 }
 
 impl RealmCache {
+    /// Constructs a new `RealmCache`.
     pub fn new() -> Self {
         Self {
             env: Map::new(),
@@ -13,6 +17,16 @@ impl RealmCache {
         }
     }
 
+    /// Handles an adaptor by parsing it and updating the cache and environment
+    /// maps accordingly.
+    ///
+    /// # Arguments
+    /// * `adaptor` - The adaptor to handle.
+    /// * `env_flag` - A flag to determine if the environment should be updated.
+    ///
+    /// # Errors
+    /// Returns `RealmError` if the adaptor cannot be parsed or if the expected
+    /// environment value is missing.
     pub fn handle_adaptor(
         &mut self,
         adaptor: &Adaptor,

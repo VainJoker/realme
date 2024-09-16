@@ -7,13 +7,43 @@ use std::{
 use super::{Source, SourceType};
 use crate::{Parser, RealmError, Value};
 
+/// Represents a source that reads configuration data from a file.
+///
+/// This struct is generic over `T` which is the parser type used to parse the
+/// file contents, and `U` which is the type of the path (defaults to
+/// `PathBuf`).
+///
+/// # Type Parameters
+///
+/// * `T`: The parser type that implements the `Parser` trait for parsing file
+///   contents.
+/// * `U`: The path type that implements `AsRef<Path>`, defaults to `PathBuf`.
 #[derive(Debug)]
 pub struct FileSource<T, U = PathBuf> {
+    /// The path to the configuration file.
     path: U,
+    /// Phantom data to hold the parser type.
     _marker: PhantomData<T>,
 }
 
 impl<U: AsRef<Path>, T> FileSource<T, U> {
+    /// Constructs a new `FileSource` with the specified file path.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - A path to the file that will be read.
+    ///
+    /// # Examples
+    ///
+    /// ```ignore
+    /// use std::path::PathBuf;
+    ///
+    /// use realm::{FileSource, TomlParser};
+    ///
+    /// let file_source = FileSource::<TomlParser>::new(PathBuf::from(
+    ///     "path/to/your/config.toml",
+    /// ));
+    /// ```
     pub const fn new(path: U) -> Self {
         Self {
             path,
@@ -27,6 +57,18 @@ where
     T: for<'a> Parser<&'a str>,
     U: AsRef<Path>,
 {
+    /// Parses the file at the specified path using the parser type `T`.
+    ///
+    /// # Returns
+    ///
+    /// * `Ok(Value)` - If the file is successfully read and parsed.
+    /// * `Err(RealmError)` - If there is an error reading the file or parsing
+    ///   its contents.
+    ///
+    /// # Errors
+    ///
+    /// This method returns `Err(RealmError)` if the file cannot be read or if
+    /// the parsing fails.
     fn parse(&self) -> Result<Value, RealmError> {
         let buffer = std::fs::read_to_string(self.path.as_ref())
             .map_err(|e| RealmError::ReadFileError(e.to_string()))?;
@@ -42,6 +84,11 @@ where
             .map_err(|e| RealmError::BuildError(e.to_string()))
     }
 
+    /// Returns the source type of this `FileSource`.
+    ///
+    /// # Returns
+    ///
+    /// Always returns `SourceType::Str`.
     fn source_type(&self) -> SourceType {
         SourceType::Str
     }

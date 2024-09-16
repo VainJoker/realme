@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Add expression for get and set value - ([b310cac](https://github.com/vainjoker/realm/commit/b310cacc89056ed6e00b77e894adb3782b7a5de9))
 - Add expration for set and get value - ([49d6eec](https://github.com/vainjoker/realm/commit/49d6eec3e80ac7f8398820136416aea62828d2a0))
 - Add support for more parser - ([693e566](https://github.com/vainjoker/realm/commit/693e5660fd7599c29985bbb069dce4c4eca8a169))
 - Add tracing support - ([24d1af1](https://github.com/vainjoker/realm/commit/24d1af191bb94bbc5d39cd1b2321fbc60c6b8378))
@@ -44,6 +45,10 @@ All notable changes to this project will be documented in this file.
 ### ✅ Testing
 
 - Add value module tests - ([97e28c3](https://github.com/vainjoker/realm/commit/97e28c307a440d6ee55c28c02841328e2d6f16d0))
+
+### ⚙️ Miscellaneous Tasks
+
+- Format examples - ([5e3999f](https://github.com/vainjoker/realm/commit/5e3999fa8ed90e0e7f9a635d3d6b07ae20d99408))
 
 ### Refator
 

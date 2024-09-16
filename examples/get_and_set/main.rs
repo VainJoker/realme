@@ -1,5 +1,5 @@
 #[cfg(feature = "toml")]
-use realm::{TomlParser, StringSource, Adaptor,Realm};
+use realm::{Adaptor, Realm, StringSource, TomlParser};
 
 #[cfg(feature = "toml")]
 fn main() {
@@ -27,30 +27,37 @@ fn main() {
     "#;
 
     let mut realm = Realm::builder()
-    .load(
-        Adaptor::new(
-            Box::new(
-                StringSource::<TomlParser>::new(
-                    CONFIGURATION1
-            )))
-        )
-    .build()
-    .expect("Building configuration object");
+        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+            CONFIGURATION1,
+        ))))
+        .build()
+        .expect("Building configuration object");
 
-    let server: String = realm.get("database.server").unwrap().try_into().unwrap();
+    let server: String =
+        realm.get("database.server").unwrap().try_into().unwrap();
     println!("Current server: {server:?}");
 
     realm.set("database.server", Value::String("192.168.1.2".to_string()));
 
-    let updated_server: String = realm.get("database.server").unwrap().try_into().unwrap();
+    let updated_server: String =
+        realm.get("database.server").unwrap().try_into().unwrap();
     println!("Updated server: {updated_server:?}");
 
-    let ports: Vec<i32> = realm.get("database.ports").unwrap().try_into().unwrap();
+    let ports: Vec<i32> =
+        realm.get("database.ports").unwrap().try_into().unwrap();
     println!("Current ports: {ports:?}");
 
-    realm.set("database.ports", Value::Array(vec![Value::Integer(8004), Value::Integer(8005), Value::Integer(8006)]));
+    realm.set(
+        "database.ports",
+        Value::Array(vec![
+            Value::Integer(8004),
+            Value::Integer(8005),
+            Value::Integer(8006),
+        ]),
+    );
 
-    let updated_ports: Vec<i32> = realm.get("database.ports").unwrap().try_into().unwrap();
+    let updated_ports: Vec<i32> =
+        realm.get("database.ports").unwrap().try_into().unwrap();
     println!("Updated ports: {updated_ports:?}");
 }
 

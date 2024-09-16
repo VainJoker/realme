@@ -2,10 +2,17 @@ use std::str::FromStr;
 
 use crate::{RealmError, RealmResult};
 
+/// Represents an expression in a custom language.
+///
+/// An expression can be a simple identifier, a nested structure, or an indexed
+/// access.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Expression {
+    /// A simple identifier, e.g., `variable`.
     Identifier(String),
+    /// A nested expression, e.g., `parent.child`.
     Child(Vec<Expression>),
+    /// An indexed access into an identifier, e.g., `array[2]`.
     Subscript(String, isize),
 }
 
@@ -28,6 +35,10 @@ impl std::fmt::Display for Expression {
 }
 
 impl FromStr for Expression {
+    /// Parses a string into an `Expression`.
+    ///
+    /// This parser supports nested and indexed expressions.
+    /// Errors are returned as `RealmError`.
     type Err = RealmError;
 
     fn from_str(s: &str) -> RealmResult<Self> {

@@ -8,6 +8,7 @@ use serde::{
 use super::Value;
 use crate::map::Map;
 
+/// Represents a custom deserializer for `Value` type.
 impl<'de> Deserialize<'de> for Value {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -17,6 +18,7 @@ impl<'de> Deserialize<'de> for Value {
     }
 }
 
+/// A visitor to handle custom deserialization logic for `Value`.
 struct ValueVisitor;
 
 impl<'de> Visitor<'de> for ValueVisitor {
@@ -94,6 +96,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
     }
 }
 
+/// Custom deserializer implementation for `Value`.
 impl<'de> serde::Deserializer<'de> for Value {
     type Error = crate::errors::DeserializeError;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -445,6 +448,7 @@ impl<'de> serde::Deserializer<'de> for Value {
     }
 }
 
+/// A helper struct to facilitate map deserialization.
 struct MapDeserializer {
     iter: <Map<String, Value> as IntoIterator>::IntoIter,
     value: Option<(String, Value)>,
@@ -497,6 +501,7 @@ impl<'de> de::MapAccess<'de> for MapDeserializer {
     }
 }
 
+/// A helper struct to facilitate sequence deserialization.
 struct SeqDeserializer {
     iter: <Vec<Value> as IntoIterator>::IntoIter,
 }
@@ -533,6 +538,7 @@ impl SeqDeserializer {
     }
 }
 
+/// Unit tests to verify the functionality of the custom deserializer.
 #[cfg(test)]
 mod tests {
     use super::*;
