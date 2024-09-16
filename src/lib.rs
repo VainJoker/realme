@@ -33,4 +33,4 @@ use errors::RealmError;
 pub use errors::RealmResult;
 use map::Map;
 pub use realm::Realm;
-pub use value::Value;
+pub use value::{Array, Table, Value};

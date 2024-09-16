@@ -1,7 +1,7 @@
 #[cfg(feature = "toml")]
-use realm::{TomlParser, StringSource, Adaptor, Realm};
-use serde::Deserialize;
+use realm::{Adaptor, Realm, StringSource, TomlParser};
 use realm::{EnvParser, EnvSource};
+use serde::Deserialize;
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
@@ -14,28 +14,19 @@ struct Config {
 
 #[cfg(feature = "toml")]
 fn main() {
-
     const CONFIGURATION1: &str = r#"
     key="{{env}}"
     like="like"
     "#;
 
     let realm = Realm::builder()
-    .load(
-        Adaptor::new(
-            Box::new(
-                StringSource::<TomlParser>::new(
-                    CONFIGURATION1
-            ))
-        )
-    )
-    .load(
-        Adaptor::new(
-            Box::new(
-                EnvSource::<EnvParser>::new("REALM_")
-        )
-    ))
-    .build();
+        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+            CONFIGURATION1,
+        ))))
+        .load(Adaptor::new(Box::new(EnvSource::<EnvParser>::new(
+            "REALM_",
+        ))))
+        .build();
 
     match realm {
         Ok(realm) => {

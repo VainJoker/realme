@@ -4,6 +4,7 @@ use thiserror::Error;
 
 pub type RealmResult<T> = Result<T, RealmError>;
 
+/// Represents all possible errors that can occur in the Realm library.
 #[derive(Error, Debug)]
 pub enum RealmError {
     #[error(transparent)]
@@ -28,19 +29,23 @@ pub enum RealmError {
 }
 
 impl RealmError {
+    /// Creates a new `InvalidCast` error.
     pub fn new_cast_error(origin: String, cause: String) -> Self {
         Self::InvalidCast(CastError::new(origin, cause))
     }
 
+    /// Creates a new `ParseError`.
     pub fn new_parse_error(from: String, to: String, cause: String) -> Self {
         Self::ParseError(ParseError::new(from, to, cause))
     }
 
+    /// Creates a new `BuildError`.
     pub const fn new_build_error(cause: String) -> Self {
         Self::BuildError(cause)
     }
 }
 
+/// Error type for casting operations within Realm.
 #[derive(Debug, Error)]
 pub struct CastError {
     origin: String,
@@ -60,6 +65,7 @@ impl Display for CastError {
     }
 }
 
+/// Error type for parsing operations within Realm.
 #[derive(Debug, Error)]
 pub struct ParseError {
     from: String,
@@ -84,6 +90,7 @@ impl ParseError {
     }
 }
 
+/// Error type for deserialization operations within Realm.
 #[derive(Debug, Error)]
 pub struct DeserializeError(String);
 
@@ -109,6 +116,7 @@ impl From<DeserializeError> for RealmError {
     }
 }
 
+/// Error type for serialization operations within Realm.
 #[derive(Debug, Error)]
 pub struct SerializeError(String);
 
