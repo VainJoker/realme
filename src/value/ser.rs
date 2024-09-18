@@ -484,7 +484,6 @@ mod test {
             seq: vec!["a".to_string(), "b".to_string()],
         };
         let config = Value::try_serialize(&test).unwrap();
-        // eprintln!("config: {:#?}",config);
         let actual: Test = config.try_deserialize().unwrap();
         assert_eq!(test, actual);
     }

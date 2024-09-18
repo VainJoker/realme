@@ -18,19 +18,7 @@ pub struct Realme {
 impl Realme {
     /// Constructs a new `Realme` with the given initial cache value.
     ///
-    /// # Arguments
-    ///
-    /// * `value` - A `Value` that will be used as the initial cache for this
-    ///   realme.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// use realme::{Realme, Value};
-    ///
-    /// let initial_value = Value::String("initial".to_string());
-    /// let realme = Realme::new(initial_value);
-    /// ```
+    /// But you should use `Realme::builder()` to create a new `Realme`.
     pub const fn new(value: Value) -> Self {
         Self { cache: value }
     }
