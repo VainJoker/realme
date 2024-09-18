@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### ✨  Features
+
+- Add example for global config setting - ([28f66f3](https://github.com/vainjoker/realme/commit/28f66f3e1bdc084d72ab2b04443b5fdb377e57c2))
+
 ## [0.1.1] - 2024-09-16
 
 ### ✨  Features

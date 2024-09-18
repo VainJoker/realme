@@ -263,6 +263,27 @@ impl Value {
             _ => None,
         }
     }
+
+    #[allow(dead_code)]
+    fn replace_value(
+        value: &str,
+        replaced: &Self,
+        origin: Self,
+    ) -> RealmeResult<Self> {
+        match origin {
+            Self::Table(table) => {
+                let mut new_table = Map::new();
+                for (k, v) in table.clone() {
+                    let processed_v =
+                        Self::replace_value(value, replaced, v.clone())?;
+                    new_table.insert(k.clone(), processed_v);
+                }
+                Ok(Self::Table(new_table))
+            }
+            Self::String(s) if s == value => Ok(replaced.clone()),
+            _ => Ok(origin.clone()),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -328,5 +349,25 @@ mod tests {
         );
         value.set("a.b[0]", Value::Integer(9));
         assert_eq!(value.get("a.b[0]"), Some(Value::Integer(9)));
+    }
+
+    #[test]
+    fn test_replace_value() {
+        let value = Value::Table(Table::from_iter(vec![(
+            "a".to_string(),
+            Value::String("{{env}}".to_string()),
+        )]));
+        assert_eq!(
+            Value::replace_value(
+                "{{env}}",
+                &Value::String("hello".to_string()),
+                value
+            )
+            .unwrap(),
+            Value::Table(Table::from_iter(vec![(
+                "a".to_string(),
+                Value::String("hello".to_string()),
+            )]))
+        );
     }
 }
