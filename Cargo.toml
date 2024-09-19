@@ -10,6 +10,8 @@ exclude = [
   "Makefile.toml",
   "CHANGELOG.md",
 ]
+repository = "https://github.com/vainjoker/realme"
+homepage = "https://github.com/vainjoker/realme"
 description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
