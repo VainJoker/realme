@@ -1,7 +1,6 @@
 #[cfg(feature = "toml")]
 use serde::{Deserialize, Serialize};
 
-#[cfg(feature = "toml")]
 #[derive(Debug, Serialize, Deserialize)]
 struct Person {
     name: String,
@@ -9,7 +8,6 @@ struct Person {
     birthday: chrono::DateTime<chrono::Utc>,
 }
 
-#[cfg(feature = "toml")]
 fn main() {
     let person_toml = toml::toml! {
         name = "John"

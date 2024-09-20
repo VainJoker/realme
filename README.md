@@ -28,7 +28,7 @@ Add this to your `Cargo.toml`:
 ```
 toml
 [dependencies]
-realme = "0.1.0"
+realme = "0.1.2"
 ```
 
 

@@ -2,11 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.1] - 2024-09-16
+## [unreleased]
 
 ### ✨  Features
 
 - Add example for global config setting - ([28f66f3](https://github.com/vainjoker/realme/commit/28f66f3e1bdc084d72ab2b04443b5fdb377e57c2))
+
+### 🐛 Bug Fixes
+
+- Fix env variable replacement in nested structures - ([0a8a4e1](https://github.com/vainjoker/realme/commit/0a8a4e1275ee177790ffd07d4fe944b5f02ededc))
+
+### Build
+
+- Delete release action - ([8923fe1](https://github.com/vainjoker/realme/commit/8923fe1f793613d766c0b91764cc1f13584b55c9))
+- Update for v0.1.2 - ([a3cf6af](https://github.com/vainjoker/realme/commit/a3cf6af2d82a224ed351047cd8f677a17001d00f))
 
 ## [0.1.1] - 2024-09-16
 

@@ -1,8 +1,7 @@
 #[cfg(feature = "toml")]
-use realme::{Adaptor, Realme, StringSource, TomlParser};
-
-#[cfg(feature = "toml")]
 fn main() {
+    use realme::{Adaptor, Realme, StringSource, TomlParser};
+
     const CONFIGURATION1: &str = r#"key1 = "value""#;
 
     let realme = Realme::builder()

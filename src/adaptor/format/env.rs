@@ -41,8 +41,11 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
         let args = args.as_ref().trim();
         let mut map = Map::new();
         for (key, value) in std::env::vars() {
-            if key.starts_with(args) {
-                let key = key.strip_prefix(args).unwrap().to_lowercase();
+            if key.to_lowercase().starts_with(&args.to_lowercase()) {
+                let key = key
+                    .to_lowercase()
+                    .trim_start_matches(&args.to_lowercase())
+                    .to_string();
                 map.insert(key, Value::String(value));
             }
         }
