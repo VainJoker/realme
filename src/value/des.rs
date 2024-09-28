@@ -1,8 +1,8 @@
 use std::fmt;
 
 use serde::{
-    de::{self, Deserializer, Visitor},
     Deserialize,
+    de::{self, Deserializer, Visitor},
 };
 
 use super::Value;
@@ -630,12 +630,9 @@ mod tests {
         }
 
         let result: NestedStruct = value.try_deserialize().unwrap();
-        assert_eq!(
-            result,
-            NestedStruct {
-                outer_key: InnerStruct { inner_key: 42 }
-            }
-        );
+        assert_eq!(result, NestedStruct {
+            outer_key: InnerStruct { inner_key: 42 }
+        });
     }
 
     #[test]

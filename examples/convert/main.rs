@@ -1,14 +1,13 @@
 #[cfg(feature = "toml")]
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Person {
-    name: String,
-    age: u32,
-    birthday: chrono::DateTime<chrono::Utc>,
-}
-
 fn main() {
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize)]
+    struct Person {
+        name: String,
+        age: u32,
+        birthday: chrono::DateTime<chrono::Utc>,
+    }
     let person_toml = toml::toml! {
         name = "John"
         age = 30

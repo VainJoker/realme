@@ -85,8 +85,7 @@ where
         Value::try_serialize(&T::parse(self.prefix.clone()).map_err(|_e| {
             RealmeError::new_parse_error(
                 self.prefix.as_ref().to_string(),
-                "env".to_string(),
-                "parse source data failed".to_string(),
+                "Failed to parse from env".to_string(),
             )
         })?)
     }

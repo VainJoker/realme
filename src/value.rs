@@ -9,7 +9,7 @@ use expr::Expression;
 use ser::ValueSerializer;
 use serde::{Deserialize, Serialize};
 
-use crate::{map::Map, RealmeResult};
+use crate::{RealmeResult, map::Map};
 
 pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;
@@ -104,7 +104,9 @@ impl Value {
                 }
                 Some(current_value)
             }
+            #[allow(unused_variables)]
             Err(e) => {
+                #[cfg(feature = "tracing")]
                 tracing::error!("Invalid expression: {}", e);
                 None
             }

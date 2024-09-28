@@ -87,7 +87,6 @@ where
             .map_err(|e| {
                 RealmeError::new_parse_error(
                     self.options.as_ref().to_string(),
-                    "cmd".to_string(),
                     e.to_string(),
                 )
             })

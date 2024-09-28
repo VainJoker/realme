@@ -50,11 +50,7 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         let i = ini::Ini::load_from_str(args).map_err(|e| {
-            RealmeError::new_parse_error(
-                args.to_string(),
-                "ini".to_string(),
-                e.to_string(),
-            )
+            RealmeError::new_parse_error(args.to_string(), e.to_string())
         })?;
         let mut map = Map::new();
         for (sec, prop) in &i {

@@ -30,11 +30,7 @@ impl<T: AsRef<str>> Parser<T> for TomlParser {
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         toml::from_str(args).map_err(|e| {
-            RealmeError::new_parse_error(
-                args.to_string(),
-                "toml".to_string(),
-                e.to_string(),
-            )
+            RealmeError::new_parse_error(args.to_string(), e.to_string())
         })
     }
 }

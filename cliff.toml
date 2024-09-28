@@ -65,6 +65,10 @@ split_commits = false
 commit_preprocessors = [
   # replace issue numbers
   { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))" },
+  # remove emoji
+  { pattern = '^[^a-zA-Z]*', replace = "" },
+  # remove commit body
+  { pattern = '\n.*', replace = "" },
 ]
 # regex for parsing and grouping commits
 commit_parsers = [

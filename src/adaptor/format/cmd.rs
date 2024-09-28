@@ -1,11 +1,11 @@
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::take_while1,
     character::complete::{char, multispace0, space0},
     combinator::map,
     multi::separated_list0,
     sequence::{delimited, preceded, separated_pair, terminated},
-    IResult,
 };
 
 use crate::{Map, Parser, RealmeError, Value};
@@ -161,15 +161,13 @@ impl<T: AsRef<str>> Parser<T> for CmdParser {
             Ok((_, map)) => Ok(Value::Table(map)),
             Err(_) => Err(RealmeError::new_parse_error(
                 args.to_string(),
-                "cmd".to_string(),
-                "Failed to parse".to_string(),
+                "Failed to parse from cmd".to_string(),
             )),
         }
     }
 }
 
 #[cfg(test)]
-
 mod tests {
 
     use super::*;

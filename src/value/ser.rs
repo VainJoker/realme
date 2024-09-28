@@ -1,10 +1,10 @@
 use serde::{
+    Serializer,
     ser::{
         self, Serialize, SerializeMap, SerializeSeq, SerializeStruct,
         SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
         SerializeTupleVariant,
     },
-    Serializer,
 };
 
 use super::Value;

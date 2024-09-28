@@ -75,7 +75,6 @@ where
         let parsed = T::parse(&buffer).map_err(|e| {
             RealmeError::new_parse_error(
                 self.path.as_ref().to_string_lossy().to_string(),
-                "file".to_string(),
                 e.to_string(),
             )
         })?;

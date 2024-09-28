@@ -35,12 +35,15 @@ impl RealmeError {
     }
 
     /// Creates a new `ParseError`.
-    pub fn new_parse_error(from: String, to: String, cause: String) -> Self {
-        Self::ParseError(ParseError::new(from, to, cause))
+    pub fn new_parse_error(origin: String, cause: String) -> Self {
+        Self::ParseError(ParseError::new(origin, cause))
     }
 
     /// Creates a new `BuildError`.
-    pub const fn new_build_error(cause: String) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn new_build_error(cause: String) -> Self {
+        #[cfg(feature = "tracing")]
+        tracing::error!("Build error: {}", cause);
         Self::BuildError(cause)
     }
 }
@@ -53,7 +56,9 @@ pub struct CastError {
 }
 
 impl CastError {
+    #[allow(clippy::missing_const_for_fn)]
     pub fn new(origin: String, cause: String) -> Self {
+        #[cfg(feature = "tracing")]
         tracing::error!("Cast error: {}, error: {}", origin, cause);
         Self { origin, cause }
     }
@@ -68,25 +73,22 @@ impl Display for CastError {
 /// Error type for parsing operations within Realme.
 #[derive(Debug, Error)]
 pub struct ParseError {
-    from: String,
-    to: String,
+    origin: String,
     cause: String,
 }
 
 impl Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Parse {} to {}, error: {}",
-            self.from, self.to, self.cause
-        )
+        write!(f, "Parse {}, error: {}", self.origin, self.cause)
     }
 }
 
 impl ParseError {
-    pub fn new(from: String, to: String, cause: String) -> Self {
-        tracing::error!("Parse error: {} to {}, error: {}", from, to, cause);
-        Self { from, to, cause }
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn new(origin: String, cause: String) -> Self {
+        #[cfg(feature = "tracing")]
+        tracing::error!("Parse error: origin:{}, error: {}", origin, cause);
+        Self { origin, cause }
     }
 }
 
@@ -111,6 +113,7 @@ impl Display for DeserializeError {
 
 impl From<DeserializeError> for RealmeError {
     fn from(value: DeserializeError) -> Self {
+        #[cfg(feature = "tracing")]
         tracing::error!("Deserialize error: {}", value);
         Self::DeserializeError(value)
     }
@@ -137,6 +140,7 @@ impl Display for SerializeError {
 
 impl From<SerializeError> for RealmeError {
     fn from(value: SerializeError) -> Self {
+        #[cfg(feature = "tracing")]
         tracing::error!("Serialize error: {}", value);
         Self::SerializeError(value)
     }

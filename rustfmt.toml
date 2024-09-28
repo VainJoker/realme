@@ -1,5 +1,5 @@
 # configuration for https://rust-lang.github.io/rustfmt/
-version = "Two"
+style_edition = "2024"
 newline_style = "Unix"
 # comments
 normalize_comments=true

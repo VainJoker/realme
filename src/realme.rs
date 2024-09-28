@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use builder::RealmeBuilder;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
 use crate::{RealmeError, Value};
 

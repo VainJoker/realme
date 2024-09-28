@@ -76,7 +76,6 @@ where
         Value::try_serialize(&T::parse(self.buffer.clone()).map_err(|e| {
             RealmeError::new_parse_error(
                 self.buffer.as_ref().to_string(),
-                "string".to_string(),
                 e.to_string(),
             )
         })?)

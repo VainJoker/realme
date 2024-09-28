@@ -1,5 +1,5 @@
-use super::{cache::RealmeCache, Realme};
-use crate::{adaptor::source::SourceType, Adaptor, RealmeError, Value};
+use super::{Realme, cache::RealmeCache};
+use crate::{Adaptor, RealmeError, Value, adaptor::source::SourceType};
 
 /// A builder for creating a `Realme` instance.
 ///

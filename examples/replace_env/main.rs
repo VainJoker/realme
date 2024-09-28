@@ -1,5 +1,4 @@
 #[cfg(all(feature = "toml", feature = "env_with_replace"))]
-
 fn main() {
     use std::collections::HashMap;
 
@@ -48,8 +47,8 @@ fn main() {
     }
 }
 
-#[cfg(not(feature = "toml"))]
+#[cfg(not(all(feature = "toml", feature = "env_with_replace")))]
 fn main() {
-    println!("Please enable toml feature");
-    println!("cargo run --example simple --features toml");
+    println!("Please enable env_with_replace feature");
+    println!("cargo run --example replace_env --features env_with_replace");
 }

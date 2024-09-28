@@ -13,13 +13,13 @@ impl TryFrom<Value> for String {
             Value::Integer(i) => Ok(i.to_string()),
             Value::Float(f) => Ok(f.to_string()),
             Value::String(s) => Ok(s),
-            Value::Array(_) => Err(RealmeError::new_cast_error(
-                "array".to_string(),
-                "string".to_string(),
+            Value::Array(a) => Err(RealmeError::new_cast_error(
+                format!("{a:?}"),
+                "Cannot cast array to string".to_string(),
             )),
-            Value::Table(_) => Err(RealmeError::new_cast_error(
-                "table".to_string(),
-                "string".to_string(),
+            Value::Table(t) => Err(RealmeError::new_cast_error(
+                format!("{t:?}"),
+                "Cannot cast table to string".to_string(),
             )),
         }
     }
@@ -163,13 +163,13 @@ impl TryFrom<Value> for bool {
                     "Cannot cast string to bool".to_string(),
                 )),
             },
-            Value::Array(_) => Err(RealmeError::new_cast_error(
-                "array".to_string(),
-                "bool".to_string(),
+            Value::Array(a) => Err(RealmeError::new_cast_error(
+                format!("{a:?}"),
+                "Cannot cast array to bool".to_string(),
             )),
-            Value::Table(_) => Err(RealmeError::new_cast_error(
-                "table".to_string(),
-                "bool".to_string(),
+            Value::Table(t) => Err(RealmeError::new_cast_error(
+                format!("{t:?}"),
+                "Cannot cast table to bool".to_string(),
             )),
         }
     }
@@ -406,18 +406,15 @@ mod tests {
     #[test]
     fn test_array_conversion() {
         assert_eq!(Array::try_from(Value::Null).unwrap(), vec![]);
-        assert_eq!(
-            Array::try_from(Value::Boolean(true)).unwrap(),
-            vec![Value::Boolean(true)]
-        );
-        assert_eq!(
-            Array::try_from(Value::Integer(42)).unwrap(),
-            vec![Value::Integer(42)]
-        );
-        assert_eq!(
-            Array::try_from(Value::Float(0.618)).unwrap(),
-            vec![Value::Float(0.618)]
-        );
+        assert_eq!(Array::try_from(Value::Boolean(true)).unwrap(), vec![
+            Value::Boolean(true)
+        ]);
+        assert_eq!(Array::try_from(Value::Integer(42)).unwrap(), vec![
+            Value::Integer(42)
+        ]);
+        assert_eq!(Array::try_from(Value::Float(0.618)).unwrap(), vec![
+            Value::Float(0.618)
+        ]);
         assert_eq!(
             Array::try_from(Value::String("test".to_string())).unwrap(),
             vec![Value::String("test".to_string())]
@@ -481,14 +478,11 @@ mod tests {
 
     #[test]
     fn test_vec_conversion() {
-        assert_eq!(
-            Vec::<i64>::try_from(Value::Null).unwrap(),
-            vec![] as Vec<i64>
-        );
-        assert_eq!(
-            Vec::<i64>::try_from(Value::Boolean(true)).unwrap(),
-            vec![1]
-        );
+        assert_eq!(Vec::<i64>::try_from(Value::Null).unwrap(), vec![]
+            as Vec<i64>);
+        assert_eq!(Vec::<i64>::try_from(Value::Boolean(true)).unwrap(), vec![
+            1
+        ]);
         assert_eq!(Vec::<i64>::try_from(Value::Integer(42)).unwrap(), vec![42]);
         assert_eq!(Vec::<i64>::try_from(Value::Float(0.618)).unwrap(), vec![0]);
         assert_eq!(
