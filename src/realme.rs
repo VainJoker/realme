@@ -3,8 +3,9 @@ use std::fmt::Debug;
 use builder::RealmeBuilder;
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
-use crate::{RealmeError, Value};
+use crate::{Value, errors::RealmeError};
 
+mod api;
 mod builder;
 mod cache;
 
@@ -39,50 +40,6 @@ impl Realme {
     /// ```
     pub fn builder() -> RealmeBuilder {
         RealmeBuilder::new()
-    }
-
-    /// Retrieves a value from the realme's cache based on the provided key.
-    ///
-    /// # Arguments
-    ///
-    /// * `key` - A string slice that holds the key of the value to retrieve.
-    ///
-    /// # Returns
-    ///
-    /// Returns an `Option<Value>` which is `Some` if the key exists, or `None`
-    /// if it does not.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// use realme::{Realme, Value};
-    ///
-    /// let mut realme = Realme::new(Value::Table(Default::default()));
-    /// realme.set("key1", Value::String("value1".to_string()));
-    /// let value = realme.get("key1");
-    /// assert_eq!(value, Some(Value::String("value1".to_string())));
-    /// ```
-    pub fn get(&self, key: &str) -> Option<Value> {
-        self.cache.get(&key)
-    }
-
-    /// Sets a value in the realme's cache for the specified key.
-    ///
-    /// # Arguments
-    ///
-    /// * `key` - A string slice that holds the key for the value to be set.
-    /// * `value` - A `Value` that will be set in the cache for the given key.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// use realme::{Realme, Value};
-    ///
-    /// let mut realme = Realme::new(Value::Table(Default::default()));
-    /// realme.set("key1", Value::String("value1".to_string()));
-    /// ```
-    pub fn set(&mut self, key: &str, value: Value) {
-        self.cache.set(&key, value);
     }
 
     /// Attempts to deserialize the realme's cache into a specified type.

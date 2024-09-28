@@ -22,20 +22,20 @@ impl Value {
     ///     )])),
     /// )]));
     /// assert_eq!(
-    ///     value.get(&"a.b"),
+    ///     value.get("a.b"),
     ///     Some(Value::Array(vec![
     ///         Value::Integer(1),
     ///         Value::Integer(2),
     ///         Value::Integer(3)
     ///     ]))
     /// );
-    /// assert_eq!(value.get(&"a.b[0]"), Some(Value::Integer(1)));
-    /// assert_eq!(value.get(&"a.b[3]"), None);
-    /// assert_eq!(value.get(&"a.b[-1]"), Some(Value::Integer(3)));
-    /// assert_eq!(value.get(&"a.b[-4]"), None);
-    /// assert_eq!(value.get(&"a.c"), None);
+    /// assert_eq!(value.get("a.b[0]"), Some(Value::Integer(1)));
+    /// assert_eq!(value.get("a.b[3]"), None);
+    /// assert_eq!(value.get("a.b[-1]"), Some(Value::Integer(3)));
+    /// assert_eq!(value.get("a.b[-4]"), None);
+    /// assert_eq!(value.get("a.c"), None);
     /// ```
-    pub fn get<K: Key>(&self, key: &K) -> Option<Self> {
+    pub fn get<K: Key>(&self, key: K) -> Option<Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
                 Self::Table(table) => table.get(&id).cloned(),
@@ -99,12 +99,12 @@ impl Value {
     ///     "a".to_string(),
     ///     Value::String("42".to_string()),
     /// )]));
-    /// let res: Option<i32> = value.get_as(&"a");
+    /// let res: Option<i32> = value.get_as("a");
     /// assert_eq!(res, Some(42));
     /// ```
     pub fn get_as<'de, T: Deserialize<'de>, K: Key>(
         &'de self,
-        key: &K,
+        key: K,
     ) -> Option<T> {
         self.get(key).and_then(|v| v.try_deserialize::<T>().ok())
     }
@@ -130,11 +130,11 @@ impl Value {
     /// use realme::{Table, Value};
     ///
     /// let mut value = Value::Table(Table::new());
-    /// value.set(&"a", Value::Integer(42));
-    /// assert_eq!(value.get_ref(&"a"), Some(&Value::Integer(42)));
-    /// assert_eq!(value.get_ref(&"b"), None);
+    /// value.set("a", Value::Integer(42));
+    /// assert_eq!(value.get_ref("a"), Some(&Value::Integer(42)));
+    /// assert_eq!(value.get_ref("b"), None);
     /// ```
-    pub fn get_ref<K: Key>(&self, key: &K) -> Option<&Self> {
+    pub fn get_ref<K: Key>(&self, key: K) -> Option<&Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
                 Self::Table(table) => table.get(&id),
@@ -195,13 +195,13 @@ impl Value {
     /// use realme::{Table, Value};
     ///
     /// let mut value = Value::Table(Table::new());
-    /// value.set(&"a", Value::Integer(42));
-    /// if let Some(v) = value.get_mut(&"a") {
+    /// value.set("a", Value::Integer(42));
+    /// if let Some(v) = value.get_mut("a") {
     ///     *v = Value::Integer(43);
     /// }
-    /// assert_eq!(value.get(&"a"), Some(Value::Integer(43)));
+    /// assert_eq!(value.get("a"), Some(Value::Integer(43)));
     /// ```
-    pub fn get_mut<K: Key>(&mut self, key: &K) -> Option<&mut Self> {
+    pub fn get_mut<K: Key>(&mut self, key: K) -> Option<&mut Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
                 Self::Table(table) => table.get_mut(&id),

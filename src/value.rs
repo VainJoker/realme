@@ -2,7 +2,7 @@ mod cast;
 mod des;
 mod expr;
 mod get;
-mod key;
+pub mod key;
 mod ser;
 mod set;
 
@@ -149,25 +149,25 @@ mod tests {
     fn test_get() {
         let value = prepare_value();
         assert_eq!(
-            value.get(&"a.b"),
+            value.get("a.b"),
             Some(Value::Array(vec![
                 Value::Integer(1),
                 Value::Integer(2),
                 Value::Integer(3)
             ]))
         );
-        assert_eq!(value.get(&"a.b[0]"), Some(Value::Integer(1)));
-        assert_eq!(value.get(&"a.b[3]"), None);
-        assert_eq!(value.get(&"a.b[-1]"), Some(Value::Integer(3)));
-        assert_eq!(value.get(&"a.b[-4]"), None);
-        assert_eq!(value.get(&"a.c"), None);
+        assert_eq!(value.get("a.b[0]"), Some(Value::Integer(1)));
+        assert_eq!(value.get("a.b[3]"), None);
+        assert_eq!(value.get("a.b[-1]"), Some(Value::Integer(3)));
+        assert_eq!(value.get("a.b[-4]"), None);
+        assert_eq!(value.get("a.c"), None);
     }
 
     #[test]
     fn test_set() {
         let mut value = Value::Table(Table::new());
         value.set(
-            &"b",
+            "b",
             Value::Array(vec![
                 Value::Integer(1),
                 Value::Integer(2),
@@ -175,25 +175,25 @@ mod tests {
             ]),
         );
         assert_eq!(
-            value.get(&"b"),
+            value.get("b"),
             Some(Value::Array(vec![
                 Value::Integer(1),
                 Value::Integer(2),
                 Value::Integer(3)
             ]))
         );
-        value.set(&"b[0]", Value::Integer(6));
-        assert_eq!(value.get(&"b[0]"), Some(Value::Integer(6)));
+        value.set("b[0]", Value::Integer(6));
+        assert_eq!(value.get("b[0]"), Some(Value::Integer(6)));
         value.set(
-            &"a.b",
+            "a.b",
             Value::Array(vec![
                 Value::Integer(1),
                 Value::Integer(2),
                 Value::Integer(3),
             ]),
         );
-        value.set(&"a.b[0]", Value::Integer(9));
-        assert_eq!(value.get(&"a.b[0]"), Some(Value::Integer(9)));
+        value.set("a.b[0]", Value::Integer(9));
+        assert_eq!(value.get("a.b[0]"), Some(Value::Integer(9)));
     }
 
     #[test]
@@ -219,25 +219,25 @@ mod tests {
     #[test]
     fn test_get_mut() {
         let mut value = Value::Table(Table::new());
-        value.set(&"a", Value::Integer(42));
-        if let Some(v) = value.get_mut(&"a") {
+        value.set("a", Value::Integer(42));
+        if let Some(v) = value.get_mut("a") {
             *v = Value::Integer(43);
         }
-        assert_eq!(value.get(&"a"), Some(Value::Integer(43)));
+        assert_eq!(value.get("a"), Some(Value::Integer(43)));
     }
 
     #[test]
     fn test_get_ref() {
         let mut value = Value::Table(Table::new());
-        value.set(&"a", Value::Integer(42));
-        assert_eq!(value.get_ref(&"a"), Some(&Value::Integer(42)));
+        value.set("a", Value::Integer(42));
+        assert_eq!(value.get_ref("a"), Some(&Value::Integer(42)));
     }
 
     #[test]
     fn test_chain_get() {
         let value = prepare_value();
         assert_eq!(
-            value.get(&"a").and_then(|b| b.get(&"b")),
+            value.get("a").and_then(|b| b.get("b")),
             Some(Value::Array(vec![
                 Value::Integer(1),
                 Value::Integer(2),
@@ -250,10 +250,10 @@ mod tests {
     fn test_chain_set() {
         let mut value = Value::Table(Table::new());
         value
-            .set(&"a", Value::Integer(42))
-            .set(&"b", Value::Integer(43));
-        assert_eq!(value.get(&"a"), Some(Value::Integer(42)));
-        assert_eq!(value.get(&"b"), Some(Value::Integer(43)));
+            .set("a", Value::Integer(42))
+            .set("b", Value::Integer(43));
+        assert_eq!(value.get("a"), Some(Value::Integer(42)));
+        assert_eq!(value.get("b"), Some(Value::Integer(43)));
     }
 
     #[test]
@@ -261,9 +261,9 @@ mod tests {
         let value = prepare_value();
         assert_eq!(
             value
-                .get(&"a")
-                .and_then(|b| b.get(&"b"))
-                .and_then(|c| c.get(&0)),
+                .get("a")
+                .and_then(|b| b.get("b"))
+                .and_then(|c| c.get(0)),
             Some(Value::Integer(1))
         );
     }
@@ -274,38 +274,38 @@ mod tests {
             "a".to_string(),
             Value::String("42".to_string()),
         )]));
-        let res: Option<i32> = value.get_as(&"a");
+        let res: Option<i32> = value.get_as("a");
         assert_eq!(res, Some(42));
     }
 
     #[test]
     fn test_and_set() {
         let mut value = Value::Table(Table::new());
-        value.set(&"a", Value::Table(Table::new()));
-        value.set(&"a.b", Value::Integer(42));
+        value.set("a", Value::Table(Table::new()));
+        value.set("a.b", Value::Integer(42));
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Integer(42))
         );
-        value.set(&"a.b", Value::Integer(43));
+        value.set("a.b", Value::Integer(43));
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Integer(43))
         );
-        value.get_mut(&"a").unwrap().set(&"b", Value::Integer(44));
+        value.get_mut("a").unwrap().set("b", Value::Integer(44));
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Integer(44))
         );
         let mut value = prepare_value();
         value
-            .get_mut(&"a")
+            .get_mut("a")
             .unwrap()
-            .get_mut(&"b")
+            .get_mut("b")
             .unwrap()
-            .set(&0, Value::Integer(10));
+            .set(0, Value::Integer(10));
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Array(vec![
                 Value::Integer(10),
                 Value::Integer(2),
@@ -317,27 +317,26 @@ mod tests {
     #[test]
     fn test_set_with_key() {
         let mut value = Value::Table(Table::new());
-        value.set(&"a", Value::Table(Table::new()));
-        value.set(&"a.b", Value::Integer(42));
-        value.set(&"a.c", Value::Integer(42));
+        value.set("a", Value::Table(Table::new()));
+        value.set("a.b", Value::Integer(42));
+        value.set("a.c", Value::Integer(42));
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Integer(42))
         );
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"c")),
+            value.get("a").and_then(|v| v.get("c")),
             Some(Value::Integer(42))
         );
-        value.with(&"a", |a| {
-            a.set(&"c", Value::Integer(43))
-                .set(&"b", Value::Integer(44));
+        value.with("a", |a| {
+            a.set("c", Value::Integer(43)).set("b", Value::Integer(44));
         });
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"b")),
+            value.get("a").and_then(|v| v.get("b")),
             Some(Value::Integer(44))
         );
         assert_eq!(
-            value.get(&"a").and_then(|v| v.get(&"c")),
+            value.get("a").and_then(|v| v.get("c")),
             Some(Value::Integer(43))
         );
     }

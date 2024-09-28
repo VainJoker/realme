@@ -2,7 +2,44 @@ use super::{Value, expr::Expression, key::Key};
 use crate::Map;
 
 impl Value {
-    pub fn set<K: Key>(&mut self, key: &K, value: Self) -> &mut Self {
+    /// Sets a value by key.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use realme::{Table, Value};
+    ///
+    /// let mut value = Value::Table(Table::new());
+    /// value.set(
+    ///     "b",
+    ///     Value::Array(vec![
+    ///         Value::Integer(1),
+    ///         Value::Integer(2),
+    ///         Value::Integer(3),
+    ///     ]),
+    /// );
+    /// assert_eq!(
+    ///     value.get("b"),
+    ///     Some(Value::Array(vec![
+    ///         Value::Integer(1),
+    ///         Value::Integer(2),
+    ///         Value::Integer(3)
+    ///     ]))
+    /// );
+    /// value.set("b[0]", Value::Integer(6));
+    /// assert_eq!(value.get("b[0]"), Some(Value::Integer(6)));
+    /// value.set(
+    ///     "a.b",
+    ///     Value::Array(vec![
+    ///         Value::Integer(1),
+    ///         Value::Integer(2),
+    ///         Value::Integer(3),
+    ///     ]),
+    /// );
+    /// value.set("a.b[0]", Value::Integer(9));
+    /// assert_eq!(value.get("a.b[0]"), Some(Value::Integer(9)));
+    /// ```
+    pub fn set<K: Key>(&mut self, key: K, value: Self) -> &mut Self {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
                 Self::Table(table) => {
@@ -73,43 +110,6 @@ impl Value {
         }
     }
 
-    // /// Sets a value by key.
-    // ///
-    // /// # Examples
-    // ///
-    // /// ```
-    // /// use realme::{Table, Value};
-    // ///
-    // /// let mut value = Value::Table(Table::new());
-    // /// value.set(
-    // ///     "b",
-    // ///     Value::Array(vec![
-    // ///         Value::Integer(1),
-    // ///         Value::Integer(2),
-    // ///         Value::Integer(3),
-    // ///     ]),
-    // /// );
-    // /// assert_eq!(
-    // ///     value.get("b"),
-    // ///     Some(Value::Array(vec![
-    // ///         Value::Integer(1),
-    // ///         Value::Integer(2),
-    // ///         Value::Integer(3)
-    // ///     ]))
-    // /// );
-    // /// value.set("b[0]", Value::Integer(6));
-    // /// assert_eq!(value.get("b[0]"), Some(Value::Integer(6)));
-    // /// value.set(
-    // ///     "a.b",
-    // ///     Value::Array(vec![
-    // ///         Value::Integer(1),
-    // ///         Value::Integer(2),
-    // ///         Value::Integer(3),
-    // ///     ]),
-    // /// );
-    // /// value.set("a.b[0]", Value::Integer(9));
-    // /// assert_eq!(value.get("a.b[0]"), Some(Value::Integer(9)));
-    // /// ```
     // pub fn set<K: Key>(&mut self, key: K, value: Self) -> Option<Self> {
     //     match key.to_key() {
     //         Ok(Expression::Identifier(id)) => match self {
@@ -165,7 +165,7 @@ impl Value {
     //     }
     // }
 
-    pub fn with<K: Key, F>(&mut self, key: &K, f: F) -> &mut Self
+    pub fn with<K: Key, F>(&mut self, key: K, f: F) -> &mut Self
     where
         F: FnOnce(&mut Self),
     {

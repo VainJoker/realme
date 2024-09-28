@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### ✨  Features
+
+- Update: Migrate to new API for accessing values - ([5646a54](https://github.com/vainjoker/realme/commit/5646a54e7be67714042acfc0656a31deac4a6d14))
+
 ### 🐛 Bug Fixes
 
 - Fix: Address potential panic in env var access - ([f70cb17](https://github.com/vainjoker/realme/commit/f70cb171d3c5287a74bf4543f82734ca8eb41cc0))
