@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨  Features
 
+- Refactor: Improve API ergonomics with key traits    - ([152be6b](https://github.com/vainjoker/realme/commit/152be6b7b3889210ec9ddd116ac4eb50b9c0a6e4))
 - Update: Migrate to new API for accessing values - ([5646a54](https://github.com/vainjoker/realme/commit/5646a54e7be67714042acfc0656a31deac4a6d14))
 
 ### 🐛 Bug Fixes
