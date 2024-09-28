@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Fix: Address potential panic in env var access - ([f70cb17](https://github.com/vainjoker/realme/commit/f70cb171d3c5287a74bf4543f82734ca8eb41cc0))
 
+### ⚙️ Miscellaneous Tasks
+
+- Refactor dependency management and code structure    - ([de9b098](https://github.com/vainjoker/realme/commit/de9b0983eba030aa6231995b29e4564a422efe61))
+
 ### Build
 
 - Delete release action - ([8923fe1](https://github.com/vainjoker/realme/commit/8923fe1f793613d766c0b91764cc1f13584b55c9))

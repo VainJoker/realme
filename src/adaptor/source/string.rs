@@ -37,9 +37,8 @@ where
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```rust ignore
     /// use realme::{StringSource, TomlParser};
-    ///
     /// const CONFIGURATION: &str = r#"key = "value""#;
     /// let source = StringSource::<TomlParser>::new(CONFIGURATION);
     /// ```

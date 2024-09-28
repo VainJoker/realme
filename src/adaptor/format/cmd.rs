@@ -132,7 +132,7 @@ impl CmdParser {
                     current_map = current_map
                         .entry((*k).to_string())
                         .or_insert_with(|| Value::Table(Map::new()))
-                        .as_table_mut()
+                        .get_table_mut()
                         .unwrap();
                 }
             }

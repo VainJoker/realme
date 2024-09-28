@@ -63,7 +63,7 @@ impl Realme {
     /// assert_eq!(value, Some(Value::String("value1".to_string())));
     /// ```
     pub fn get(&self, key: &str) -> Option<Value> {
-        self.cache.get(key)
+        self.cache.get(&key)
     }
 
     /// Sets a value in the realme's cache for the specified key.
@@ -82,7 +82,7 @@ impl Realme {
     /// realme.set("key1", Value::String("value1".to_string()));
     /// ```
     pub fn set(&mut self, key: &str, value: Value) {
-        self.cache.set(key, value);
+        self.cache.set(&key, value);
     }
 
     /// Attempts to deserialize the realme's cache into a specified type.
