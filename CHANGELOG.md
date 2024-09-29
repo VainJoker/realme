@@ -16,8 +16,15 @@ All notable changes to this project will be documented in this file.
 - Fix: Address potential panic in env var access - ([f70cb17](https://github.com/vainjoker/realme/commit/f70cb171d3c5287a74bf4543f82734ca8eb41cc0))
 - Fix env variable replacement in nested structures - ([0a8a4e1](https://github.com/vainjoker/realme/commit/0a8a4e1275ee177790ffd07d4fe944b5f02ededc))
 
+### 📚 Documentation
+
+- Update for badges - ([d64ddf4](https://github.com/vainjoker/realme/commit/d64ddf4a39f7ef9ec145215e602c078b3a4d2a4d))
+
 ### ⚙️ Miscellaneous Tasks
 
+- Securely pass Codecov token in coverage workflow - ([969e998](https://github.com/vainjoker/realme/commit/969e9982ce38b9a0718286983335d1eeea69b3f6))
+- Update codecov-action to v4 - ([1344b81](https://github.com/vainjoker/realme/commit/1344b81d65acb1109dfdebde67e3314f472c7f17))
+- Integrate coverage reporting - ([eae11f3](https://github.com/vainjoker/realme/commit/eae11f3b7aec034aec9327f7961336614be3c803))
 - Refactor dependency management and code structure    - ([de9b098](https://github.com/vainjoker/realme/commit/de9b0983eba030aa6231995b29e4564a422efe61))
 
 ### Build
