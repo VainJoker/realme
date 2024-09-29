@@ -1,4 +1,5 @@
 # Realme
+[![Build Status](https://travis-ci.org/VainJoker/realme.svg?branch=main)](https://travis-ci.org/VainJoker/realme) [![License: GPLv3](https://img.shields.io/badge/License-GPL-green.svg)](https://opensource.org/license/gpl-3-0) [![Latest Version](https://img.shields.io/crates/v/realme.svg)](https://crates.io/crates/realme) [![codecov](https://codecov.io/github/VainJoker/realme/graph/badge.svg?token=KF87R60IJ1)](https://codecov.io/github/VainJoker/realme)
 
 The name "Realme" is a play on "Realm" and "me," emphasizing its role in managing your application's configuration realm. 
 
