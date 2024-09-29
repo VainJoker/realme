@@ -16,6 +16,7 @@ description = "A flexible and extensible configuration management library for Ru
 
 [features]
 default = ["file","string","cmd","env"]
+full = ["file","string","cmd","env_with_replace","toml","json","yaml","json5","ron","ini","tracing"]
 file = []
 string = []
 env = []
