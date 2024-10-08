@@ -55,9 +55,9 @@ fn main() {
     let args = Args::parse();
 
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(CmdSource::<CmdParser, String>::new(
+        .load(Adaptor::new(CmdSource::<CmdParser, String>::new(
             args.config,
-        ))))
+        )))
         .build()
         .expect("Building configuration object");
     println!("{realme:?}");

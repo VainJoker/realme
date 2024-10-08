@@ -18,12 +18,12 @@ All notable changes to this project will be documented in this file.
 
 ### 📚 Documentation
 
-- Update for badges - ([d64ddf4](https://github.com/vainjoker/realme/commit/d64ddf4a39f7ef9ec145215e602c078b3a4d2a4d))
+- Update for badges - ([8f9d86e](https://github.com/vainjoker/realme/commit/8f9d86e03475e03b4280771d84fa39496e1577c3))
 
 ### ⚙️ Miscellaneous Tasks
 
-- Securely pass Codecov token in coverage workflow - ([969e998](https://github.com/vainjoker/realme/commit/969e9982ce38b9a0718286983335d1eeea69b3f6))
-- Update codecov-action to v4 - ([1344b81](https://github.com/vainjoker/realme/commit/1344b81d65acb1109dfdebde67e3314f472c7f17))
+- Remove Travis CI configuration - ([e04ba5d](https://github.com/vainjoker/realme/commit/e04ba5dcbc79b2617e00e69f28ea5c52269fdeec))
+- Update codecov-action to v4 - ([ed6f4f2](https://github.com/vainjoker/realme/commit/ed6f4f20a92994c148cb0fde773307da0aac9219))
 - Integrate coverage reporting - ([eae11f3](https://github.com/vainjoker/realme/commit/eae11f3b7aec034aec9327f7961336614be3c803))
 - Refactor dependency management and code structure    - ([de9b098](https://github.com/vainjoker/realme/commit/de9b0983eba030aa6231995b29e4564a422efe61))
 

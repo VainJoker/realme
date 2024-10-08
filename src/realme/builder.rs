@@ -7,10 +7,7 @@ use crate::{Adaptor, RealmeError, Value, adaptor::source::SourceType};
 /// with a configured environment.
 #[derive(Debug, Default)]
 pub struct RealmeBuilder {
-    env: Vec<Adaptor>,
-    str: Vec<Adaptor>,
-    cmd: Vec<Adaptor>,
-    set: Vec<Adaptor>,
+    adaptors: Vec<Adaptor>,
 }
 
 impl RealmeBuilder {
@@ -36,12 +33,7 @@ impl RealmeBuilder {
     /// ```
     #[must_use]
     pub fn load(mut self, adaptor: Adaptor) -> Self {
-        match adaptor.source_type() {
-            SourceType::Env => self.env.push(adaptor),
-            SourceType::Str => self.str.push(adaptor),
-            SourceType::Cmd => self.cmd.push(adaptor),
-            SourceType::Set => self.set.push(adaptor),
-        }
+        self.adaptors.push(adaptor);
         self
     }
 
@@ -63,15 +55,14 @@ impl RealmeBuilder {
     /// let builder = RealmeBuilder::new().load(adaptor);
     /// let realme = builder.build().expect("Failed to build Realme");
     /// ```
-    pub fn build(&self) -> Result<Realme, RealmeError> {
+    pub fn build(mut self) -> Result<Realme, RealmeError> {
         let mut cache = RealmeCache::new();
 
-        for adaptor in &self.env {
-            cache.handle_adaptor(adaptor, true)?;
-        }
-        let all_adaptors = [&self.str, &self.cmd, &self.set];
-        for adaptors in &all_adaptors {
-            for adaptor in *adaptors {
+        self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
+        for adaptor in self.adaptors.iter().rev() {
+            if adaptor.source_type() == SourceType::Env {
+                cache.handle_adaptor(adaptor, true)?;
+            } else {
                 cache.handle_adaptor(adaptor, false)?;
             }
         }

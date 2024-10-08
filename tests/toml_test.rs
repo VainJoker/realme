@@ -96,8 +96,8 @@ pub struct Expression {
 #[test]
 fn toml_parse() {
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(FileSource::<TomlParser>::new(
-            PathBuf::from("./tests/source/test.toml"),
+        .load(Adaptor::new(FileSource::<TomlParser>::new(PathBuf::from(
+            "./tests/source/test.toml",
         ))))
         .build()
         .expect("Building configuration object");

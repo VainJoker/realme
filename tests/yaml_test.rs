@@ -97,8 +97,8 @@ pub struct Expression {
 #[test]
 fn yaml_parse() {
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(FileSource::<YamlParser>::new(
-            PathBuf::from("./tests/source/test.yaml"),
+        .load(Adaptor::new(FileSource::<YamlParser>::new(PathBuf::from(
+            "./tests/source/test.yaml",
         ))))
         .build()
         .expect("Building configuration object");

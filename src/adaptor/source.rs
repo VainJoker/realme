@@ -26,12 +26,14 @@ pub trait Source {
 }
 
 /// Enum representing different types of sources
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum SourceType {
     /// Environment variable source
     Env,
     /// String source
     Str,
+    /// File source
+    File,
     /// Command output source
     Cmd,
     /// Set source

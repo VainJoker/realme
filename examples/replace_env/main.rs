@@ -28,12 +28,10 @@ fn main() {
     std::env::set_var("REALME_WHY.KEY", "world");
 
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+        .load(Adaptor::new(StringSource::<TomlParser>::new(
             CONFIGURATION1,
-        ))))
-        .load(Adaptor::new(Box::new(EnvSource::<EnvParser>::new(
-            "REALME_",
-        ))))
+        )))
+        .load(Adaptor::new(EnvSource::<EnvParser>::new("REALME_")))
         .build();
 
     match realme {

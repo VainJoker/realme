@@ -27,8 +27,8 @@ pub struct Database {
 #[test]
 fn ini_parse() {
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(FileSource::<IniParser>::new(
-            PathBuf::from("./tests/source/test.ini"),
+        .load(Adaptor::new(FileSource::<IniParser>::new(PathBuf::from(
+            "./tests/source/test.ini",
         ))))
         .build()
         .expect("Building configuration object");

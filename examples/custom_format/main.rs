@@ -9,9 +9,9 @@ fn main() {
     const CONFIGURATION1: &str = "key1=value1";
 
     let config = Realme::builder()
-        .load(Adaptor::new(Box::new(StringSource::<MyParser, &str>::new(
+        .load(Adaptor::new(StringSource::<MyParser, &str>::new(
             CONFIGURATION1,
-        ))))
+        )))
         .build()
         .expect("Building configuration object");
 

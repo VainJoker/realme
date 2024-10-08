@@ -12,6 +12,7 @@ pub mod source;
 pub struct Adaptor {
     /// The underlying source of configuration data.
     source: Box<dyn Source>,
+    pub priority: Option<usize>,
 }
 
 impl std::fmt::Debug for Adaptor {
@@ -22,12 +23,11 @@ impl std::fmt::Debug for Adaptor {
 
 impl Adaptor {
     /// Creates a new `Adaptor` with the given source.
-    ///
-    /// # Arguments
-    ///
-    /// * `source` - A boxed trait object implementing the `Source` trait.
-    pub const fn new(source: Box<dyn Source>) -> Self {
-        Self { source }
+    pub fn new<T: Source + 'static>(source: T) -> Self {
+        Self {
+            source: Box::new(source),
+            priority: None,
+        }
     }
 
     /// Parses the configuration data from the source.
@@ -47,5 +47,19 @@ impl Adaptor {
     /// Returns a `SourceType` enum indicating the type of the source.
     pub fn source_type(&self) -> source::SourceType {
         self.source.source_type()
+    }
+
+    /// Set the priority of the adaptor.
+    ///
+    /// # Returns
+    ///
+    /// Returns the adaptor with the priority set.
+    /// The larger the priority, the earlier it will be parsed.
+    /// If the priority is not set, it will be parsed first.
+    /// If all adaptors are not set priority, it will be parsed from the last.
+    #[must_use]
+    pub const fn priority(mut self, priority: usize) -> Self {
+        self.priority = Some(priority);
+        self
     }
 }

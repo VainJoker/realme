@@ -38,8 +38,8 @@ struct MyConfig {
 #[test]
 fn ron_parse() {
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(FileSource::<RonParser>::new(
-            PathBuf::from("./tests/source/test.ron"),
+        .load(Adaptor::new(FileSource::<RonParser>::new(PathBuf::from(
+            "./tests/source/test.ron",
         ))))
         .build()
         .expect("Building configuration object");

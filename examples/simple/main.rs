@@ -5,9 +5,9 @@ fn main() {
     const CONFIGURATION1: &str = r#"key1 = "value""#;
 
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+        .load(Adaptor::new(StringSource::<TomlParser>::new(
             CONFIGURATION1,
-        ))))
+        )))
         .build()
         .expect("Building configuration object");
 

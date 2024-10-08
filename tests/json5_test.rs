@@ -97,8 +97,8 @@ pub struct Expression {
 #[test]
 fn json5_parse() {
     let realme = Realme::builder()
-        .load(Adaptor::new(Box::new(FileSource::<Json5Parser>::new(
-            PathBuf::from("./tests/source/test.json5"),
+        .load(Adaptor::new(FileSource::<Json5Parser>::new(PathBuf::from(
+            "./tests/source/test.json5",
         ))))
         .build()
         .expect("Building configuration object");

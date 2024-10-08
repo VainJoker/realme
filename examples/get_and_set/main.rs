@@ -24,9 +24,9 @@ fn main() {
     "#;
 
     let mut realme = Realme::builder()
-        .load(Adaptor::new(Box::new(StringSource::<TomlParser>::new(
+        .load(Adaptor::new(StringSource::<TomlParser>::new(
             CONFIGURATION1,
-        ))))
+        )))
         .build()
         .expect("Building configuration object");
 
