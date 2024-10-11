@@ -1,3 +1,4 @@
+#[cfg(all(feature = "toml", feature = "json", feature = "hot_reload"))]
 #[cfg(test)]
 mod tests {
     use std::{
@@ -12,7 +13,6 @@ mod tests {
     use realme::{Adaptor, FileSource, JsonParser, Realme, TomlParser};
 
     #[test]
-    #[cfg(all(feature = "toml", feature = "json", feature = "hot_reload"))]
     fn test_concurrent_multi_source_hot_reload() {
         // 创建临时配置文件
         let toml_path = PathBuf::from("test_config.toml");

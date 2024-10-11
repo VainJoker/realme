@@ -1,6 +1,6 @@
 [package]
 name = "realme"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Jasper 张汉杰 <vainjoker@tuta.io>"]
 readme = "README.md"
@@ -15,8 +15,8 @@ homepage = "https://github.com/vainjoker/realme"
 description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
-default = ["file","string","cmd","env", "toml", "hot_reload", "json"]
-full = ["file","string","cmd","env_with_replace","toml","json","yaml","json5","ron","ini","tracing"]
+default = ["file","string","cmd","env"]
+full = ["file","string","cmd","env_with_replace","toml","json","yaml","json5","ron","ini","tracing","hot_reload"]
 file = []
 string = []
 env = []
