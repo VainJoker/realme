@@ -1,65 +1,70 @@
 # Realme
-[![Build](https://github.com/VainJoker/realme/actions/workflows/integration.yml/badge.svg)](https://github.com/VainJoker/realme/actions/workflows/integration.yml) [![License: GPLv3](https://img.shields.io/badge/License-GPL-green.svg)](https://opensource.org/license/gpl-3-0) [![Latest Version](https://img.shields.io/crates/v/realme.svg)](https://crates.io/crates/realme) [![codecov](https://codecov.io/github/VainJoker/realme/graph/badge.svg?token=KF87R60IJ1)](https://codecov.io/github/VainJoker/realme)
 
-The name "Realme" is a play on "Realm" and "me," emphasizing its role in managing your application's configuration realm. 
+[![Build](https://github.com/VainJoker/realme/actions/workflows/integration.yml/badge.svg)](https://github.com/VainJoker/realme/actions/workflows/integration.yml) 
+[![License: GPLv3](https://img.shields.io/badge/License-GPL-green.svg)](https://opensource.org/license/gpl-3-0) 
+[![Latest Version](https://img.shields.io/crates/v/realme.svg)](https://crates.io/crates/realme) 
+[![codecov](https://codecov.io/github/VainJoker/realme/graph/badge.svg?token=KF87R60IJ1)](https://codecov.io/github/VainJoker/realme)
 
-Realme is a flexible and extensible configuration management library for Rust. It simplifies the process of loading and managing configuration settings from various sources. Designed to work within an application, Realme can handle all types of configuration needs and formats.
+Realme is a flexible and extensible configuration management library for Rust. It simplifies the process of loading and managing configuration settings from various sources. The name "Realme" is a play on "Realm" and "me," emphasizing its role in managing your application's configuration realm.
 
 ## Features
 
-- [x] Supports multiple configuration formats
-    - [x] TOML
-    - [x] JSON
-    - [x] JSON5
-    - [x] YAML
-    - [x] RON
-    - [x] INI
-- [x] Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
-- [x] Custom parser support and flexible adaptor system for different data sources
-- [x] Setting defaults and set explicit values override
-- [x] Reading from environment variables
-- [x] Reading from command line flags
-- [ ] Live watching and re-reading of config files
-
+- Support for multiple configuration formats (TOML, JSON, YAML, JSON5, RON, INI), and you can easily add support for more formats
+- Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
+- Custom parser support and flexible adaptor system for different data sources, for example, you can read configuration from a file, environment variables, command line flags, etc.
+- Live watching and re-reading of config files
 
 ## Installation
 
 Add this to your `Cargo.toml`:
 
-```
-toml
+```toml
 [dependencies]
-realme = "0.1.2"
+realme = {version = "0.1.4", features = ["toml"]}
 ```
+You can also enable other features, for example, to use hot reloading feature, you need to enable `json` and`hot_reload` feature:
 
+```toml
+realme = {version = "0.1.4", features = ["toml", "json", "hot_reload"]}
+```
 
 ## Usage
 
 Here's a simple example of how to use Realme:
 
 ```rust
-use realme::{TomlParser, StringSource, Adaptor,Realme};
+    use realme::{Adaptor, Realme, StringSource, TomlParser};
+    use serde::{Serialize, Deserialize};
+
+    #[derive(Debug, Serialize, Deserialize)]
+    struct Person {
+        name: String,
+        age: u32,
+        birthday: chrono::DateTime<chrono::Utc>,
+    }
+
+    const CONFIGURATION1: &str = r#"
+        name = "John"
+        age = 30
+        birthday = 1993-01-01T00:00:00Z
+    "#;
 
 fn main() {
-    const CONFIGURATION1: &str = r#"key1 = "value""#;
-
     let realme = Realme::builder()
-    .load(
-        Adaptor::new(
-            Box::new(
-                StringSource::<TomlParser>::new(
-                    CONFIGURATION1
-            )))
-        )
-    .build()
-    .expect("Building configuration object");
+        .load(Adaptor::new(StringSource::<TomlParser>::new(
+            CONFIGURATION1,
+        )))
+        .build()
+        .expect("Building configuration object");
 
-    let value :String = realme
-        .get("key1")
-        .expect("Accessing configuration object")
-        .try_into().unwrap();
+    let person: Person = realme.try_deserialize().unwrap();
 
-    println!("'key1' Config element is: '{value:?}'");
+    println!("{:?}", person);
+    println!("{:?}", realme);
+    
+    assert_eq!(person.name, TryInto::<String>::try_into(realme.get("name").unwrap()).unwrap());
+    assert_eq!(person.age, realme.get_as::<u32, _>("age").unwrap());
+    assert_eq!(person.birthday, realme.get_as::<chrono::DateTime<chrono::Utc>, _>("birthday").unwrap());
 }
 ```
 

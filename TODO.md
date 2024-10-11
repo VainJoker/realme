@@ -3,11 +3,11 @@
 - [x] Attempt type conversion in serialize and deserialize
 - [x] When parsing {{env}}, allow using variables from env
 - [x] Separate adaptors: use fileadaptor, envadaptor, overrideadaptor
-- [ ] Monitor configuration file changes, hot reload
+- [x] Monitor configuration file changes, hot reload
 - [x] Default value support
 - [x] Support command-line arguments
 - [x] Support getting configuration subtrees, nested reading config1.key1
-- [ ] Support environment control, namespaces
 - [ ] Add functionality to read configurations from remote sources (such as etcd, Consul, or custom HTTP endpoints)
 - [x] Add tracing support
 - [ ] Better performance (Make features optional)
+- [ ] Need to ensure that the user-set values are not overwritten by the default values

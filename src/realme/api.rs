@@ -134,7 +134,7 @@ impl Realme {
     /// let deserialized: Option<MyStruct> = realme.get_as("key1");
     /// assert_eq!(deserialized, Some(MyStruct { field: "value1".to_string() }));
     /// ```
-    pub fn get_as<K: Key, V>(&self, key: K) -> Option<V>
+    pub fn get_as<V, K: Key>(&self, key: K) -> Option<V>
     where
         V: for<'de> Deserialize<'de>,
     {

@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.4](https://github.com/vainjoker/realme/compare/v0.1.3..v0.1.4) - 2024-10-11
+
+### ✨  Features
+
+- Add hot reloading functionality - ([6bd208b](https://github.com/vainjoker/realme/commit/6bd208b2ef52c26d5f05b38975e88fc0a2e696b9))
 
 ### 🚜 Refactor
 
@@ -14,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### ⚙️ Miscellaneous Tasks
 
+- Bump version to 0.1.4 - ([3d5f77d](https://github.com/vainjoker/realme/commit/3d5f77d75f998b1a94b209d993f7b16ef83d548a))
 - Remove Travis CI configuration - ([e04ba5d](https://github.com/vainjoker/realme/commit/e04ba5dcbc79b2617e00e69f28ea5c52269fdeec))
 - Update codecov-action to v4 - ([ed6f4f2](https://github.com/vainjoker/realme/commit/ed6f4f20a92994c148cb0fde773307da0aac9219))
 - Integrate coverage reporting - ([eae11f3](https://github.com/vainjoker/realme/commit/eae11f3b7aec034aec9327f7961336614be3c803))
