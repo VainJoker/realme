@@ -37,37 +37,87 @@ impl RealmeBuilder {
         self
     }
 
-    /// Constructs the `Realme` from the added adaptors.
-    ///
-    /// This method attempts to build the `Realme` using the adaptors provided
-    /// through the `load` method. It initializes a `RealmeCache` and
-    /// populates it with the adaptors' data.
-    ///
-    /// # Returns
-    ///
-    /// A `Result` which is `Ok` if the `Realme` was successfully created, or an
-    /// `Err` containing a `RealmeError` if an error occurred during the
-    /// building process.
-    ///
-    /// # Examples
-    ///
-    /// ```ignore
-    /// let builder = RealmeBuilder::new().load(adaptor);
-    /// let realme = builder.build().expect("Failed to build Realme");
-    /// ```
-    pub fn build(mut self) -> Result<Realme, RealmeError> {
-        let mut cache = RealmeCache::new();
-
+    pub(crate) fn handle_adaptors(
+        &mut self,
+        cache: &mut RealmeCache,
+    ) -> Result<(), RealmeError> {
         self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
         for adaptor in self.adaptors.iter().rev() {
-            if adaptor.source_type() == SourceType::Env {
-                cache.handle_adaptor(adaptor, true)?;
-            } else {
-                cache.handle_adaptor(adaptor, false)?;
-            }
+            let is_env = adaptor.source_type() == SourceType::Env;
+            cache.handle_adaptor(adaptor, is_env)?;
         }
+        Ok(())
+    }
+
+    #[cfg(feature = "hot_reload")]
+    pub(crate) fn handle_shared_adaptors(
+        &mut self,
+        cache: &mut RealmeCache,
+        sender: &crossbeam::channel::Sender<()>,
+    ) -> Result<(), RealmeError> {
+        self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
+        for adaptor in self.adaptors.iter().rev() {
+            let is_env = adaptor.source_type() == SourceType::Env;
+            cache.handle_adaptor(adaptor, is_env)?;
+            adaptor.watcher(sender.clone())?;
+        }
+        Ok(())
+    }
+
+    pub fn build(mut self) -> Result<Realme, RealmeError> {
+        let mut cache = RealmeCache::new();
+        self.handle_adaptors(&mut cache)?;
         Ok(Realme {
             cache: Value::Table(cache.cache),
         })
+    }
+
+    #[cfg(feature = "hot_reload")]
+    pub fn shared_build(
+        mut self,
+    ) -> Result<super::shared::SharedRealme, RealmeError> {
+        let mut cache = RealmeCache::new();
+        let (sender, receiver) = crossbeam::channel::unbounded::<()>();
+
+        self.handle_shared_adaptors(&mut cache, &sender)?;
+
+        let shared_realme =
+            super::shared::SharedRealme::from_value(Value::Table(cache.cache));
+        let mut shared_realme_clone = shared_realme.clone();
+        let builder_clone = std::sync::RwLock::new(self);
+
+        std::thread::spawn(move || {
+            let debounce_duration = std::time::Duration::from_millis(100);
+            let mut last_update = std::time::Instant::now();
+
+            loop {
+                match receiver.recv_timeout(debounce_duration) {
+                    Ok(()) => {
+                        last_update = std::time::Instant::now();
+                    }
+                    Err(crossbeam::channel::RecvTimeoutError::Timeout) => {
+                        if last_update.elapsed() >= debounce_duration {
+                            if let Err(_e) =
+                                shared_realme_clone.update(&builder_clone)
+                            {
+                                #[cfg(feature = "tracing")]
+                                tracing::error!(
+                                    "Error updating shared realme: {:?}",
+                                    _e
+                                );
+                                break;
+                            }
+                        }
+                    }
+                    Err(_) => {
+                        #[cfg(feature = "tracing")]
+                        tracing::error!("Watcher error");
+                        break;
+                    }
+                }
+            }
+        });
+
+        Ok(shared_realme)
     }
 }

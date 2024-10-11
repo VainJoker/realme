@@ -7,22 +7,30 @@ pub mod file;
 /// Module for string-related functionality
 pub mod string;
 
-use crate::{errors::RealmeError, value::Value};
+use crate::value::Value;
 
 /// Trait representing a source of configuration or data
-pub trait Source {
+pub trait Source: Send + Sync {
+    type Error;
     /// Parses the source and returns a `Value` or an error
     ///
     /// # Returns
     /// - `Ok(Value)` if parsing is successful
     /// - `Err(RealmeError)` if an error occurs during parsing
-    fn parse(&self) -> Result<Value, RealmeError>;
+    fn parse(&self) -> Result<Value, Self::Error>;
 
     /// Returns the type of the source
     ///
     /// # Returns
     /// The `SourceType` of this source
     fn source_type(&self) -> SourceType;
+
+    #[cfg(feature = "hot_reload")]
+    /// Watch the source for changes
+    fn watch(
+        &self,
+        s: crossbeam::channel::Sender<()>,
+    ) -> Result<(), Self::Error>;
 }
 
 /// Enum representing different types of sources
@@ -38,4 +46,6 @@ pub enum SourceType {
     Cmd,
     /// Set source
     Set,
+    /// Custom source
+    Custom,
 }

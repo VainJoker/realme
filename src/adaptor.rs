@@ -11,8 +11,9 @@ pub mod source;
 /// Represents an adaptor that wraps a source of configuration data.
 pub struct Adaptor {
     /// The underlying source of configuration data.
-    source: Box<dyn Source>,
+    source: Box<dyn Source<Error = RealmeError>>,
     pub priority: Option<usize>,
+    pub watcher: bool,
 }
 
 impl std::fmt::Debug for Adaptor {
@@ -23,10 +24,11 @@ impl std::fmt::Debug for Adaptor {
 
 impl Adaptor {
     /// Creates a new `Adaptor` with the given source.
-    pub fn new<T: Source + 'static>(source: T) -> Self {
+    pub fn new<T: Source<Error = RealmeError> + 'static>(source: T) -> Self {
         Self {
             source: Box::new(source),
             priority: None,
+            watcher: false,
         }
     }
 
@@ -61,5 +63,24 @@ impl Adaptor {
     pub const fn priority(mut self, priority: usize) -> Self {
         self.priority = Some(priority);
         self
+    }
+
+    #[cfg(feature = "hot_reload")]
+    #[must_use]
+    pub const fn watch(mut self) -> Self {
+        self.watcher = true;
+        self
+    }
+
+    #[cfg(feature = "hot_reload")]
+    pub fn watcher(
+        &self,
+        s: crossbeam::channel::Sender<()>,
+    ) -> Result<(), RealmeError> {
+        if self.watcher {
+            self.source.watch(s)
+        } else {
+            Ok(())
+        }
     }
 }

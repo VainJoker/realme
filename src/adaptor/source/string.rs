@@ -52,9 +52,10 @@ where
 
 impl<'a, T, U> Source for StringSource<'a, T, U>
 where
-    U: AsRef<str> + Clone,
-    T: Parser<U>,
+    U: AsRef<str> + Clone + Send + Sync,
+    T: Parser<U> + Send + Sync,
 {
+    type Error = RealmeError;
     /// Parses the buffer using the specified parser and returns the parsed
     /// value or an error.
     ///
@@ -83,5 +84,13 @@ where
     /// Returns the source type of this adaptor, which is `SourceType::Str`.
     fn source_type(&self) -> SourceType {
         SourceType::Str
+    }
+
+    #[cfg(feature = "hot_reload")]
+    fn watch(
+        &self,
+        _s: crossbeam::channel::Sender<()>,
+    ) -> Result<(), Self::Error> {
+        Ok(())
     }
 }

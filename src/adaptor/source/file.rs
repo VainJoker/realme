@@ -54,9 +54,10 @@ impl<U: AsRef<Path>, T> FileSource<T, U> {
 
 impl<T, U> Source for FileSource<T, U>
 where
-    T: for<'a> Parser<&'a str>,
-    U: AsRef<Path>,
+    T: for<'a> Parser<&'a str> + Send + Sync,
+    U: AsRef<Path> + Send + Sync,
 {
+    type Error = RealmeError;
     /// Parses the file at the specified path using the parser type `T`.
     ///
     /// # Returns
@@ -90,5 +91,56 @@ where
     /// Always returns `SourceType::Str`.
     fn source_type(&self) -> SourceType {
         SourceType::Str
+    }
+
+    #[cfg(feature = "hot_reload")]
+    fn watch(
+        &self,
+        s: crossbeam::channel::Sender<()>,
+    ) -> Result<(), Self::Error> {
+        let path = self.path.as_ref().to_owned();
+
+        std::thread::spawn(move || -> Result<(), Self::Error> {
+            let (tx, rx) = crossbeam::channel::unbounded();
+
+            let mut watcher = notify::recommended_watcher(
+                move |res: notify::Result<notify::Event>| {
+                    if let Ok(event) = res {
+                        if let Err(_e) = tx.send(event) {
+                            #[cfg(feature = "tracing")]
+                            tracing::error!("Send event error: {:?}", _e);
+                        }
+                    }
+                },
+            )
+            .map_err(|e| {
+                #[cfg(feature = "tracing")]
+                tracing::error!("Watcher error: {:?}", e);
+                RealmeError::WatcherError(e.to_string())
+            })?;
+
+            // 开始监视文件
+            notify::Watcher::watch(
+                &mut watcher,
+                &path,
+                notify::RecursiveMode::NonRecursive,
+            )
+            .map_err(|e| {
+                #[cfg(feature = "tracing")]
+                tracing::error!("Watcher error: {:?}", e);
+                RealmeError::WatcherError(e.to_string())
+            })?;
+
+            // 处理文件系统事件
+            while let Ok(_event) = rx.recv() {
+                if let Err(_e) = s.send(()) {
+                    #[cfg(feature = "tracing")]
+                    tracing::error!("Send event error: {:?}", _e);
+                }
+            }
+
+            Ok(())
+        });
+        Ok(())
     }
 }

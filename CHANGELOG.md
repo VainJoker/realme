@@ -4,17 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-### ✨  Features
+### 🚜 Refactor
 
-- Bump version to 0.1.3    - ([d7f5ef9](https://github.com/vainjoker/realme/commit/d7f5ef9bea5ededca4573e4da516e05c43ee329d))
-- Refactor: Improve API ergonomics with key traits    - ([152be6b](https://github.com/vainjoker/realme/commit/152be6b7b3889210ec9ddd116ac4eb50b9c0a6e4))
-- Update: Migrate to new API for accessing values - ([5646a54](https://github.com/vainjoker/realme/commit/5646a54e7be67714042acfc0656a31deac4a6d14))
-- Add example for global config setting - ([28f66f3](https://github.com/vainjoker/realme/commit/28f66f3e1bdc084d72ab2b04443b5fdb377e57c2))
-
-### 🐛 Bug Fixes
-
-- Fix: Address potential panic in env var access - ([f70cb17](https://github.com/vainjoker/realme/commit/f70cb171d3c5287a74bf4543f82734ca8eb41cc0))
-- Fix env variable replacement in nested structures - ([0a8a4e1](https://github.com/vainjoker/realme/commit/0a8a4e1275ee177790ffd07d4fe944b5f02ededc))
+- Simplify Adaptor instantiation - ([b5e241e](https://github.com/vainjoker/realme/commit/b5e241e0cc1bd5f967f43393308d1da96f2a72a7))
 
 ### 📚 Documentation
 
@@ -25,11 +17,39 @@ All notable changes to this project will be documented in this file.
 - Remove Travis CI configuration - ([e04ba5d](https://github.com/vainjoker/realme/commit/e04ba5dcbc79b2617e00e69f28ea5c52269fdeec))
 - Update codecov-action to v4 - ([ed6f4f2](https://github.com/vainjoker/realme/commit/ed6f4f20a92994c148cb0fde773307da0aac9219))
 - Integrate coverage reporting - ([eae11f3](https://github.com/vainjoker/realme/commit/eae11f3b7aec034aec9327f7961336614be3c803))
+
+## [0.1.3](https://github.com/vainjoker/realme/compare/v0.1.2..v0.1.3) - 2024-09-28
+
+### ✨  Features
+
+- Bump version to 0.1.3    - ([d7f5ef9](https://github.com/vainjoker/realme/commit/d7f5ef9bea5ededca4573e4da516e05c43ee329d))
+- Refactor: Improve API ergonomics with key traits    - ([152be6b](https://github.com/vainjoker/realme/commit/152be6b7b3889210ec9ddd116ac4eb50b9c0a6e4))
+- Update: Migrate to new API for accessing values - ([5646a54](https://github.com/vainjoker/realme/commit/5646a54e7be67714042acfc0656a31deac4a6d14))
+
+### 🐛 Bug Fixes
+
+- Fix: Address potential panic in env var access - ([f70cb17](https://github.com/vainjoker/realme/commit/f70cb171d3c5287a74bf4543f82734ca8eb41cc0))
+
+### ⚙️ Miscellaneous Tasks
+
 - Refactor dependency management and code structure    - ([de9b098](https://github.com/vainjoker/realme/commit/de9b0983eba030aa6231995b29e4564a422efe61))
 
 ### Build
 
 - Delete release action - ([8923fe1](https://github.com/vainjoker/realme/commit/8923fe1f793613d766c0b91764cc1f13584b55c9))
+
+## [0.1.2](https://github.com/vainjoker/realme/compare/v0.1.1..v0.1.2) - 2024-09-18
+
+### ✨  Features
+
+- Add example for global config setting - ([28f66f3](https://github.com/vainjoker/realme/commit/28f66f3e1bdc084d72ab2b04443b5fdb377e57c2))
+
+### 🐛 Bug Fixes
+
+- Fix env variable replacement in nested structures - ([0a8a4e1](https://github.com/vainjoker/realme/commit/0a8a4e1275ee177790ffd07d4fe944b5f02ededc))
+
+### Build
+
 - Update for v0.1.2 - ([a3cf6af](https://github.com/vainjoker/realme/commit/a3cf6af2d82a224ed351047cd8f677a17001d00f))
 
 ## [0.1.1] - 2024-09-16

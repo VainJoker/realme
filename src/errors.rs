@@ -18,6 +18,10 @@ pub enum RealmeError {
     BuildError(String),
     #[error("Read file error: {0}")]
     ReadFileError(String),
+    #[error("Watcher error: {0}")]
+    WatcherError(String),
+    #[error("Lock error: {0}")]
+    LockError(String),
 
     #[error(transparent)]
     DeserializeError(DeserializeError),

@@ -8,10 +8,11 @@ use crate::{Value, errors::RealmeError};
 mod api;
 mod builder;
 mod cache;
-
+#[cfg(feature = "hot_reload")]
+mod shared;
 /// Represents a configuration realme with a cache for storing configuration
 /// values.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Realme {
     cache: Value,
 }
