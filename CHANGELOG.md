@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### ✨  Features
+
+- Enable deserialization of enum from string - ([8ada5aa](https://github.com/vainjoker/realme/commit/8ada5aa001e6d3705a3e716c7cd3935cc371dddb))
+
 ### 📚 Documentation
 
 - Update README with improved clarity and examples - ([db86df9](https://github.com/vainjoker/realme/commit/db86df95b00b0b4e8e06ef7525d9268e0472e10d))

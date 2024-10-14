@@ -761,17 +761,71 @@ mod tests {
         assert_eq!(result, (1, 2));
     }
 
-    #[test]
-    fn test_deserialize_enum() {
+    #[cfg(test)]
+    mod enum_deserialization_tests {
+        use super::*;
+
         #[derive(Debug, Deserialize, PartialEq)]
+        #[serde(rename_all = "snake_case")]
         enum TestEnum {
             Variant1,
             Variant2(i64),
             Variant3 { field: String },
         }
 
-        let value = Value::String("Variant1".to_string());
-        let result: TestEnum = value.try_deserialize().unwrap();
-        assert_eq!(result, TestEnum::Variant1);
+        #[test]
+        fn test_deserialize_unit_variant() {
+            let value = Value::String("variant1".to_string());
+            let result: TestEnum = value.try_deserialize().unwrap();
+            assert_eq!(result, TestEnum::Variant1);
+        }
+
+        #[test]
+        fn test_deserialize_newtype_variant_fails() {
+            let value = Value::String("variant2".to_string());
+            let result: Result<TestEnum, RealmeError> = value.try_deserialize();
+            assert!(result.is_err());
+            assert!(
+                result
+                    .unwrap_err()
+                    .to_string()
+                    .contains("newtype variant is not supported")
+            );
+        }
+
+        #[test]
+        fn test_deserialize_struct_variant_fails() {
+            let mut map = Map::new();
+            map.insert("variant3".to_string(), Value::Table(Map::new()));
+            let value = Value::Table(map);
+            let result: Result<TestEnum, RealmeError> = value.try_deserialize();
+            assert!(result.is_err());
+            assert!(result.unwrap_err().to_string().contains(
+                "enum with tuple or struct variant is not supported"
+            ));
+        }
+
+        #[test]
+        fn test_deserialize_non_existent_variant() {
+            let value = Value::String("variant4".to_string());
+            let result: Result<TestEnum, RealmeError> = value.try_deserialize();
+            assert!(result.is_err());
+            assert!(
+                result.unwrap_err().to_string().contains("unknown variant")
+            );
+        }
+
+        #[test]
+        fn test_deserialize_enum_from_non_string() {
+            let value = Value::Integer(42);
+            let result: Result<TestEnum, RealmeError> = value.try_deserialize();
+            assert!(result.is_err());
+            assert!(
+                result
+                    .unwrap_err()
+                    .to_string()
+                    .contains("expected a string")
+            );
+        }
     }
 }

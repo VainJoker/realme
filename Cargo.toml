@@ -15,7 +15,7 @@ homepage = "https://github.com/vainjoker/realme"
 description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
-default = ["file","string","cmd","env", "toml"]
+default = ["file","string","cmd","env"]
 full = ["file","string","cmd","env_with_replace","toml","json","yaml","json5","ron","ini","tracing","hot_reload"]
 file = []
 string = []
