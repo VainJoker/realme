@@ -2,10 +2,10 @@ use std::fmt;
 
 use serde::{
     Deserialize,
-    de::{self, Deserializer, Visitor},
+    de::{self, Deserializer, IntoDeserializer, Visitor},
 };
 
-use super::Value;
+use super::{Table, Value};
 use crate::map::Map;
 
 /// Represents a custom deserializer for `Value` type.
@@ -400,16 +400,25 @@ impl<'de> serde::Deserializer<'de> for Value {
         self,
         _name: &'static str,
         _variants: &'static [&'static str],
-        _visitor: V,
+        visitor: V,
     ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(de::Error::custom(format!(
-            "unsupported type for enum: {}, value: {:?}",
-            self.value_type(),
-            self
-        )))
+        match self {
+            Self::String(s) => {
+                visitor.visit_enum(EnumDeserializer::new(EnumVariant::Unit(s)))
+            }
+            Self::Table(_) => Err(de::Error::custom(
+                "enum with tuple or struct variant is not supported"
+                    .to_string(),
+            )),
+            _ => Err(de::Error::custom(format!(
+                "expected a string, got {}, value: {:?}",
+                self.value_type(),
+                self
+            ))),
+        }
     }
 
     fn deserialize_identifier<V>(
@@ -535,6 +544,88 @@ impl SeqDeserializer {
         Self {
             iter: seq.into_iter(),
         }
+    }
+}
+
+/// A helper struct to facilitate map deserialization.
+struct EnumDeserializer {
+    variant: EnumVariant,
+}
+
+enum EnumVariant {
+    Unit(String),
+    #[allow(dead_code)]
+    Tuple(Table),
+    #[allow(dead_code)]
+    Struct(Table),
+}
+
+impl EnumDeserializer {
+    const fn new(variant: EnumVariant) -> Self {
+        Self { variant }
+    }
+}
+
+struct EnumVariantDeserializer;
+
+impl<'de> de::VariantAccess<'de> for EnumVariantDeserializer {
+    type Error = crate::errors::DeserializeError;
+
+    fn unit_variant(self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    fn newtype_variant_seed<T>(self, _seed: T) -> Result<T::Value, Self::Error>
+    where
+        T: de::DeserializeSeed<'de>,
+    {
+        Err(de::Error::custom("newtype variant is not supported"))
+    }
+
+    fn tuple_variant<V>(
+        self,
+        _len: usize,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        Err(de::Error::custom("tuple variant is not supported"))
+    }
+
+    fn struct_variant<V>(
+        self,
+        _fields: &'static [&'static str],
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        Err(de::Error::custom("struct variant is not supported"))
+    }
+}
+
+impl<'de> de::EnumAccess<'de> for EnumDeserializer {
+    type Error = crate::errors::DeserializeError;
+
+    type Variant = EnumVariantDeserializer;
+
+    fn variant_seed<V>(
+        self,
+        seed: V,
+    ) -> Result<(V::Value, Self::Variant), Self::Error>
+    where
+        V: serde::de::DeserializeSeed<'de>,
+    {
+        let EnumVariant::Unit(key) = self.variant else {
+            return Err(de::Error::custom("not a unit variant".to_string()));
+        };
+
+        let val = seed.deserialize(key.into_deserializer())?;
+
+        let variant = EnumVariantDeserializer;
+
+        Ok((val, variant))
     }
 }
 
@@ -668,5 +759,19 @@ mod tests {
         let value = Value::Array(vec![Value::Integer(1), Value::Integer(2)]);
         let result: (i64, i64) = value.try_deserialize().unwrap();
         assert_eq!(result, (1, 2));
+    }
+
+    #[test]
+    fn test_deserialize_enum() {
+        #[derive(Debug, Deserialize, PartialEq)]
+        enum TestEnum {
+            Variant1,
+            Variant2(i64),
+            Variant3 { field: String },
+        }
+
+        let value = Value::String("Variant1".to_string());
+        let result: TestEnum = value.try_deserialize().unwrap();
+        assert_eq!(result, TestEnum::Variant1);
     }
 }

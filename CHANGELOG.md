@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 📚 Documentation
+
+- Update README with improved clarity and examples - ([db86df9](https://github.com/vainjoker/realme/commit/db86df95b00b0b4e8e06ef7525d9268e0472e10d))
+
 ## [0.1.4](https://github.com/vainjoker/realme/compare/v0.1.3..v0.1.4) - 2024-10-11
 
 ### ✨  Features
