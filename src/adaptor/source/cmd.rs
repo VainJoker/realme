@@ -1,8 +1,15 @@
 #![cfg(feature = "cmd")]
 use std::marker::PhantomData;
 
-use super::{Source, SourceType};
-use crate::{Parser, RealmeError, Value};
+use super::{
+    Source,
+    SourceType,
+};
+use crate::{
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// A source that parses command output into a `Value`.
 ///

@@ -8,7 +8,7 @@ alias = "ci"
 
 [tasks.ci]
 description = "Run continuous integration tasks"
-dependencies = ["lint-style", "clippy", "check", "build", "test", "changelog"]
+dependencies = ["lint-style", "check", "clippy", "test", "build", "changelog"]
 
 [tasks.lint-style]
 description = "Lint code style (formatting, typos, docs)"
@@ -29,13 +29,13 @@ command = "typos"
 description = "Check documentation for errors and warnings"
 toolchain = "nightly"
 command = "cargo"
-args = [
-  "rustdoc",
-  "--",
-  "-Zunstable-options",
-  "--check",
-  "-Dwarnings",
-]
+args = ["rustdoc", "--lib", "--", "-Zunstable-options", "--check", "-Dwarnings"]
+
+[tasks.lint-dependencies]
+description = "Lint crate dependencies"
+toolchain = "nightly"
+command = "cargo"
+args = ["deny", "check", "all"]
 
 [tasks.check]
 description = "Check code for errors and warnings"
@@ -66,31 +66,25 @@ install_crate = { crate_name = "cargo-nextest", binary = "cargo-nextest", test_a
 
 [tasks.test]
 description = "Run tests"
-run_task = { name = ["test-lib","test-doc"] }
+run_task = { name = ["test-lib", "test-doc"] }
 
 [tasks.test-lib]
 description = "Run default tests"
 dependencies = ["install-nextest"]
 command = "cargo"
-args = [
-  "nextest",
-  "run",
-  "--all-targets",
-  "--all-features"
-]
+args = ["nextest", "run", "--all-targets", "--all-features"]
 
 [tasks.test-doc]
 description = "Run documentation tests"
 command = "cargo"
 args = ["test", "--doc"]
 
-
-[tasks.install-cliff]
-description = "Install git-cliff"
-install_crate = { crate_name = "git-cliff", binary = "git-cliff", test_arg = "--help" }
-
 [tasks.changelog]
 description = "Generate changelog"
-dependencies = ["install-cliff"]
+install_crate = { crate_name = "git-cliff", binary = "git-cliff", test_arg = "--help" }
 command = "git"
-args = ["cliff", "-o", "CHANGELOG.md"]
+args = [
+  "cliff",
+  "-o",
+  "CHANGELOG.md",
+]

@@ -2,10 +2,18 @@ use std::fmt;
 
 use serde::{
     Deserialize,
-    de::{self, Deserializer, IntoDeserializer, Visitor},
+    de::{
+        self,
+        Deserializer,
+        IntoDeserializer,
+        Visitor,
+    },
 };
 
-use super::{Table, Value};
+use super::{
+    Table,
+    Value,
+};
 use crate::map::Map;
 
 /// Represents a custom deserializer for `Value` type.
@@ -459,14 +467,14 @@ impl<'de> serde::Deserializer<'de> for Value {
 
 /// A helper struct to facilitate map deserialization.
 struct MapDeserializer {
-    iter: <Map<String, Value> as IntoIterator>::IntoIter,
+    iter:  <Map<String, Value> as IntoIterator>::IntoIter,
     value: Option<(String, Value)>,
 }
 
 impl MapDeserializer {
     fn new(map: Map<String, Value>) -> Self {
         Self {
-            iter: map.into_iter(),
+            iter:  map.into_iter(),
             value: None,
         }
     }
@@ -722,7 +730,7 @@ mod tests {
 
         let result: NestedStruct = value.try_deserialize().unwrap();
         assert_eq!(result, NestedStruct {
-            outer_key: InnerStruct { inner_key: 42 }
+            outer_key: InnerStruct { inner_key: 42 },
         });
     }
 

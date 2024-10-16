@@ -1,6 +1,9 @@
 use std::str::FromStr;
 
-use crate::{RealmeError, RealmeResult};
+use crate::{
+    RealmeError,
+    RealmeResult,
+};
 
 /// Represents an expression in a custom language.
 ///

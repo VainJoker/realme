@@ -1,5 +1,10 @@
 #[cfg(feature = "toml")]
-use realme::{Adaptor, Realme, StringSource, TomlParser};
+use realme::{
+    Adaptor,
+    Realme,
+    StringSource,
+    TomlParser,
+};
 
 #[cfg(feature = "toml")]
 fn main() {

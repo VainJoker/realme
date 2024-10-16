@@ -28,9 +28,16 @@ pub use adaptor::source::env::EnvSource;
 pub use adaptor::source::file::FileSource;
 #[cfg(feature = "string")]
 pub use adaptor::source::string::StringSource;
-pub use adaptor::{Adaptor, parser::Parser};
+pub use adaptor::{
+    Adaptor,
+    parser::Parser,
+};
 use errors::RealmeError;
 pub use errors::RealmeResult;
 use map::Map;
 pub use realme::Realme;
-pub use value::{Array, Table, Value};
+pub use value::{
+    Array,
+    Table,
+    Value,
+};

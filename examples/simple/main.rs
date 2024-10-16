@@ -1,11 +1,19 @@
 #[cfg(feature = "toml")]
 fn main() {
-    use realme::{Adaptor, Realme, StringSource, TomlParser};
-    use serde::{Deserialize, Serialize};
+    use realme::{
+        Adaptor,
+        Realme,
+        StringSource,
+        TomlParser,
+    };
+    use serde::{
+        Deserialize,
+        Serialize,
+    };
     #[derive(Debug, Serialize, Deserialize)]
     struct Person {
-        name: String,
-        age: u32,
+        name:     String,
+        age:      u32,
         birthday: chrono::DateTime<chrono::Utc>,
     }
 

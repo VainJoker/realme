@@ -1,6 +1,10 @@
 use serde::Deserialize;
 
-use super::{Value, expr::Expression, key::Key};
+use super::{
+    Value,
+    expr::Expression,
+    key::Key,
+};
 
 impl Value {
     /// Gets a value by key.
@@ -8,7 +12,10 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realme::{Table, Value};
+    /// use realme::{
+    ///     Table,
+    ///     Value,
+    /// };
     ///
     /// let value = Value::Table(Table::from_iter(vec![(
     ///     "a".to_string(),
@@ -94,7 +101,10 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realme::{Table, Value};
+    /// use realme::{
+    ///     Table,
+    ///     Value,
+    /// };
     ///
     /// let value = Value::Table(Table::from_iter(vec![(
     ///     "a".to_string(),
@@ -128,7 +138,10 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realme::{Table, Value};
+    /// use realme::{
+    ///     Table,
+    ///     Value,
+    /// };
     ///
     /// let mut value = Value::Table(Table::new());
     /// value.set("a", Value::Integer(42));
@@ -194,7 +207,10 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realme::{Table, Value};
+    /// use realme::{
+    ///     Table,
+    ///     Value,
+    /// };
     ///
     /// let mut value = Value::Table(Table::new());
     /// value.set("a", Value::Integer(42));

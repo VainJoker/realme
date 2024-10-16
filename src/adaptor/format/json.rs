@@ -2,7 +2,10 @@
 ///
 /// This struct implements the `Parser` trait for parsing JSON strings into
 /// `serde_json::Value`.
-use crate::{Parser, RealmeError};
+use crate::{
+    Parser,
+    RealmeError,
+};
 
 #[derive(Debug)]
 pub struct JsonParser;

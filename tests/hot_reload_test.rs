@@ -2,7 +2,10 @@
 #[cfg(test)]
 mod tests {
     use std::{
-        fs::{File, OpenOptions},
+        fs::{
+            File,
+            OpenOptions,
+        },
         io::Write,
         path::PathBuf,
         sync::Arc,
@@ -10,7 +13,13 @@ mod tests {
         time::Duration,
     };
 
-    use realme::{Adaptor, FileSource, JsonParser, Realme, TomlParser};
+    use realme::{
+        Adaptor,
+        FileSource,
+        JsonParser,
+        Realme,
+        TomlParser,
+    };
 
     #[test]
     fn test_concurrent_multi_source_hot_reload() {

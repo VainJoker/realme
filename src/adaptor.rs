@@ -2,7 +2,10 @@ use std::fmt::Formatter;
 
 use source::Source;
 
-use crate::{errors::RealmeError, value::Value};
+use crate::{
+    errors::RealmeError,
+    value::Value,
+};
 
 pub mod format;
 pub mod parser;
@@ -11,9 +14,9 @@ pub mod source;
 /// Represents an adaptor that wraps a source of configuration data.
 pub struct Adaptor {
     /// The underlying source of configuration data.
-    source: Box<dyn Source<Error = RealmeError>>,
+    source:       Box<dyn Source<Error = RealmeError>>,
     pub priority: Option<usize>,
-    pub watcher: bool,
+    pub watcher:  bool,
 }
 
 impl std::fmt::Debug for Adaptor {
@@ -26,9 +29,9 @@ impl Adaptor {
     /// Creates a new `Adaptor` with the given source.
     pub fn new<T: Source<Error = RealmeError> + 'static>(source: T) -> Self {
         Self {
-            source: Box::new(source),
+            source:   Box::new(source),
             priority: None,
-            watcher: false,
+            watcher:  false,
         }
     }
 

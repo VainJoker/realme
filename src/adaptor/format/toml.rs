@@ -2,7 +2,10 @@
 ///
 /// This struct implements the `Parser` trait for parsing TOML strings into
 /// `toml::Value` objects.
-use crate::{Parser, RealmeError};
+use crate::{
+    Parser,
+    RealmeError,
+};
 
 #[derive(Debug)]
 pub struct TomlParser;

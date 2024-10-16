@@ -2,7 +2,11 @@
 ///
 /// This struct implements the `Parser` trait for parsing JSON5 strings
 /// into `Value` objects.
-use crate::{Parser, RealmeError, Value};
+use crate::{
+    Parser,
+    RealmeError,
+    Value,
+};
 
 #[derive(Debug)]
 pub struct Json5Parser;

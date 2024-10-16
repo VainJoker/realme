@@ -1,5 +1,13 @@
-use realme::{Adaptor, Parser, Realme, StringSource};
-use serde::{Deserialize, Serialize};
+use realme::{
+    Adaptor,
+    Parser,
+    Realme,
+    StringSource,
+};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
 // for more complex example, see <https://github.com/vainjoker/realme/tree/main/src/adaptor/format/cmd.rs>
 // which uses `nom` crate to parse command line arguments
@@ -33,7 +41,7 @@ pub struct MyParser;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyValue {
-    key: String,
+    key:   String,
     value: String,
 }
 
@@ -45,7 +53,7 @@ impl Parser<&str> for MyParser {
     fn parse(content: &str) -> Result<Self::Item, Self::Error> {
         let res: Vec<&str> = content.trim().split('=').collect();
         Ok(MyValue {
-            key: res[0].to_string(),
+            key:   res[0].to_string(),
             value: res[1].to_string(),
         })
     }

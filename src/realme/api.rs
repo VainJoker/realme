@@ -1,7 +1,10 @@
 use serde::Deserialize;
 
 use super::Realme;
-use crate::{Value, value::key::Key};
+use crate::{
+    Value,
+    value::key::Key,
+};
 
 impl Realme {
     /// Retrieves a value from the realme's cache based on the provided key.

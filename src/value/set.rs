@@ -1,4 +1,8 @@
-use super::{Value, expr::Expression, key::Key};
+use super::{
+    Value,
+    expr::Expression,
+    key::Key,
+};
 use crate::Map;
 
 impl Value {
@@ -7,7 +11,10 @@ impl Value {
     /// # Examples
     ///
     /// ```
-    /// use realme::{Table, Value};
+    /// use realme::{
+    ///     Table,
+    ///     Value,
+    /// };
     ///
     /// let mut value = Value::Table(Table::new());
     /// value.set(

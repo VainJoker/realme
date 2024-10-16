@@ -1,6 +1,12 @@
 #[cfg(feature = "toml")]
 fn main() {
-    use realme::{Adaptor, Realme, StringSource, TomlParser, Value};
+    use realme::{
+        Adaptor,
+        Realme,
+        StringSource,
+        TomlParser,
+        Value,
+    };
 
     const CONFIGURATION1: &str = r#"
         [database]

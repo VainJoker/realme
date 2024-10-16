@@ -1,8 +1,15 @@
 #![cfg(feature = "string")]
 use std::marker::PhantomData;
 
-use super::{Source, SourceType};
-use crate::{Parser, RealmeError, Value};
+use super::{
+    Source,
+    SourceType,
+};
+use crate::{
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// A `Source` implementation that reads from a string buffer.
 ///
@@ -22,7 +29,7 @@ use crate::{Parser, RealmeError, Value};
 /// ```
 #[derive(Debug)]
 pub struct StringSource<T> {
-    buffer: String,
+    buffer:  String,
     _marker: PhantomData<T>,
 }
 
@@ -41,7 +48,7 @@ impl<T> StringSource<T> {
     /// ```
     pub fn new<U: Into<String>>(buffer: U) -> Self {
         Self {
-            buffer: buffer.into(),
+            buffer:  buffer.into(),
             _marker: PhantomData,
         }
     }

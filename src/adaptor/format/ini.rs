@@ -1,4 +1,9 @@
-use crate::{Map, Parser, RealmeError, Value};
+use crate::{
+    Map,
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// A parser for INI format configuration files.
 #[derive(Debug)]
@@ -33,7 +38,11 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     /// # Examples
     ///
     /// ```
-    /// use realme::{IniParser, Parser, Value};
+    /// use realme::{
+    ///     IniParser,
+    ///     Parser,
+    ///     Value,
+    /// };
     ///
     /// let ini_str = r#"
     /// [section1]

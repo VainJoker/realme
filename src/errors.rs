@@ -56,7 +56,7 @@ impl RealmeError {
 #[derive(Debug, Error)]
 pub struct CastError {
     origin: String,
-    cause: String,
+    cause:  String,
 }
 
 impl CastError {
@@ -78,7 +78,7 @@ impl Display for CastError {
 #[derive(Debug, Error)]
 pub struct ParseError {
     origin: String,
-    cause: String,
+    cause:  String,
 }
 
 impl Display for ParseError {

@@ -1,6 +1,10 @@
 use std::{
     borrow::Borrow,
-    collections::hash_map::{Entry, HashMap, Iter},
+    collections::hash_map::{
+        Entry,
+        HashMap,
+        Iter,
+    },
     hash::Hash,
 };
 

@@ -1,4 +1,9 @@
-use crate::{Map, Parser, RealmeError, Value};
+use crate::{
+    Map,
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// A parser for environment variables.
 #[derive(Debug)]
@@ -30,7 +35,10 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     /// # Examples
     ///
     /// ```
-    /// use realme::{EnvParser, Parser};
+    /// use realme::{
+    ///     EnvParser,
+    ///     Parser,
+    /// };
     ///
     /// // Assuming environment variables: APP_NAME=MyApp, APP_VERSION=1.0
     /// let result = EnvParser::parse("APP_");

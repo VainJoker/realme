@@ -6,12 +6,21 @@ pub mod key;
 mod ser;
 mod set;
 
-use std::fmt::{Display, Formatter};
+use std::fmt::{
+    Display,
+    Formatter,
+};
 
 use ser::ValueSerializer;
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
-use crate::{RealmeResult, map::Map};
+use crate::{
+    RealmeResult,
+    map::Map,
+};
 
 pub type Array = Vec<Value>;
 pub type Table = Map<String, Value>;

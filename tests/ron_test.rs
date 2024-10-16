@@ -2,37 +2,45 @@
 
 use std::path::PathBuf;
 
-use realme::{Adaptor, FileSource, Realme, RonParser};
-use serde::{Deserialize, Serialize};
+use realme::{
+    Adaptor,
+    FileSource,
+    Realme,
+    RonParser,
+};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 struct Creator {
-    name: String,
+    name:     String,
     username: String,
-    email: String,
+    email:    String,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 struct Place {
-    initials: (char, char),
-    name: String,
+    initials:  (char, char),
+    name:      String,
     longitude: f64,
-    latitude: f64,
-    favorite: bool,
-    reviews: u32,
-    rating: Option<f64>,
+    latitude:  f64,
+    favorite:  bool,
+    reviews:   u32,
+    rating:    Option<f64>,
     telephone: Option<String>,
-    creator: Creator,
+    creator:   Creator,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 struct MyConfig {
-    debug: bool,
+    debug:      bool,
     production: bool,
-    arr: Vec<u32>,
-    place: Place,
-    foo: String,
-    bar: String,
+    arr:        Vec<u32>,
+    place:      Place,
+    foo:        String,
+    bar:        String,
 }
 
 #[test]

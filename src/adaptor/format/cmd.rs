@@ -2,13 +2,27 @@ use nom::{
     IResult,
     branch::alt,
     bytes::complete::take_while1,
-    character::complete::{char, multispace0, space0},
+    character::complete::{
+        char,
+        multispace0,
+        space0,
+    },
     combinator::map,
     multi::separated_list0,
-    sequence::{delimited, preceded, separated_pair, terminated},
+    sequence::{
+        delimited,
+        preceded,
+        separated_pair,
+        terminated,
+    },
 };
 
-use crate::{Map, Parser, RealmeError, Value};
+use crate::{
+    Map,
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// A parser for command-line style key-value pairs.
 #[derive(Debug, Default)]
@@ -339,7 +353,12 @@ mod tests {
 
     #[test]
     fn test_parse_table_and_array() {
-        let result = CmdParser::parse("skills=[Go;Rust;Python;Bash Scripting], name.first=John, name.last=Doe".to_string()).unwrap();
+        let result = CmdParser::parse(
+            "skills=[Go;Rust;Python;Bash Scripting], name.first=John, \
+             name.last=Doe"
+                .to_string(),
+        )
+        .unwrap();
 
         let expected = Value::Table(Map::from_iter([
             (

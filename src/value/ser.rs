@@ -1,8 +1,14 @@
 use serde::{
     Serializer,
     ser::{
-        self, Serialize, SerializeMap, SerializeSeq, SerializeStruct,
-        SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
+        self,
+        Serialize,
+        SerializeMap,
+        SerializeSeq,
+        SerializeStruct,
+        SerializeStructVariant,
+        SerializeTuple,
+        SerializeTupleStruct,
         SerializeTupleVariant,
     },
 };
@@ -263,7 +269,7 @@ impl TupleVariantSerializer {
 }
 /// Serializer for maps, converting key-value pairs into `Value::Table`.
 pub struct MapSerializer {
-    map: Map<String, Value>,
+    map:         Map<String, Value>,
     current_key: Option<String>,
 }
 
@@ -271,7 +277,7 @@ impl MapSerializer {
     /// Constructs a new `MapSerializer`.
     fn new() -> Self {
         Self {
-            map: Map::new(),
+            map:         Map::new(),
             current_key: None,
         }
     }
@@ -467,7 +473,10 @@ impl SerializeStructVariant for StructVariantSerializer {
 
 #[cfg(test)]
 mod test {
-    use serde::{Deserialize, Serialize};
+    use serde::{
+        Deserialize,
+        Serialize,
+    };
 
     use super::*;
 

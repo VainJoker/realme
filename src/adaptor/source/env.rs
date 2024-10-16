@@ -1,8 +1,15 @@
 #![cfg(feature = "env")]
 use std::marker::PhantomData;
 
-use super::{Source, SourceType};
-use crate::{Parser, RealmeError, Value};
+use super::{
+    Source,
+    SourceType,
+};
+use crate::{
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// Represents a source for environment variables with a specific prefix.
 ///
@@ -25,7 +32,7 @@ use crate::{Parser, RealmeError, Value};
 #[derive(Debug)]
 pub struct EnvSource<T> {
     /// The prefix used for filtering environment variables.
-    prefix: String,
+    prefix:  String,
     /// Phantom data to hold the lifetime and parser type.
     _marker: PhantomData<T>,
 }
@@ -40,13 +47,16 @@ impl<T> EnvSource<T> {
     /// # Examples
     ///
     /// ```rust
-    /// use realme::{EnvParser, EnvSource};
+    /// use realme::{
+    ///     EnvParser,
+    ///     EnvSource,
+    /// };
     ///
     /// let env_source = EnvSource::<EnvParser>::new("MYAPP_");
     /// ```
     pub fn new<U: Into<String>>(prefix: U) -> Self {
         Self {
-            prefix: prefix.into(),
+            prefix:  prefix.into(),
             _marker: PhantomData,
         }
     }

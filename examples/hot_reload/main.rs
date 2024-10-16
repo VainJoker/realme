@@ -2,7 +2,12 @@
 fn main() {
     use std::path::PathBuf;
 
-    use realme::{Adaptor, FileSource, Realme, TomlParser};
+    use realme::{
+        Adaptor,
+        FileSource,
+        Realme,
+        TomlParser,
+    };
 
     let realme = Realme::builder()
         .load(

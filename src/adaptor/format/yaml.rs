@@ -1,7 +1,10 @@
 /// A parser for YAML format.
 ///
 /// This struct implements the `Parser` trait for YAML parsing.
-use crate::{Parser, RealmeError};
+use crate::{
+    Parser,
+    RealmeError,
+};
 
 #[derive(Debug)]
 pub struct YamlParser;

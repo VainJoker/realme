@@ -1,5 +1,12 @@
-use super::{Array, Table, Value};
-use crate::{Map, RealmeError};
+use super::{
+    Array,
+    Table,
+    Value,
+};
+use crate::{
+    Map,
+    RealmeError,
+};
 
 /// Attempts to convert a `Value` into a `String`.
 /// Returns an error if the `Value` is an `Array` or `Table`.
@@ -309,7 +316,10 @@ impl_try_from_value_for_uinteger!(u128);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{map::Map, value::Value};
+    use crate::{
+        map::Map,
+        value::Value,
+    };
 
     #[test]
     fn test_string_conversion() {
@@ -344,18 +354,18 @@ mod tests {
         );
         assert!(f64::try_from(Value::Boolean(true)).is_err());
         assert!(
-            (f64::try_from(Value::Integer(42)).unwrap() - 42.0).abs()
-                < f64::EPSILON
+            (f64::try_from(Value::Integer(42)).unwrap() - 42.0).abs() <
+                f64::EPSILON
         );
         assert!(
-            (f64::try_from(Value::Float(0.618)).unwrap() - 0.618).abs()
-                < f64::EPSILON
+            (f64::try_from(Value::Float(0.618)).unwrap() - 0.618).abs() <
+                f64::EPSILON
         );
         assert!(
-            (f64::try_from(Value::String("0.618".to_string())).unwrap()
-                - 0.618)
-                .abs()
-                < f64::EPSILON
+            (f64::try_from(Value::String("0.618".to_string())).unwrap() -
+                0.618)
+                .abs() <
+                f64::EPSILON
         );
         assert!(f64::try_from(Value::String("test".to_string())).is_err());
         assert!(f64::try_from(Value::Array(vec![])).is_err());

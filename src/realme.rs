@@ -1,9 +1,16 @@
 use std::fmt::Debug;
 
 use builder::RealmeBuilder;
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use serde::{
+    Deserialize,
+    Serialize,
+    de::DeserializeOwned,
+};
 
-use crate::{Value, errors::RealmeError};
+use crate::{
+    Value,
+    errors::RealmeError,
+};
 
 mod api;
 mod builder;

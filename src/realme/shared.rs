@@ -1,7 +1,18 @@
-use std::sync::{Arc, RwLock};
+use std::sync::{
+    Arc,
+    RwLock,
+};
 
-use super::{Realme, builder::RealmeBuilder, cache::RealmeCache};
-use crate::{RealmeResult, Value, errors::RealmeError};
+use super::{
+    Realme,
+    builder::RealmeBuilder,
+    cache::RealmeCache,
+};
+use crate::{
+    RealmeResult,
+    Value,
+    errors::RealmeError,
+};
 
 #[derive(Debug, Clone)]
 pub struct SharedRealme(Arc<RwLock<Realme>>);

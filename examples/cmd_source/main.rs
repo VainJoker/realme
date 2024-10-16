@@ -1,7 +1,12 @@
 #[cfg(feature = "cmd")]
 fn main() {
     use clap::Parser;
-    use realme::{Adaptor, CmdParser, CmdSource, Realme};
+    use realme::{
+        Adaptor,
+        CmdParser,
+        CmdSource,
+        Realme,
+    };
     use serde::Deserialize;
     // cargo run --example cmd_source -- -c
     // 'age=30,name.first=John,name.last=Doe,skills=[Go Rust; Python;
@@ -10,19 +15,19 @@ fn main() {
     #[allow(dead_code)]
     #[derive(Debug, Deserialize)]
     struct User {
-        age: u8,
-        name: Name,
-        skills: Vec<String>,
+        age:          u8,
+        name:         Name,
+        skills:       Vec<String>,
         nested_array: Vec<Vec<Vec<String>>>,
-        extra: String,
-        email: String,
-        address: Address,
+        extra:        String,
+        email:        String,
+        address:      Address,
     }
     #[allow(dead_code)]
     #[derive(Debug, Deserialize)]
     struct Name {
         first: String,
-        last: String,
+        last:  String,
     }
     #[allow(dead_code)]
     #[derive(Debug, Deserialize)]

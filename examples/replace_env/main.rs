@@ -3,18 +3,23 @@ fn main() {
     use std::collections::HashMap;
 
     use realme::{
-        Adaptor, EnvParser, EnvSource, Realme, StringSource, TomlParser,
+        Adaptor,
+        EnvParser,
+        EnvSource,
+        Realme,
+        StringSource,
+        TomlParser,
     };
     use serde::Deserialize;
 
     #[allow(dead_code)]
     #[derive(Debug, Deserialize)]
     struct Config {
-        key: String,
-        like: String,
+        key:     String,
+        like:    String,
         #[serde(default)]
         default: String,
-        why: HashMap<String, String>,
+        why:     HashMap<String, String>,
     }
 
     const CONFIGURATION1: &str = r#"

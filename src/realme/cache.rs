@@ -1,10 +1,16 @@
-use crate::{Adaptor, Map, RealmeError, RealmeResult, Value};
+use crate::{
+    Adaptor,
+    Map,
+    RealmeError,
+    RealmeResult,
+    Value,
+};
 
 /// A cache system for storing environment and other values.
 #[derive(Default)]
 pub struct RealmeCache {
     /// Environment-specific configurations.
-    pub env: Map<String, Value>,
+    pub env:   Map<String, Value>,
     /// General cache for values.
     pub cache: Map<String, Value>,
 }

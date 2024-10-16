@@ -1,8 +1,18 @@
 #![cfg(feature = "file")]
-use std::{marker::PhantomData, path::PathBuf};
+use std::{
+    marker::PhantomData,
+    path::PathBuf,
+};
 
-use super::{Source, SourceType};
-use crate::{Parser, RealmeError, Value};
+use super::{
+    Source,
+    SourceType,
+};
+use crate::{
+    Parser,
+    RealmeError,
+    Value,
+};
 
 /// Represents a source that reads configuration data from a file.
 ///
@@ -18,7 +28,7 @@ use crate::{Parser, RealmeError, Value};
 #[derive(Debug)]
 pub struct FileSource<T> {
     /// The path to the configuration file.
-    path: PathBuf,
+    path:    PathBuf,
     /// Phantom data to hold the parser type.
     _marker: PhantomData<T>,
 }
@@ -43,7 +53,7 @@ impl<T> FileSource<T> {
     /// ```
     pub fn new<P: Into<PathBuf>>(path: P) -> Self {
         Self {
-            path: path.into(),
+            path:    path.into(),
             _marker: PhantomData,
         }
     }
