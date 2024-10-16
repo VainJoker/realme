@@ -169,7 +169,7 @@ impl Realme {
     /// });
     /// assert_eq!(realme.get("key1"), Some(Value::String("value1_modified".to_string())));
     /// ```
-    pub fn with<K: Key, F>(&mut self, key: K, f: F) -> &mut Self
+    pub fn with<K: Key + Clone, F>(&mut self, key: K, f: F) -> &mut Self
     where
         F: FnOnce(&mut Value),
     {

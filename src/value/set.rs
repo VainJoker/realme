@@ -39,6 +39,7 @@ impl Value {
     /// value.set("a.b[0]", Value::Integer(9));
     /// assert_eq!(value.get("a.b[0]"), Some(Value::Integer(9)));
     /// ```
+    #[allow(clippy::needless_pass_by_value)]
     pub fn set<K: Key>(&mut self, key: K, value: Self) -> &mut Self {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
@@ -110,67 +111,13 @@ impl Value {
         }
     }
 
-    // pub fn set<K: Key>(&mut self, key: K, value: Self) -> Option<Self> {
-    //     match key.to_key() {
-    //         Ok(Expression::Identifier(id)) => match self {
-    //             Self::Table(table) => table.insert(id, value),
-    //             Self::Array(arr) => {
-    //                 let idx = id.parse::<usize>().unwrap();
-    //                 if idx < arr.len() {
-    //                     arr[idx] = value.clone();
-    //                     Some(value)
-    //                 } else {
-    //                     None
-    //                 }
-    //             },
-    //             _ => Some(self.clone()),
-    //         },
-    //         Ok(Expression::Subscript(id, idx)) => match self {
-    //             Self::Table(table) => {
-    //                 if let Some(v) = table.get_mut(&id) {
-    //                     match v {
-    //                         Self::Array(arr) => {
-    //                             if idx >= 0 && (idx as usize) < arr.len() {
-    //                                 arr[idx as usize] = value.clone();
-    //                                 Some(value)
-    //                             } else {
-    //                                 // TODO: Implement negative indexing
-    //                                 None
-    //                             }
-    //                         }
-    //                         _ => None,
-    //                     }
-    //                 } else {
-    //                     None
-    //                 }
-    //             }
-    //             _ => None,
-    //         },
-    //         Ok(Expression::Child(exprs)) => {
-    //             let mut current = self;
-    //             for (i, expr) in exprs.iter().enumerate() {
-    //                 if i == exprs.len() - 1 {
-    //                     return current.set(expr.clone(), value);
-    //                 }
-    //                 current = match current {
-    //                     Self::Table(table) => table
-    //                         .entry(expr.to_string())
-    //                         .or_insert_with(|| Self::Table(Map::new())),
-    //                     _ => return None,
-    //                 };
-    //             }
-    //             None
-    //         }
-    //         Err(_) => None,
-    //     }
-    // }
-
-    pub fn with<K: Key, F>(&mut self, key: K, f: F) -> &mut Self
+    pub fn with<K: Key + Clone, F>(&mut self, key: K, f: F) -> &mut Self
     where
         F: FnOnce(&mut Self),
     {
-        let mut inner_value =
-            self.get(key).unwrap_or_else(|| Self::Table(Map::new()));
+        let mut inner_value = self
+            .get(key.clone())
+            .unwrap_or_else(|| Self::Table(Map::new()));
         f(&mut inner_value);
         self.set(key, inner_value);
         self

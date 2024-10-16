@@ -35,6 +35,7 @@ impl Value {
     /// assert_eq!(value.get("a.b[-4]"), None);
     /// assert_eq!(value.get("a.c"), None);
     /// ```
+    #[allow(clippy::needless_pass_by_value)]
     pub fn get<K: Key>(&self, key: K) -> Option<Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
@@ -134,6 +135,7 @@ impl Value {
     /// assert_eq!(value.get_ref("a"), Some(&Value::Integer(42)));
     /// assert_eq!(value.get_ref("b"), None);
     /// ```
+    #[allow(clippy::needless_pass_by_value)]
     pub fn get_ref<K: Key>(&self, key: K) -> Option<&Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {
@@ -201,6 +203,7 @@ impl Value {
     /// }
     /// assert_eq!(value.get("a"), Some(Value::Integer(43)));
     /// ```
+    #[allow(clippy::needless_pass_by_value)]
     pub fn get_mut<K: Key>(&mut self, key: K) -> Option<&mut Self> {
         match key.to_key() {
             Ok(Expression::Identifier(id)) => match self {

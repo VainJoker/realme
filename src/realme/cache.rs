@@ -1,6 +1,7 @@
 use crate::{Adaptor, Map, RealmeError, RealmeResult, Value};
 
 /// A cache system for storing environment and other values.
+#[derive(Default)]
 pub struct RealmeCache {
     /// Environment-specific configurations.
     pub env: Map<String, Value>,
@@ -11,10 +12,7 @@ pub struct RealmeCache {
 impl RealmeCache {
     /// Constructs a new `RealmeCache`.
     pub fn new() -> Self {
-        Self {
-            env: Map::new(),
-            cache: Map::new(),
-        }
+        Self::default()
     }
 
     /// Handles an adaptor by parsing it and updating the cache and environment
@@ -32,48 +30,40 @@ impl RealmeCache {
         adaptor: &Adaptor,
         env_flag: bool,
     ) -> Result<(), RealmeError> {
-        match adaptor.parse() {
-            Ok(Value::Table(table)) => {
-                for (k, v) in table {
-                    if env_flag {
-                        self.cache.insert(k.clone(), v.clone());
-                        self.env.insert(k, v);
-                        continue;
-                    }
+        if let Ok(Value::Table(table)) = adaptor.parse() {
+            for (k, v) in table {
+                if env_flag {
+                    self.cache.insert(k.clone(), v.clone());
+                    self.env.insert(k, v);
+                } else {
                     let processed_value = self.process_value(v, &k)?;
                     self.cache.insert(k, processed_value);
                 }
             }
-            Err(e) => {
-                return Err(RealmeError::new_build_error(e.to_string()));
-            }
-            Ok(value) => {
-                return Err(RealmeError::new_build_error(format!(
-                    "adaptor parse result is not a table: {value}"
-                )));
-            }
+            Ok(())
+        } else {
+            Err(RealmeError::new_build_error(
+                "Adaptor parse result is not a table".to_string(),
+            ))
         }
-        Ok(())
     }
 
     fn process_value(&self, value: Value, key: &str) -> RealmeResult<Value> {
         match value {
-            Value::Table(table) => {
-                let mut new_table = Map::new();
-                for (k, v) in table {
-                    let processed_v = self.process_value(v, &k)?;
-                    new_table.insert(k, processed_v);
-                }
-                Ok(Value::Table(new_table))
-            }
+            Value::Table(table) => table
+                .into_iter()
+                .map(|(k, v)| {
+                    self.process_value(v, &k)
+                        .map(|processed_v| (k, processed_v))
+                })
+                .collect::<Result<Map<_, _>, _>>()
+                .map(Value::Table),
             Value::String(s) if s == "{{env}}" => {
-                if let Some(env_value) = self.cache.get(&key.to_string()) {
-                    Ok(env_value.clone())
-                } else {
-                    Err(RealmeError::new_build_error(format!(
+                self.cache.get(key).cloned().ok_or_else(|| {
+                    RealmeError::new_build_error(format!(
                         "replace {key} with env value failed"
-                    )))
-                }
+                    ))
+                })
             }
             _ => Ok(value),
         }

@@ -35,33 +35,26 @@ impl std::fmt::Display for Expression {
 }
 
 impl FromStr for Expression {
-    /// Parses a string into an `Expression`.
-    ///
-    /// This parser supports nested and indexed expressions.
-    /// Errors are returned as `RealmeError`.
     type Err = RealmeError;
 
     fn from_str(s: &str) -> RealmeResult<Self> {
-        let mut chars = s.chars().peekable();
-        let mut current = String::new();
-        let mut stack = Vec::new();
-        let mut sub_stack = Vec::new();
+        let mut current = String::with_capacity(s.len());
+        let mut stack = Vec::with_capacity(s.len() / 2);
+        let mut sub_stack = Vec::with_capacity(2);
 
-        while let Some(&ch) = chars.peek() {
+        for (i, ch) in s.chars().enumerate() {
             match ch {
                 '.' => {
                     if !current.is_empty() {
                         stack.push(Self::Identifier(current.clone()));
                         current.clear();
                     }
-                    chars.next(); // Consume '.'
                 }
                 '[' => {
                     if !current.is_empty() {
                         sub_stack.push(current.clone());
                         current.clear();
                     }
-                    chars.next(); // Consume '['
                 }
                 ']' => {
                     let identifier = sub_stack.pop().ok_or_else(|| {
@@ -76,23 +69,20 @@ impl FromStr for Expression {
                     })?;
                     stack.push(Self::Subscript(identifier, index));
                     current.clear();
-                    chars.next(); // Consume ']'
                 }
-                _ => {
-                    current.push(ch);
-                    chars.next(); // Consume the current character
-                }
+                _ => current.push(ch),
+            }
+
+            // Handle the case where ']' is the last character
+            if i == s.len() - 1 && !current.is_empty() {
+                stack.push(Self::Identifier(current.clone()));
             }
         }
 
-        if !current.is_empty() {
-            stack.push(Self::Identifier(current));
-        }
-
-        if stack.len() == 1 {
-            Ok(stack.pop().unwrap())
-        } else {
-            Ok(Self::Child(stack))
+        match stack.len() {
+            0 => Err(RealmeError::ExprError("Empty expression".to_string())),
+            1 => Ok(stack.pop().unwrap()),
+            _ => Ok(Self::Child(stack)),
         }
     }
 }

@@ -5,7 +5,7 @@ use crate::errors::RealmeError;
 ///
 /// This trait allows various types to be used as keys when accessing values
 /// in a nested structure.
-pub trait Key: Copy {
+pub trait Key {
     /// Converts the implementing type into an `Expression`.
     ///
     /// # Returns
@@ -23,14 +23,14 @@ impl Key for &str {
     }
 }
 
-// /// Implements `Key` for `String`.
-// ///
-// /// `String`s are directly converted into `Expression::Identifier`.
-// impl Key for String {
-//     fn to_key(&self) -> Result<Expression, RealmeError> {
-//         Ok(Expression::Identifier(self.clone()))
-//     }
-// }
+/// Implements `Key` for `String`.
+///
+/// `String`s are parsed into `Expression`s using their string slice.
+impl Key for String {
+    fn to_key(&self) -> Result<Expression, RealmeError> {
+        self.as_str().to_key()
+    }
+}
 
 /// Implements `Key` for `isize`.
 ///
@@ -42,12 +42,18 @@ impl Key for isize {
     }
 }
 
-// impl Key for Expression {
-//     fn to_key(&self) -> Result<Expression, RealmeError> {
-//         Ok(self.clone())
-//     }
-// }
+/// Implements `Key` for `Expression`.
+///
+/// `Expression` values are returned as-is.
+impl Key for Expression {
+    fn to_key(&self) -> Result<Expression, RealmeError> {
+        Ok(self.clone())
+    }
+}
 
+/// Implements `Key` for `&Expression`.
+///
+/// References to `Expression` values are cloned and returned.
 impl Key for &Expression {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         Ok((*self).clone())

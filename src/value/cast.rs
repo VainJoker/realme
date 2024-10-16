@@ -248,19 +248,9 @@ impl<T: TryFrom<Value, Error = RealmeError>> TryFrom<Value> for Vec<T> {
             Value::Integer(i) => Ok(vec![T::try_from(Value::Integer(i))?]),
             Value::Float(f) => Ok(vec![T::try_from(Value::Float(f))?]),
             Value::String(s) => Ok(vec![T::try_from(Value::String(s))?]),
-            Value::Array(a) => {
-                let mut vec = Self::new();
-                for item in a {
-                    vec.push(T::try_from(item)?);
-                }
-                Ok(vec)
-            }
+            Value::Array(a) => a.into_iter().map(T::try_from).collect(),
             Value::Table(t) => {
-                let mut vec = Self::new();
-                for (_, v) in t {
-                    vec.push(T::try_from(v)?);
-                }
-                Ok(vec)
+                t.into_iter().map(|(_, v)| T::try_from(v)).collect()
             }
         }
     }

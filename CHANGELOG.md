@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### ✨  Features
+
+- Simplify FileSource implementation - ([2202883](https://github.com/vainjoker/realme/commit/2202883d58b2cbb942393d49bd8223b13e55ca25))
+
 ## [0.1.5](https://github.com/vainjoker/realme/compare/v0.1.4..v0.1.5) - 2024-10-14
 
 ### ✨  Features
