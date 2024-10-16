@@ -23,18 +23,14 @@ use crate::{Parser, RealmeError, Value};
 /// }
 /// ```
 #[derive(Debug)]
-pub struct EnvSource<'a, T, U = &'a str> {
+pub struct EnvSource<T> {
     /// The prefix used for filtering environment variables.
-    prefix: U,
+    prefix: String,
     /// Phantom data to hold the lifetime and parser type.
-    _marker: PhantomData<&'a T>,
+    _marker: PhantomData<T>,
 }
 
-impl<'a, T, U> EnvSource<'a, T, U>
-where
-    U: AsRef<str>,
-    T: Parser<U>,
-{
+impl<T> EnvSource<T> {
     /// Constructs a new `EnvSource` with the specified prefix.
     ///
     /// # Arguments
@@ -48,18 +44,17 @@ where
     ///
     /// let env_source = EnvSource::<EnvParser>::new("MYAPP_");
     /// ```
-    pub const fn new(prefix: U) -> Self {
+    pub fn new<U: Into<String>>(prefix: U) -> Self {
         Self {
-            prefix,
+            prefix: prefix.into(),
             _marker: PhantomData,
         }
     }
 }
 
-impl<'a, T, U> Source for EnvSource<'a, T, U>
+impl<T> Source for EnvSource<T>
 where
-    T: Parser<U> + Send + Sync,
-    U: AsRef<str> + Clone + Send + Sync,
+    T: for<'a> Parser<&'a str> + Send + Sync,
 {
     type Error = RealmeError;
     /// Parses the environment variables starting with the specified prefix into
@@ -83,9 +78,9 @@ where
     /// }
     /// ```
     fn parse(&self) -> Result<Value, RealmeError> {
-        Value::try_serialize(&T::parse(self.prefix.clone()).map_err(|_e| {
+        Value::try_serialize(&T::parse(self.prefix.as_ref()).map_err(|_e| {
             RealmeError::new_parse_error(
-                self.prefix.as_ref().to_string(),
+                self.prefix.clone(),
                 "Failed to parse from env".to_string(),
             )
         })?)

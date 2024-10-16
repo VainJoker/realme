@@ -22,19 +22,20 @@ use crate::{Parser, RealmeError, Value};
 /// }
 /// ```
 #[derive(Debug)]
-pub struct CmdSource<'a, T, U = &'a str> {
+pub struct CmdSource<T> {
     /// The options or arguments for the command.
-    options: U,
+    options: String,
     /// Phantom data to hold the parser type `T`.
-    _marker: PhantomData<&'a T>,
+    _marker: PhantomData<T>,
 }
 
-impl<'a, T, U> CmdSource<'a, T, U> {
+impl<T> CmdSource<T> {
     /// Creates a new `CmdSource` with the given options.
     ///
     /// # Arguments
     ///
-    /// * `options` - The options or arguments for the command.
+    /// * `options` - The options or arguments for the command. Can be
+    ///   `Some(String)` or `None`.
     ///
     /// # Returns
     ///
@@ -45,20 +46,24 @@ impl<'a, T, U> CmdSource<'a, T, U> {
     /// ```ignore
     /// use realme::{CmdParser, CmdSource, Parser};
     ///
-    /// let cmd_source = CmdSource::<CmdParser, _>::new("foo=bar");
+    /// let cmd_source_with_options = CmdSource::<CmdParser>::new(Some("foo=bar"));
+    /// let cmd_source_without_options = CmdSource::<CmdParser>::new(None);
+    /// let cmd_source_from_string = CmdSource::<CmdParser>::new("foo=bar");
     /// ```
-    pub const fn new(options: U) -> Self {
+    pub fn new<U>(options: U) -> Self
+    where
+        U: Into<String>,
+    {
         Self {
-            options,
+            options: options.into(),
             _marker: PhantomData,
         }
     }
 }
 
-impl<'a, T, U> Source for CmdSource<'a, T, U>
+impl<T> Source for CmdSource<T>
 where
-    T: Parser<U> + Send + Sync,
-    U: AsRef<str> + Clone + Send + Sync,
+    T: for<'a> Parser<&'a str> + Send + Sync,
 {
     type Error = RealmeError;
     /// Parses the command output into a `Value`.
@@ -84,10 +89,10 @@ where
     /// }
     /// ```
     fn parse(&self) -> Result<Value, Self::Error> {
-        T::parse(self.options.clone())
+        T::parse(&self.options)
             .map_err(|e| {
                 RealmeError::new_parse_error(
-                    self.options.as_ref().to_string(),
+                    self.options.clone(),
                     e.to_string(),
                 )
             })

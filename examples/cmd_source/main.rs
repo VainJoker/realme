@@ -4,9 +4,9 @@ fn main() {
     use realme::{Adaptor, CmdParser, CmdSource, Realme};
     use serde::Deserialize;
     // cargo run --example cmd_source -- -c
-    // "age=30,name.first=John,name.last=Doe,skills=[Go Rust; Python; Bash
-    // Scripting],nested_array=[[12]; [3; four; [5;
-    // 6]]],extra=and.and,email=john.doe@example.com,address.city=New York"
+    // 'age=30,name.first=John,name.last=Doe,skills=[Go Rust; Python;
+    // BashScripting],nested_array=[[12]; [3; four;
+    // [5;6]]],extra=and.and,email=john.doe@example.com,address.city=New York'
     #[allow(dead_code)]
     #[derive(Debug, Deserialize)]
     struct User {
@@ -35,7 +35,7 @@ fn main() {
     #[clap(author, version, about)]
     struct Args {
         #[clap(short, long)]
-        config: String,
+        config: Option<String>,
     }
 
     // for simple key-value pairs
@@ -55,8 +55,8 @@ fn main() {
     let args = Args::parse();
 
     let realme = Realme::builder()
-        .load(Adaptor::new(CmdSource::<CmdParser, String>::new(
-            args.config,
+        .load(Adaptor::new(CmdSource::<CmdParser>::new(
+            args.config.as_deref().unwrap_or(""),
         )))
         .build()
         .expect("Building configuration object");

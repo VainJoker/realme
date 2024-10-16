@@ -9,16 +9,21 @@ fn main() {
         birthday: chrono::DateTime<chrono::Utc>,
     }
 
-    const CONFIGURATION1: &str = r#"
+    // const CONFIGURATION1: &str = r#"
+    //     name = "John"
+    //     age = 30
+    //     birthday = 1993-01-01T00:00:00Z
+    // "#;
+    let c = String::from(
+        r#"
         name = "John"
         age = 30
         birthday = 1993-01-01T00:00:00Z
-    "#;
+    "#,
+    );
 
     let realme = Realme::builder()
-        .load(Adaptor::new(StringSource::<TomlParser>::new(
-            CONFIGURATION1,
-        )))
+        .load(Adaptor::new(StringSource::<TomlParser>::new(&c)))
         .build()
         .expect("Building configuration object");
 

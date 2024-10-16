@@ -2,11 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.6](https://github.com/vainjoker/realme/compare/v0.1.5..v0.1.6) - 2024-10-16
 
 ### ✨  Features
 
 - Simplify FileSource implementation - ([2202883](https://github.com/vainjoker/realme/commit/2202883d58b2cbb942393d49bd8223b13e55ca25))
+
+### ⚡️ Performance
+
+- Refactor: Improve code clarity and efficiency in `Map` and `Value` - ([be6e30c](https://github.com/vainjoker/realme/commit/be6e30ce2073e89e1514789de1e6cf504fff697d))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 0.1.6 - ([2d1be52](https://github.com/vainjoker/realme/commit/2d1be52ce159c854ca67c9edc859aa27bf2782ac))
 
 ## [0.1.5](https://github.com/vainjoker/realme/compare/v0.1.4..v0.1.5) - 2024-10-14
 

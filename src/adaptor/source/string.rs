@@ -21,15 +21,12 @@ use crate::{Parser, RealmeError, Value};
 /// assert!(parsed_value.is_some());
 /// ```
 #[derive(Debug)]
-pub struct StringSource<'a, T, U = &'a str> {
-    buffer: U,
-    _marker: PhantomData<&'a T>,
+pub struct StringSource<T> {
+    buffer: String,
+    _marker: PhantomData<T>,
 }
 
-impl<'a, T, U> StringSource<'a, T, U>
-where
-    T: Parser<U>,
-{
+impl<T> StringSource<T> {
     /// Constructs a new `StringSource` with the given buffer.
     ///
     /// # Arguments
@@ -42,18 +39,17 @@ where
     /// const CONFIGURATION: &str = r#"key = "value""#;
     /// let source = StringSource::<TomlParser>::new(CONFIGURATION);
     /// ```
-    pub const fn new(buffer: U) -> Self {
+    pub fn new<U: Into<String>>(buffer: U) -> Self {
         Self {
-            buffer,
+            buffer: buffer.into(),
             _marker: PhantomData,
         }
     }
 }
 
-impl<'a, T, U> Source for StringSource<'a, T, U>
+impl<T> Source for StringSource<T>
 where
-    U: AsRef<str> + Clone + Send + Sync,
-    T: Parser<U> + Send + Sync,
+    T: for<'a> Parser<&'a str> + Send + Sync,
 {
     type Error = RealmeError;
     /// Parses the buffer using the specified parser and returns the parsed
@@ -73,11 +69,8 @@ where
     /// assert!(parsed_value.is_some());
     /// ```
     fn parse(&self) -> Result<Value, RealmeError> {
-        Value::try_serialize(&T::parse(self.buffer.clone()).map_err(|e| {
-            RealmeError::new_parse_error(
-                self.buffer.as_ref().to_string(),
-                e.to_string(),
-            )
+        Value::try_serialize(&T::parse(self.buffer.as_ref()).map_err(|e| {
+            RealmeError::new_parse_error(self.buffer.clone(), e.to_string())
         })?)
     }
 
