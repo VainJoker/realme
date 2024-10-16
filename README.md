@@ -70,6 +70,8 @@ fn main() {
 
 For more detailed examples, check the `examples` directory.
 
+For a real-world example, you can check the [Rinkle](https://github.com/VainJoker/rinkle/blob/main/src/config.rs) project.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.

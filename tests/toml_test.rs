@@ -1,7 +1,5 @@
 #![cfg(feature = "toml")]
 
-use std::path::PathBuf;
-
 use realme::{Adaptor, FileSource, Realme, TomlParser};
 use serde::{Deserialize, Serialize};
 
@@ -95,10 +93,9 @@ pub struct Expression {
 
 #[test]
 fn toml_parse() {
+    let path = String::from("./tests/source/test.toml");
     let realme = Realme::builder()
-        .load(Adaptor::new(FileSource::<TomlParser>::new(PathBuf::from(
-            "./tests/source/test.toml",
-        ))))
+        .load(Adaptor::new(FileSource::<TomlParser>::new(path.as_str())))
         .build()
         .expect("Building configuration object");
 

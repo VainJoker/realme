@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.5](https://github.com/vainjoker/realme/compare/v0.1.4..v0.1.5) - 2024-10-14
 
 ### ✨  Features
 
@@ -11,6 +11,14 @@ All notable changes to this project will be documented in this file.
 ### 📚 Documentation
 
 - Update README with improved clarity and examples - ([db86df9](https://github.com/vainjoker/realme/commit/db86df95b00b0b4e8e06ef7525d9268e0472e10d))
+
+### ✅ Testing
+
+- Resolve deserialization issue - ([7c031f6](https://github.com/vainjoker/realme/commit/7c031f662aa22e91ac5f8ba53899921f25e9a9bb))
+
+### ⚙️ Miscellaneous Tasks
+
+- Increment version to 0.1.5 - ([85bda4b](https://github.com/vainjoker/realme/commit/85bda4be7febe2d81a782cba7c65a4f4602e1ca3))
 
 ## [0.1.4](https://github.com/vainjoker/realme/compare/v0.1.3..v0.1.4) - 2024-10-11
 

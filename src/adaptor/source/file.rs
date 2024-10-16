@@ -1,8 +1,5 @@
 #![cfg(feature = "file")]
-use std::{
-    marker::PhantomData,
-    path::{Path, PathBuf},
-};
+use std::{marker::PhantomData, path::PathBuf};
 
 use super::{Source, SourceType};
 use crate::{Parser, RealmeError, Value};
@@ -19,14 +16,14 @@ use crate::{Parser, RealmeError, Value};
 ///   contents.
 /// * `U`: The path type that implements `AsRef<Path>`, defaults to `PathBuf`.
 #[derive(Debug)]
-pub struct FileSource<T, U = PathBuf> {
+pub struct FileSource<T> {
     /// The path to the configuration file.
-    path: U,
+    path: PathBuf,
     /// Phantom data to hold the parser type.
     _marker: PhantomData<T>,
 }
 
-impl<U: AsRef<Path>, T> FileSource<T, U> {
+impl<T> FileSource<T> {
     /// Constructs a new `FileSource` with the specified file path.
     ///
     /// # Arguments
@@ -44,18 +41,17 @@ impl<U: AsRef<Path>, T> FileSource<T, U> {
     ///     "path/to/your/config.toml",
     /// ));
     /// ```
-    pub const fn new(path: U) -> Self {
+    pub fn new<P: Into<PathBuf>>(path: P) -> Self {
         Self {
-            path,
+            path: path.into(),
             _marker: PhantomData,
         }
     }
 }
 
-impl<T, U> Source for FileSource<T, U>
+impl<T> Source for FileSource<T>
 where
     T: for<'a> Parser<&'a str> + Send + Sync,
-    U: AsRef<Path> + Send + Sync,
 {
     type Error = RealmeError;
     /// Parses the file at the specified path using the parser type `T`.
@@ -71,11 +67,11 @@ where
     /// This method returns `Err(RealmeError)` if the file cannot be read or if
     /// the parsing fails.
     fn parse(&self) -> Result<Value, RealmeError> {
-        let buffer = std::fs::read_to_string(self.path.as_ref())
+        let buffer = std::fs::read_to_string(self.path.clone())
             .map_err(|e| RealmeError::ReadFileError(e.to_string()))?;
         let parsed = T::parse(&buffer).map_err(|e| {
             RealmeError::new_parse_error(
-                self.path.as_ref().to_string_lossy().to_string(),
+                self.path.display().to_string(),
                 e.to_string(),
             )
         })?;
@@ -98,7 +94,7 @@ where
         &self,
         s: crossbeam::channel::Sender<()>,
     ) -> Result<(), Self::Error> {
-        let path = self.path.as_ref().to_owned();
+        let path = std::sync::Arc::new(self.path.clone());
 
         std::thread::spawn(move || -> Result<(), Self::Error> {
             let (tx, rx) = crossbeam::channel::unbounded();
@@ -131,7 +127,6 @@ where
                 RealmeError::WatcherError(e.to_string())
             })?;
 
-            // 处理文件系统事件
             while let Ok(_event) = rx.recv() {
                 if let Err(_e) = s.send(()) {
                     #[cfg(feature = "tracing")]
