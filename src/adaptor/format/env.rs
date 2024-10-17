@@ -47,6 +47,9 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
+        if args.is_empty() {
+            return Ok(Value::Table(Map::new()));
+        }
         let mut map = Map::new();
         for (key, value) in std::env::vars() {
             if key.to_lowercase().starts_with(&args.to_lowercase()) {

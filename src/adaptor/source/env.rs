@@ -88,12 +88,11 @@ where
     /// }
     /// ```
     fn parse(&self) -> Result<Value, RealmeError> {
-        Value::try_serialize(&T::parse(self.prefix.as_ref()).map_err(|_e| {
-            RealmeError::new_parse_error(
-                self.prefix.clone(),
-                "Failed to parse from env".to_string(),
-            )
-        })?)
+        T::parse(&self.prefix)
+            .map_err(|e| {
+                RealmeError::new_parse_error(self.prefix.clone(), e.to_string())
+            })
+            .and_then(|v| Value::try_serialize(&v))
     }
 
     /// Returns the source type as `SourceType::Env`.

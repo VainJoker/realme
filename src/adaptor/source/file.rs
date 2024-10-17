@@ -79,15 +79,15 @@ where
     fn parse(&self) -> Result<Value, RealmeError> {
         let buffer = std::fs::read_to_string(self.path.clone())
             .map_err(|e| RealmeError::ReadFileError(e.to_string()))?;
-        let parsed = T::parse(&buffer).map_err(|e| {
-            RealmeError::new_parse_error(
-                self.path.display().to_string(),
-                e.to_string(),
-            )
-        })?;
 
-        Value::try_serialize(&parsed)
-            .map_err(|e| RealmeError::BuildError(e.to_string()))
+        T::parse(&buffer)
+            .map_err(|e| {
+                RealmeError::new_parse_error(
+                    self.path.display().to_string(),
+                    e.to_string(),
+                )
+            })
+            .and_then(|v| Value::try_serialize(&v))
     }
 
     /// Returns the source type of this `FileSource`.

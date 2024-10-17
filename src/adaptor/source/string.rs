@@ -76,9 +76,11 @@ where
     /// assert!(parsed_value.is_some());
     /// ```
     fn parse(&self) -> Result<Value, RealmeError> {
-        Value::try_serialize(&T::parse(self.buffer.as_ref()).map_err(|e| {
-            RealmeError::new_parse_error(self.buffer.clone(), e.to_string())
-        })?)
+        T::parse(&self.buffer)
+            .map_err(|e| {
+                RealmeError::new_parse_error(self.buffer.clone(), e.to_string())
+            })
+            .and_then(|v| Value::try_serialize(&v))
     }
 
     /// Returns the source type of this adaptor, which is `SourceType::Str`.

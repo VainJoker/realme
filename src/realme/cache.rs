@@ -37,21 +37,24 @@ impl RealmeCache {
         adaptor: &Adaptor,
         env_flag: bool,
     ) -> Result<(), RealmeError> {
-        if let Ok(Value::Table(table)) = adaptor.parse() {
-            for (k, v) in table {
-                if env_flag {
-                    self.cache_insert(k.clone(), v.clone());
-                    self.env_insert(k, v);
-                } else {
-                    let processed_value = self.process_value(v, &k)?;
-                    self.cache_insert(k, processed_value);
+        match adaptor.parse() {
+            Ok(Value::Table(table)) => {
+                for (k, v) in table {
+                    if env_flag {
+                        self.cache_insert(k.clone(), v.clone());
+                        self.env_insert(k, v);
+                    } else {
+                        let processed_value = self.process_value(v, &k)?;
+                        self.cache_insert(k, processed_value);
+                    }
                 }
+                Ok(())
             }
-            Ok(())
-        } else {
-            Err(RealmeError::new_build_error(
+            Ok(Value::Null) => Ok(()),
+            Ok(_) => Err(RealmeError::new_build_error(
                 "Adaptor parse result is not a table".to_string(),
-            ))
+            )),
+            Err(e) => Err(e),
         }
     }
 

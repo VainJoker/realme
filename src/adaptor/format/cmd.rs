@@ -171,6 +171,9 @@ impl<T: AsRef<str>> Parser<T> for CmdParser {
     /// * `Result` - A result containing the parsed `Value` or a `RealmeError`.
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
+        if args.is_empty() {
+            return Ok(Value::Table(Map::new()));
+        }
         match Self::parse_cmd(args) {
             Ok((_, map)) => Ok(Value::Table(map)),
             Err(_) => Err(RealmeError::new_parse_error(
