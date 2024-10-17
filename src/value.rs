@@ -3,6 +3,7 @@ mod des;
 mod expr;
 mod get;
 pub mod key;
+pub mod merge;
 mod ser;
 mod set;
 

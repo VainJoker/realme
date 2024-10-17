@@ -268,8 +268,8 @@ impl<T: TryFrom<Value, Error = RealmeError>> TryFrom<Value> for Vec<T> {
 /// with specific errors for non-convertible types.
 impl<K, V> TryFrom<Value> for Map<K, V>
 where
-    K: std::cmp::Eq + std::hash::Hash + std::convert::From<String>,
-    V: TryFrom<Value, Error = RealmeError>,
+    K: std::cmp::Eq + std::hash::Hash + std::convert::From<String> + Clone,
+    V: TryFrom<Value, Error = RealmeError> + Clone,
 {
     type Error = RealmeError;
 

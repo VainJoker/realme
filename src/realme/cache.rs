@@ -4,6 +4,7 @@ use crate::{
     RealmeError,
     RealmeResult,
     Value,
+    value::merge::Merge,
 };
 
 /// A cache system for storing environment and other values.
@@ -39,11 +40,11 @@ impl RealmeCache {
         if let Ok(Value::Table(table)) = adaptor.parse() {
             for (k, v) in table {
                 if env_flag {
-                    self.cache.insert(k.clone(), v.clone());
-                    self.env.insert(k, v);
+                    self.cache_insert(k.clone(), v.clone());
+                    self.env_insert(k, v);
                 } else {
                     let processed_value = self.process_value(v, &k)?;
-                    self.cache.insert(k, processed_value);
+                    self.cache_insert(k, processed_value);
                 }
             }
             Ok(())
@@ -73,5 +74,24 @@ impl RealmeCache {
             }
             _ => Ok(value),
         }
+    }
+
+    fn cache_insert(&mut self, key: String, value: Value) {
+        match value {
+            Value::Table(table) => {
+                if let Some(existing) = self.cache.get_mut(&key) {
+                    *existing = existing.merge(&Value::Table(table));
+                } else {
+                    self.cache.insert(key, Value::Table(table));
+                }
+            }
+            _ => {
+                self.cache.insert(key, value);
+            }
+        }
+    }
+
+    fn env_insert(&mut self, key: String, value: Value) {
+        self.env.insert(key, value);
     }
 }
