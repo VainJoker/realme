@@ -5,13 +5,20 @@ use crate::errors::RealmeError;
 ///
 /// This trait allows various types to be used as keys when accessing values
 /// in a nested structure.
-pub trait Key {
+pub trait Key: Clone {
     /// Converts the implementing type into an `Expression`.
     ///
     /// # Returns
     /// - `Ok(Expression)` if the conversion is successful.
     /// - `Err(RealmeError)` if the conversion fails.
     fn to_key(&self) -> Result<Expression, RealmeError>;
+
+    /// Converts the implementing type into a `String`.
+    ///
+    /// # Returns
+    /// - `String` if the conversion is successful.
+    #[allow(clippy::wrong_self_convention)]
+    fn into_string(&self) -> String;
 }
 
 /// Implements `Key` for string slices.
@@ -21,6 +28,10 @@ impl Key for &str {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         self.parse()
     }
+
+    fn into_string(&self) -> String {
+        (*self).to_string()
+    }
 }
 
 /// Implements `Key` for `String`.
@@ -29,6 +40,10 @@ impl Key for &str {
 impl Key for String {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         self.as_str().to_key()
+    }
+
+    fn into_string(&self) -> String {
+        self.clone()
     }
 }
 
@@ -40,6 +55,10 @@ impl Key for isize {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         Ok(Expression::Identifier(self.to_string()))
     }
+
+    fn into_string(&self) -> String {
+        self.to_string()
+    }
 }
 
 /// Implements `Key` for `Expression`.
@@ -49,6 +68,10 @@ impl Key for Expression {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         Ok(self.clone())
     }
+
+    fn into_string(&self) -> String {
+        self.to_string()
+    }
 }
 
 /// Implements `Key` for `&Expression`.
@@ -57,5 +80,9 @@ impl Key for Expression {
 impl Key for &Expression {
     fn to_key(&self) -> Result<Expression, RealmeError> {
         Ok((*self).clone())
+    }
+
+    fn into_string(&self) -> String {
+        self.to_string()
     }
 }

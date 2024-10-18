@@ -10,6 +10,7 @@ use serde::{
 use crate::{
     Value,
     errors::RealmeError,
+    value::merge::Merge,
 };
 
 mod api;
@@ -21,17 +22,14 @@ mod shared;
 /// values.
 #[derive(Debug, Deserialize, Clone)]
 pub struct Realme {
-    cache: Value,
+    cache:   Value,
+    #[serde(skip)]
+    default: Option<Value>,
+    #[serde(skip)]
+    builder: RealmeBuilder,
 }
 
 impl Realme {
-    /// Constructs a new `Realme` with the given initial cache value.
-    ///
-    /// But you should use `Realme::builder()` to create a new `Realme`.
-    pub const fn new(value: Value) -> Self {
-        Self { cache: value }
-    }
-
     /// Creates a new `RealmeBuilder` for constructing a `Realme`.
     ///
     /// # Returns
@@ -124,8 +122,53 @@ impl Realme {
     /// let realme = Realme::try_serialize(&config).unwrap();
     /// ```
     pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, RealmeError> {
+        let cache = Value::try_serialize(from)?;
         Ok(Self {
-            cache: Value::try_serialize(from)?,
+            cache:   cache.clone(),
+            default: Some(cache),
+            builder: RealmeBuilder::new(),
         })
+    }
+
+    /// Reloads the Realme instance from its builder.
+    ///
+    /// This method creates a new `Realme` instance by reloading configuration
+    /// from the sources specified in the builder. It only reloads data that
+    /// was originally loaded through the builder's `load` method. Any
+    /// values set programmatically after the initial build are preserved.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result<Self, RealmeError>` containing either:
+    /// - `Ok(Self)`: A new `Realme` instance with reloaded configuration.
+    /// - `Err(RealmeError)`: An error if the reload operation fails.
+    ///
+    /// # Examples
+    ///
+    /// ```rust ignore
+    /// use realme::{
+    ///     Adaptor,
+    ///     FileSource,
+    ///     Realme,
+    ///     TomlParser,
+    /// };
+    ///
+    /// let realme = Realme::builder()
+    ///     .load(Adaptor::new(Box::new(FileSource::<TomlParser>::new(
+    ///         "config.toml".into(),
+    ///     ))))
+    ///     .build()
+    ///     .unwrap();
+    ///
+    /// // Reload configuration
+    /// let reloaded_realme = realme.reload().unwrap();
+    /// ```
+    pub fn reload(self) -> Result<Self, RealmeError> {
+        let mut new_realme = self.builder.build()?;
+        if let Some(default) = self.default {
+            new_realme.cache.merge(&default);
+            new_realme.default = Some(default);
+        }
+        Ok(new_realme)
     }
 }

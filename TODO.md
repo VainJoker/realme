@@ -10,4 +10,6 @@
 - [ ] Add functionality to read configurations from remote sources (such as etcd, Consul, or custom HTTP endpoints)
 - [x] Add tracing support
 - [ ] Better performance (Make features optional)
-- [ ] Need to ensure that the user-set values are not overwritten by the default values
+- [x] Need to ensure that the user-set values are not overwritten by the default values
+- [ ] For shared_build, need to ensure that the default values are not overwritten by the user-set values
+- [ ] Code refactor for v0.2.0

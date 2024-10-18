@@ -83,7 +83,7 @@ impl RealmeCache {
         match value {
             Value::Table(table) => {
                 if let Some(existing) = self.cache.get_mut(&key) {
-                    *existing = existing.merge(&Value::Table(table));
+                    existing.merge(&Value::Table(table));
                 } else {
                     self.cache.insert(key, Value::Table(table));
                 }

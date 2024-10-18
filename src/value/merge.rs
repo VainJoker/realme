@@ -1,23 +1,23 @@
 use super::Value;
 
 pub trait Merge {
-    fn merge(&self, other: &Self) -> Self;
+    fn merge(&mut self, other: &Self);
 }
 
 impl Merge for Value {
-    fn merge(&self, other: &Self) -> Self {
-        match (self, other) {
+    fn merge(&mut self, other: &Self) {
+        match (self.clone(), other.clone()) {
             (Self::Table(a), Self::Table(b)) => {
                 let mut merged = a.clone();
                 for (k, v) in b {
                     merged
                         .entry(k.clone())
-                        .and_modify(|e| *e = e.merge(v))
+                        .and_modify(|e| e.merge(&v))
                         .or_insert_with(|| v.clone());
                 }
-                Self::Table(merged)
+                *self = Self::Table(merged);
             }
-            (_, other) => other.clone(),
+            (_, other) => *self = other.clone(),
         }
     }
 }
@@ -40,7 +40,7 @@ mod tests {
             .insert("city".to_string(), Value::String("New York".to_string()));
         a_map.insert("address".to_string(), Value::Table(nested));
 
-        let a = Value::Table(a_map);
+        let mut a = Value::Table(a_map);
 
         let mut b_map = Map::new();
         b_map.insert("name".to_string(), Value::String("Jasper".to_string()));
@@ -54,12 +54,11 @@ mod tests {
 
         let b = Value::Table(b_map);
 
-        let merged = a.merge(&b);
+        a.merge(&b);
         eprintln!("a: {a:#?}");
         eprintln!("b: {b:#?}");
-        eprintln!("merged: {merged:#?}");
 
-        if let Value::Table(merged_map) = merged {
+        if let Value::Table(merged_map) = a {
             assert_eq!(
                 merged_map.get("name"),
                 Some(&Value::String("Jasper".to_string()))

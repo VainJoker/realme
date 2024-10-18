@@ -1,4 +1,7 @@
-use std::fmt::Formatter;
+use std::{
+    fmt::Formatter,
+    sync::Arc,
+};
 
 use source::Source;
 
@@ -12,9 +15,10 @@ pub mod parser;
 pub mod source;
 
 /// Represents an adaptor that wraps a source of configuration data.
+#[derive(Clone)]
 pub struct Adaptor {
     /// The underlying source of configuration data.
-    source:       Box<dyn Source<Error = RealmeError>>,
+    source:       Arc<dyn Source<Error = RealmeError>>,
     pub priority: Option<usize>,
     pub watcher:  bool,
 }
@@ -29,7 +33,7 @@ impl Adaptor {
     /// Creates a new `Adaptor` with the given source.
     pub fn new<T: Source<Error = RealmeError> + 'static>(source: T) -> Self {
         Self {
-            source:   Box::new(source),
+            source:   Arc::new(source),
             priority: None,
             watcher:  false,
         }

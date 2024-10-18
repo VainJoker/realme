@@ -3,7 +3,7 @@
 # General Settings
 style_edition = "2024"
 max_width = 80
-hard_tabs = false
+tab_spaces = 4
 
 # Newline and Whitespace
 newline_style = "Unix"

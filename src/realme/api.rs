@@ -3,7 +3,11 @@ use serde::Deserialize;
 use super::Realme;
 use crate::{
     Value,
-    value::key::Key,
+    map::Map,
+    value::{
+        key::Key,
+        merge::Merge,
+    },
 };
 
 impl Realme {
@@ -48,6 +52,13 @@ impl Realme {
     /// realme.set("key1", Value::String("value1".to_string()));
     /// ```
     pub fn set<K: Key>(&mut self, key: K, value: Value) {
+        let mut inner = Map::new();
+        inner.insert(key.into_string(), value.clone());
+        if let Some(default) = &mut self.default {
+            default.merge(&Value::Table(inner));
+        } else {
+            self.default = Some(Value::Table(inner));
+        }
         self.cache.set(key, value);
     }
 
@@ -178,5 +189,50 @@ impl Realme {
     {
         self.cache.with(key, f);
         self
+    }
+
+    /// Merges the contents of another Realme instance into the current
+    /// instance.
+    ///
+    /// This method merges the `cache` and `default` fields (if present).
+    /// The `builder` field remains unchanged.
+    ///
+    /// # Arguments
+    ///
+    /// * `other` - A reference to the other Realme instance to merge from
+    ///
+    /// # Returns
+    ///
+    /// Returns a mutable reference to `Self` to allow for method chaining.
+    ///
+    /// # Examples
+    ///
+    /// ```rust ignore
+    /// use realme::Realme;
+    ///
+    /// let mut realme1 = Realme::builder().build().unwrap();
+    /// realme1.set("key1", "value1");
+    ///
+    /// let mut realme2 = Realme::builder().build().unwrap();
+    /// realme2.set("key2", "value2");
+    ///
+    /// realme1.merge(&realme2).unwrap();
+    /// assert_eq!(realme1.get::<String>("key1").unwrap(), "value1");
+    /// assert_eq!(realme1.get::<String>("key2").unwrap(), "value2");
+    /// ```
+    pub fn merge(&mut self, other: &Self) {
+        // 合并 cache
+        self.cache.merge(&other.cache);
+
+        // 合并 default
+        match (&mut self.default, &other.default) {
+            (Some(self_default), Some(other_default)) => {
+                self_default.merge(other_default);
+            }
+            (None, Some(other_default)) => {
+                self.default = Some(other_default.clone());
+            }
+            _ => {}
+        }
     }
 }

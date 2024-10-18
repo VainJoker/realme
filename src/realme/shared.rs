@@ -26,7 +26,11 @@ impl SharedRealme {
     }
 
     pub(crate) fn from_value(value: Value) -> Self {
-        Self(Arc::new(RwLock::new(Realme { cache: value })))
+        Self(Arc::new(RwLock::new(Realme {
+            cache:   value,
+            builder: RealmeBuilder::default(),
+            default: None,
+        })))
     }
 
     pub(crate) fn update(
@@ -45,7 +49,9 @@ impl SharedRealme {
             return Err(RealmeError::LockError("realme".to_string()));
         };
         *realme = Realme {
-            cache: Value::Table(cache.cache),
+            cache:   Value::Table(cache.cache),
+            builder: RealmeBuilder::default(),
+            default: None,
         };
 
         Ok(self.clone())

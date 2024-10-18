@@ -13,7 +13,7 @@ use crate::{
 ///
 /// This struct collects adaptors from various sources and constructs a `Realme`
 /// with a configured environment.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct RealmeBuilder {
     adaptors: Vec<Adaptor>,
 }
@@ -76,7 +76,9 @@ impl RealmeBuilder {
         let mut cache = RealmeCache::new();
         self.handle_adaptors(&mut cache)?;
         Ok(Realme {
-            cache: Value::Table(cache.cache),
+            cache:   Value::Table(cache.cache),
+            default: None,
+            builder: self,
         })
     }
 
