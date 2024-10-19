@@ -1,12 +1,12 @@
+//! Error types for the crate
+
 use std::fmt::Display;
 
 use thiserror::Error;
 
-pub type RealmeResult<T> = Result<T, RealmeError>;
-
-/// Represents all possible errors that can occur in the Realme library.
+/// The error type for this crate
 #[derive(Error, Debug)]
-pub enum RealmeError {
+pub enum Error {
     #[error(transparent)]
     InvalidCast(CastError),
     #[error(transparent)]
@@ -32,7 +32,10 @@ pub enum RealmeError {
     Unknown(String),
 }
 
-impl RealmeError {
+/// Convenience type alias for this crate's error type
+pub type Result<T> = std::result::Result<T, Error>;
+
+impl Error {
     /// Creates a new `InvalidCast` error.
     pub fn new_cast_error(origin: String, cause: String) -> Self {
         Self::InvalidCast(CastError::new(origin, cause))
@@ -115,7 +118,7 @@ impl Display for DeserializeError {
     }
 }
 
-impl From<DeserializeError> for RealmeError {
+impl From<DeserializeError> for Error {
     fn from(value: DeserializeError) -> Self {
         #[cfg(feature = "tracing")]
         tracing::error!("Deserialize error: {}", value);
@@ -142,7 +145,7 @@ impl Display for SerializeError {
     }
 }
 
-impl From<SerializeError> for RealmeError {
+impl From<SerializeError> for Error {
     fn from(value: SerializeError) -> Self {
         #[cfg(feature = "tracing")]
         tracing::error!("Serialize error: {}", value);
