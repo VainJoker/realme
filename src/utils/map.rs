@@ -39,7 +39,7 @@ where
     pub(crate) fn get<Q>(&self, k: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
-        Q: Sized + Hash + Eq,
+        Q: Hash + Eq + ?Sized,
     {
         self.inner.get(k)
     }
@@ -47,7 +47,7 @@ where
     pub(crate) fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
-        Q: Sized + Hash + Eq,
+        Q: Hash + Eq + ?Sized,
     {
         self.inner.get_mut(k)
     }
@@ -67,18 +67,10 @@ where
     pub(crate) fn contains_key<Q>(&self, k: &Q) -> bool
     where
         K: Borrow<Q>,
-        Q: Sized + Hash + Eq,
+        Q: Hash + Eq + ?Sized,
     {
         self.inner.contains_key(k)
     }
-
-    // pub fn entry(&mut self, key: K) -> Entry<K, V> {
-    //     if self.contains_key(&key) {
-    //         Entry::Occupied(OccupiedEntry { map: self, key })
-    //     } else {
-    //         Entry::Vacant(VacantEntry { map: self, key })
-    //     }
-    // }
 }
 
 impl<K, V> FromIterator<(K, V)> for Map<K, V>

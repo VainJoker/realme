@@ -98,6 +98,21 @@ impl Value {
         }
     }
 
+    pub fn merge(&mut self, other: &Self) {
+        match (self, other) {
+            (Self::Table(a), Self::Table(b)) => {
+                for (k, v) in b {
+                    if let Some(existing) = a.get_mut(k) {
+                        existing.merge(v);
+                    } else {
+                        a.insert(k.clone(), v.clone());
+                    }
+                }
+            }
+            (this, other) => *this = other.clone(),
+        }
+    }
+
     // pub fn with<K: Key + Clone, F>(&mut self, key: K, f: F) -> &mut Self
     // where
     //     F: FnOnce(&mut Self),

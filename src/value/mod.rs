@@ -259,6 +259,63 @@ mod tests {
         Ok(())
     }
 
+    #[test]
+    fn test_merge() {
+        let mut a_map = Map::new();
+        a_map.insert("name".to_string(), Value::String("Tom".to_string()));
+        a_map.insert(
+            "dob".to_string(),
+            Value::String("1979-05-27T07:32:00Z".to_string()),
+        );
+        let mut nested = Map::new();
+        nested
+            .insert("city".to_string(), Value::String("New York".to_string()));
+        a_map.insert("address".to_string(), Value::Table(nested));
+
+        let mut a = Value::Table(a_map);
+
+        let mut b_map = Map::new();
+        b_map.insert("name".to_string(), Value::String("Jasper".to_string()));
+        let mut nested = Map::new();
+        nested.insert(
+            "city".to_string(),
+            Value::String("San Francisco".to_string()),
+        );
+        nested.insert("zip".to_string(), Value::String("94105".to_string()));
+        b_map.insert("address".to_string(), Value::Table(nested));
+
+        let b = Value::Table(b_map);
+
+        a.merge(&b);
+        eprintln!("a: {a:#?}");
+        eprintln!("b: {b:#?}");
+
+        if let Value::Table(merged_map) = a {
+            assert_eq!(
+                merged_map.get("name"),
+                Some(&Value::String("Jasper".to_string()))
+            );
+            assert_eq!(
+                merged_map.get("dob"),
+                Some(&Value::String("1979-05-27T07:32:00Z".to_string()))
+            );
+            if let Some(Value::Table(address)) = merged_map.get("address") {
+                assert_eq!(
+                    address.get("city"),
+                    Some(&Value::String("San Francisco".to_string()))
+                );
+                assert_eq!(
+                    address.get("zip"),
+                    Some(&Value::String("94105".to_string()))
+                );
+            } else {
+                panic!("Expected nested address table");
+            }
+        } else {
+            panic!("Expected merged result to be a table");
+        }
+    }
+
     // #[test]
     // fn test_set_with_key() {
     //     let mut value = Value::Table(Table::new());

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Introduce expression language for key access    - ([de34124](https://github.com/vainjoker/realme/commit/de34124db87232cc6bdd15021f88ed8dd3b5ec7e))
 - Prepare for v0.2    - ([3d2ba77](https://github.com/vainjoker/realme/commit/3d2ba776198180a81f67b6ecd4b65cb5166be6c5))
 - Introduce support for reloading configurations - ([1e37ed9](https://github.com/vainjoker/realme/commit/1e37ed902a27c908559e16e0c9264a9e934805b5))
 

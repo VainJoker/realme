@@ -1,7 +1,7 @@
 #![allow(dead_code)]
-mod utils;
 pub mod error;
 pub mod prelude;
+mod utils;
 
 pub mod realme;
 pub mod value;
