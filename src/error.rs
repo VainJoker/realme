@@ -14,6 +14,9 @@ pub enum Error {
     #[error("Expression error: {0}")]
     ExprError(String),
 
+    #[error("Set value error: {0}")]
+    SetValueError(String),
+
     #[error("Build error: {0}")]
     BuildError(String),
     #[error("Read file error: {0}")]

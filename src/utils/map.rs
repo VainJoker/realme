@@ -7,7 +7,7 @@ use std::{
 type InnerMap<K, V> = HashMap<K, V>;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub(crate) struct Map<K, V>
+pub struct Map<K, V>
 where
     K: Hash + Eq,
 {
@@ -30,22 +30,24 @@ where
         }
     }
 
+    #[inline]
     pub(crate) fn insert(&mut self, k: K, v: V) -> Option<V> {
         self.inner.insert(k, v)
     }
 
-    pub(crate) fn get<Q: ?Sized>(&self, k: &Q) -> Option<&V>
+    #[inline]
+    pub(crate) fn get<Q>(&self, k: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
-        Q: Hash + Eq,
+        Q: Sized + Hash + Eq,
     {
         self.inner.get(k)
     }
 
-    pub(crate) fn get_mut<Q: ?Sized>(&mut self, k: &Q) -> Option<&mut V>
+    pub(crate) fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
-        Q: Hash + Eq,
+        Q: Sized + Hash + Eq,
     {
         self.inner.get_mut(k)
     }
@@ -59,16 +61,24 @@ where
     }
 
     pub(crate) fn clear(&mut self) {
-        self.inner.clear()
+        self.inner.clear();
     }
 
-    pub(crate) fn contains_key<Q: ?Sized>(&self, k: &Q) -> bool
+    pub(crate) fn contains_key<Q>(&self, k: &Q) -> bool
     where
         K: Borrow<Q>,
-        Q: Hash + Eq,
+        Q: Sized + Hash + Eq,
     {
         self.inner.contains_key(k)
     }
+
+    // pub fn entry(&mut self, key: K) -> Entry<K, V> {
+    //     if self.contains_key(&key) {
+    //         Entry::Occupied(OccupiedEntry { map: self, key })
+    //     } else {
+    //         Entry::Vacant(VacantEntry { map: self, key })
+    //     }
+    // }
 }
 
 impl<K, V> FromIterator<(K, V)> for Map<K, V>
@@ -79,7 +89,7 @@ where
     where
         T: IntoIterator<Item = (K, V)>,
     {
-        Map {
+        Self {
             inner: FromIterator::from_iter(iter),
         }
     }
@@ -94,5 +104,17 @@ where
 
     fn into_iter(self) -> Self::IntoIter {
         self.inner.into_iter()
+    }
+}
+
+impl<'a, K, V> IntoIterator for &'a Map<K, V>
+where
+    K: Hash + Eq,
+{
+    type Item = (&'a K, &'a V);
+    type IntoIter = <&'a InnerMap<K, V> as IntoIterator>::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter()
     }
 }
