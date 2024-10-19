@@ -221,10 +221,8 @@ impl Realme {
     /// assert_eq!(realme1.get::<String>("key2").unwrap(), "value2");
     /// ```
     pub fn merge(&mut self, other: &Self) {
-        // 合并 cache
         self.cache.merge(&other.cache);
 
-        // 合并 default
         match (&mut self.default, &other.default) {
             (Some(self_default), Some(other_default)) => {
                 self_default.merge(other_default);

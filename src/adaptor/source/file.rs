@@ -125,7 +125,6 @@ where
                 RealmeError::WatcherError(e.to_string())
             })?;
 
-            // 开始监视文件
             notify::Watcher::watch(
                 &mut watcher,
                 &path,
