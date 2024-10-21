@@ -18,13 +18,23 @@ use crate::{
 
 /// Represents a configuration realme with a cache for storing configuration
 /// values.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Deserialize, Clone)]
 pub struct Realme {
     cache:   Value,
     #[serde(skip)]
     default: Option<Value>,
     #[serde(skip)]
     builder: RealmeBuilder,
+}
+
+impl std::fmt::Debug for Realme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Realme {{ cache: {:?}, default: {:?} }}",
+            self.cache, self.default
+        )
+    }
 }
 
 impl Realme {

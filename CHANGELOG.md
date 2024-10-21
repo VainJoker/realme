@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Add realme functionality - ([ff1c6fc](https://github.com/vainjoker/realme/commit/ff1c6fca9cdc1c0ee16058b87e63e202d0ece04b))
 - Add Adaptor Module - ([c1dffd6](https://github.com/vainjoker/realme/commit/c1dffd6873ed8af1cdc76f02023672e115ed9635))
 - Implement: Add merge functionality to `Value::Table`    - ([1e297e0](https://github.com/vainjoker/realme/commit/1e297e080422e321d7066bf0cc659912c62088fb))
 - Introduce expression language for key access    - ([de34124](https://github.com/vainjoker/realme/commit/de34124db87232cc6bdd15021f88ed8dd3b5ec7e))

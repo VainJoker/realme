@@ -8,7 +8,7 @@ use crate::{
 ///
 /// This struct collects adaptors from various sources and constructs a `Realme`
 /// with a configured environment.
-#[derive(Debug, Default, Clone)]
+#[derive(Default, Clone)]
 pub struct RealmeBuilder {
     adaptors: Vec<Adaptor>,
 }
