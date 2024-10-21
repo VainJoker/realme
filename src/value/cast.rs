@@ -214,6 +214,16 @@ impl TryFrom<Value> for Table {
     }
 }
 
+/// Attempts to convert a `Table` into a `Value`.
+/// Converts the table into a `Value::Table`.
+impl TryFrom<Table> for Value {
+    type Error = Error;
+
+    fn try_from(value: Table) -> Result<Self, Self::Error> {
+        Ok(Self::Table(value))
+    }
+}
+
 /// Attempts to convert a `Table` into an `Array`.
 /// Converts each value in the table into an element of the array.
 impl TryFrom<Table> for Array {

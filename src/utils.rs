@@ -1,3 +1,3 @@
-mod map;
+pub mod map;
 
-pub(crate) use map::*;
+pub use map::*;

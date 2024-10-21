@@ -75,7 +75,7 @@ impl Value {
                 let mut current = self;
                 for (i, e) in exprs.iter().enumerate() {
                     if i == exprs.len() - 1 {
-                        return current.set(e.to_owned(), value);
+                        return current.set(e.clone(), value);
                     }
                     current = if let Self::Table(table) = current {
                         if !table.contains_key(&e.to_string()) {
@@ -102,11 +102,9 @@ impl Value {
         match (self, other) {
             (Self::Table(a), Self::Table(b)) => {
                 for (k, v) in b {
-                    if let Some(existing) = a.get_mut(k) {
-                        existing.merge(v);
-                    } else {
-                        a.insert(k.clone(), v.clone());
-                    }
+                    a.entry(k.clone())
+                        .and_modify(|a| a.merge(v))
+                        .or_insert(v.clone());
                 }
             }
             (this, other) => *this = other.clone(),

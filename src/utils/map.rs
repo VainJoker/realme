@@ -1,10 +1,14 @@
 use std::{
     borrow::Borrow,
-    collections::HashMap,
+    collections::{
+        HashMap,
+        hash_map::Entry,
+    },
     hash::Hash,
 };
 
 type InnerMap<K, V> = HashMap<K, V>;
+type InnerEntry<'a, K, V> = Entry<'a, K, V>;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Map<K, V>
@@ -70,6 +74,14 @@ where
         Q: Hash + Eq + ?Sized,
     {
         self.inner.contains_key(k)
+    }
+
+    pub(crate) fn entry(&mut self, k: K) -> InnerEntry<'_, K, V> {
+        self.inner.entry(k)
+    }
+
+    fn iter(&self) -> <&Self as IntoIterator>::IntoIter {
+        <&Self as IntoIterator>::into_iter(self)
     }
 }
 

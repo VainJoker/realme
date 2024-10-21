@@ -112,7 +112,7 @@ impl Value {
     ) -> Option<T> {
         let expr = key.to_key().ok()?;
         self.get_internal(&expr)
-            .and_then(|v| v.to_owned().try_deserialize().ok())
+            .and_then(|v| v.clone().try_deserialize().ok())
     }
 
     fn get_internal<'a>(&'a self, key: &Expression) -> Option<&'a Self> {
@@ -146,19 +146,28 @@ impl Value {
     fn get_mut_internal(&mut self, key: &Expression) -> Option<&mut Self> {
         match key {
             Expression::Identifier(id) => match self {
-                Self::Table(table) => table.get_mut(id),
+                Self::Table(table) => {
+                    Some(table.entry(id.clone()).or_insert_with(|| Self::Null))
+                }
                 Self::Array(arr) => arr.get_mut(id.parse::<usize>().ok()?),
                 _ => None,
             },
             Expression::Subscript(id, idx) => {
                 if let Self::Table(table) = self {
-                    if let Some(Self::Array(arr)) = table.get_mut(id) {
+                    let entry = table
+                        .entry(id.clone())
+                        .or_insert_with(|| Self::Array(Vec::new()));
+                    if let Self::Array(arr) = entry {
                         let index = if *idx >= 0 {
                             *idx as usize
                         } else {
                             arr.len().wrapping_add(*idx as usize)
                         };
-                        return arr.get_mut(index);
+                        // Ensure the array has enough capacity
+                        if index >= arr.len() {
+                            arr.resize(index + 1, Self::Null);
+                        }
+                        return Some(&mut arr[index]);
                     }
                 }
                 None
