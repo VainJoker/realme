@@ -6,6 +6,10 @@ pub mod env;
 pub mod file;
 /// Module for string-related functionality
 pub mod string;
+
+/// Module for ser-related functionality
+pub mod ser;
+
 use serde::Serialize;
 
 /// Trait representing a source of configuration or data

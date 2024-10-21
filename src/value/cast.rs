@@ -29,6 +29,28 @@ impl TryFrom<Value> for String {
     }
 }
 
+impl TryFrom<&Value> for String {
+    type Error = Error;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(b.to_string()),
+            Value::Integer(i) => Ok(i.to_string()),
+            Value::Float(f) => Ok(f.to_string()),
+            Value::String(s) => Ok(s.clone()),
+            Value::Array(a) => Err(Error::new_cast_error(
+                format!("{a:?}"),
+                "Cannot cast array to string".to_string(),
+            )),
+            Value::Table(t) => Err(Error::new_cast_error(
+                format!("{t:?}"),
+                "Cannot cast table to string".to_string(),
+            )),
+        }
+    }
+}
+
 /// Macro to implement `TryFrom<Value>` for integer types.
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
@@ -179,6 +201,35 @@ impl TryFrom<Value> for bool {
     }
 }
 
+impl TryFrom<&Value> for bool {
+    type Error = Error;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(false),
+            Value::Boolean(b) => Ok(*b),
+            Value::Integer(i) => Ok(*i != 0),
+            Value::Float(f) => Ok(*f != 0.0),
+            Value::String(s) => match s.as_str() {
+                "true" | "1" | "yes" | "on" => Ok(true),
+                "false" | "0" | "no" | "off" => Ok(false),
+                _ => Err(Error::new_cast_error(
+                    s.clone(),
+                    "Cannot cast string to bool".to_string(),
+                )),
+            },
+            Value::Array(a) => Err(Error::new_cast_error(
+                format!("{a:?}"),
+                "Cannot cast array to bool".to_string(),
+            )),
+            Value::Table(t) => Err(Error::new_cast_error(
+                format!("{t:?}"),
+                "Cannot cast table to bool".to_string(),
+            )),
+        }
+    }
+}
+
 /// Attempts to convert a `Value` into an `Array`.
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
@@ -198,6 +249,21 @@ impl TryFrom<Value> for Array {
     }
 }
 
+impl TryFrom<&Value> for Array {
+    type Error = Error;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(vec![Value::Boolean(*b)]),
+            Value::Integer(i) => Ok(vec![Value::Integer(*i)]),
+            Value::Float(f) => Ok(vec![Value::Float(*f)]),
+            Value::String(s) => Ok(vec![Value::String(s.clone())]),
+            Value::Array(a) => Ok(a.clone()),
+            Value::Table(t) => t.clone().try_into(),
+        }
+    }
+}
 /// Attempts to convert a `Value` into a `Table`.
 /// Handles conversion from all `Value` variants, with specific errors for
 /// non-convertible types.
@@ -210,6 +276,19 @@ impl TryFrom<Value> for Table {
             Value::Array(a) => a.try_into(),
             Value::Table(t) => Ok(t),
             _ => Ok(Self::from_iter(vec![(0.to_string(), value)])),
+        }
+    }
+}
+
+impl TryFrom<&Value> for Table {
+    type Error = Error;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Array(a) => a.clone().try_into(),
+            Value::Table(t) => Ok(t.clone()),
+            _ => Ok(Self::from_iter(vec![(0.to_string(), value.clone())])),
         }
     }
 }

@@ -11,17 +11,6 @@ use crate::{
 /// This struct holds a reference to a string buffer and parses it using a
 /// specified parser. The generic type `T` represents the parser, and `U` is the
 /// type of the buffer which must implement `AsRef<str>` and `Clone`.
-///
-/// # Examples
-///
-/// ```ignore
-/// use realme::{StringSource, TomlParser, Parser};
-///
-/// const CONFIGURATION: &str = r#"key = "value""#;
-/// let source = StringSource::<TomlParser>::new(CONFIGURATION);
-/// let parsed_value = source.parse().unwrap();
-/// assert!(parsed_value.is_some());
-/// ```
 #[derive(Debug)]
 pub struct StringSource<T> {
     buffer:  String,

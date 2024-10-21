@@ -9,9 +9,9 @@ Realme is a flexible and extensible configuration management library for Rust. I
 
 ## Features
 
-- Support for multiple configuration formats (TOML, JSON, YAML, JSON5, RON, INI), and you can easily add support for more formats
+- Support for multiple configuration formats for file(etc. TOML, JSON ...) or string or env or even command line flags, and you can easily add support for more formats
 - Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
-- Custom parser support and flexible adaptor system for different data sources, for example, you can read configuration from a file, environment variables, command line flags, etc.
+- Custom parser support and flexible adaptor system for different data sources, for example, you can check the [cmd](https://github.com/VainJoker/realme/blob/main/src/adaptor/parser/cmd.rs) parser, which allows you to read configuration from command line flags with clap
 - Live watching and re-reading of config files
 
 ## Installation
@@ -71,6 +71,22 @@ fn main() {
 For more detailed examples, check the `examples` directory.
 
 For a real-world example, you can check the [Rinkle](https://github.com/VainJoker/rinkle/blob/main/src/config.rs) project.
+
+## Compartion
+
+I am impressed by the following libraries: 
+- [config-rs](https://github.com/mehcode/config-rs)
+- [toml](https://github.com/toml-rs/toml)
+- [figment](https://github.com/SergioBenitez/Figment)
+
+And compared to them, Realme has the following features:
+- Realme value conversion is all based on `serde`, so you can convert to any type that implements `serde::Serialize` and `serde::Deserialize` trait
+- Realme has a flexible adaptor system, you can easily add your own adaptor by implementing the `Parser` and `Source` trait
+- Realme supports hot reloading, you can reload the configuration file at runtime
+
+But Realme has the following drawbacks:
+- Newer project, less documentations, less tests
+- It might have some breaking changes
 
 ## License
 

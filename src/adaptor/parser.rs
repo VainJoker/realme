@@ -10,6 +10,7 @@ pub mod json;
 pub mod json5;
 #[cfg(feature = "ron")]
 pub mod ron;
+pub mod ser;
 #[cfg(feature = "toml")]
 pub mod toml;
 #[cfg(feature = "yaml")]
