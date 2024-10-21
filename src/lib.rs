@@ -8,6 +8,7 @@ pub mod realme;
 pub mod value;
 
 pub use adaptor::{
+    Adaptor,
     parser::{
         Parser,
         cmd::CmdParser,

@@ -1,6 +1,5 @@
 pub mod api;
 pub mod builder;
-// mod cache;
 
 use builder::RealmeBuilder;
 use serde::{
@@ -63,6 +62,7 @@ impl Realme {
     }
 
     /// Attempts to serialize a given object into a new `Realme` instance.
+    /// It is not recommended to use this method.
     ///
     /// # Arguments
     ///
@@ -75,27 +75,10 @@ impl Realme {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<Self, RealmeError>` which is `Ok` containing a new
-    /// `Realme` instance if successful, or an `Err` containing a `RealmeError`
+    /// Returns a `Result<Self, Error>` which is `Ok` containing a new
+    /// `Realme` instance if successful, or an `Err` containing a `Error`
     /// if the operation fails.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// use realme::Realme;
-    /// use serde::Serialize;
-    ///
-    /// #[derive(Serialize)]
-    /// struct Config {
-    ///     key1: String,
-    /// }
-    ///
-    /// let config = Config {
-    ///     key1: "value1".to_string(),
-    /// };
-    /// let realme = Realme::try_serialize(&config).unwrap();
-    /// ```
-    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self, Error> {
+    pub(crate) fn try_serialize<T: Serialize>(from: &T) -> Result<Self, Error> {
         let cache = Value::try_serialize(from)?;
         Ok(Self {
             cache:   cache.clone(),
@@ -113,9 +96,9 @@ impl Realme {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<Self, RealmeError>` containing either:
+    /// Returns a `Result<Self, Error>` containing either:
     /// - `Ok(Self)`: A new `Realme` instance with reloaded configuration.
-    /// - `Err(RealmeError)`: An error if the reload operation fails.
+    /// - `Err(Error)`: An error if the reload operation fails.
     pub fn reload(self) -> Result<Self, Error> {
         let mut new_realme = self.builder.build()?;
         if let Some(default) = self.default {

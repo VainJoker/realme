@@ -3,7 +3,10 @@ use super::{
     Table,
     Value,
 };
-use crate::Error;
+use crate::{
+    Error,
+    Map,
+};
 
 /// Attempts to convert a `Value` into a `String`.
 /// Returns an error if the `Value` is an `Array` or `Table`.
@@ -328,61 +331,83 @@ impl TryFrom<Array> for Table {
     }
 }
 
-// /// Attempts to convert a `Value` into a `Vec<T>`, where `T` implements
-// /// `TryFrom<Value>`. Handles conversion from all `Value` variants, with
-// /// specific errors for non-convertible types.
-// impl<T: TryFrom<Value, Error = Error>> TryFrom<Value> for Vec<T> {
-//     type Error = Error;
+/// Attempts to convert a `Value` into a `Vec<T>`, where `T` implements
+/// `TryFrom<Value>`. Handles conversion from all `Value` variants, with
+/// specific errors for non-convertible types.
+impl<T: TryFrom<Value, Error = Error>> TryFrom<Value> for Vec<T> {
+    type Error = Error;
 
-//     fn try_from(value: Value) -> Result<Self, Self::Error> {
-//         match value {
-//             Value::Null => Ok(Self::new()),
-//             Value::Boolean(b) => Ok(vec![T::try_from(Value::Boolean(b))?]),
-//             Value::Integer(i) => Ok(vec![T::try_from(Value::Integer(i))?]),
-//             Value::Float(f) => Ok(vec![T::try_from(Value::Float(f))?]),
-//             Value::String(s) => Ok(vec![T::try_from(Value::String(s))?]),
-//             Value::Array(a) => a.into_iter().map(T::try_from).collect(),
-//             Value::Table(t) => {
-//                 t.into_iter().map(|(_, v)| T::try_from(v)).collect()
-//             }
-//         }
-//     }
-// }
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(vec![T::try_from(Value::Boolean(b))?]),
+            Value::Integer(i) => Ok(vec![T::try_from(Value::Integer(i))?]),
+            Value::Float(f) => Ok(vec![T::try_from(Value::Float(f))?]),
+            Value::String(s) => Ok(vec![T::try_from(Value::String(s))?]),
+            Value::Array(a) => a.into_iter().map(T::try_from).collect(),
+            Value::Table(t) => {
+                t.into_iter().map(|(_, v)| T::try_from(v)).collect()
+            }
+        }
+    }
+}
 
-// /// Attempts to convert a `Value` into a `Map<K, V>`, where `K` and `V`
-// /// implement specific traits. Handles conversion from all `Value` variants,
-// /// with specific errors for non-convertible types.
-// impl<K, V> TryFrom<Value> for Map<K, V>
-// where
-//     K: std::cmp::Eq + std::hash::Hash + std::convert::From<String> + Clone,
-//     V: TryFrom<Value, Error = Error> + Clone,
-// {
-//     type Error = Error;
+impl<T: TryFrom<Value, Error = Error>> TryFrom<&Value> for Vec<T> {
+    type Error = Error;
 
-//     fn try_from(value: Value) -> Result<Self, Self::Error> {
-//         match value {
-//             Value::Null => Ok(Self::new()),
-//             Value::Array(a) => {
-//                 let mut map = Self::new();
-//                 for (index, val) in a.into_iter().enumerate() {
-//                     let key: K = index.to_string().into();
-//                     let value = V::try_from(val)?;
-//                     map.insert(key, value);
-//                 }
-//                 Ok(map)
-//             }
-//             Value::Table(t) => t
-//                 .into_iter()
-//                 .map(|(k, v)| Ok((k.into(), V::try_from(v)?)))
-//                 .collect(),
-//             _ => {
-//                 let key: K = "0".to_string().into();
-//                 let value = V::try_from(value)?;
-//                 Ok(Self::from_iter(vec![(key, value)]))
-//             }
-//         }
-//     }
-// }
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Boolean(b) => Ok(vec![T::try_from(Value::Boolean(*b))?]),
+            Value::Integer(i) => Ok(vec![T::try_from(Value::Integer(*i))?]),
+            Value::Float(f) => Ok(vec![T::try_from(Value::Float(*f))?]),
+            Value::String(s) => {
+                Ok(vec![T::try_from(Value::String(s.clone()))?])
+            }
+            Value::Array(a) => {
+                a.iter().map(|v| T::try_from(v.clone())).collect()
+            }
+            Value::Table(t) => {
+                t.iter().map(|(_, v)| T::try_from(v.clone())).collect()
+            }
+        }
+    }
+}
+
+/// Attempts to convert a `Value` into a `Map<K, V>`, where `K` and `V`
+/// implement specific traits. Handles conversion from all `Value` variants,
+/// with specific errors for non-convertible types.
+impl<K, V> TryFrom<Value> for Map<K, V>
+where
+    K: std::cmp::Eq + std::hash::Hash + std::convert::From<String> + Clone,
+    V: TryFrom<Value, Error = Error> + Clone,
+{
+    type Error = Error;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Null => Ok(Self::new()),
+            Value::Array(a) => {
+                let mut map = Self::new();
+                for (index, val) in a.into_iter().enumerate() {
+                    let key: K = index.to_string().into();
+                    let value = V::try_from(val)?;
+                    map.insert(key, value);
+                }
+                Ok(map)
+            }
+            Value::Table(t) => t
+                .into_iter()
+                .map(|(k, v)| Ok((k.into(), V::try_from(v)?)))
+                .collect(),
+            _ => {
+                let key: K = "0".to_string().into();
+                let value = V::try_from(value)?;
+                Ok(Self::from_iter(vec![(key, value)]))
+            }
+        }
+    }
+}
 
 impl_try_from_value_for_integer!(i8);
 impl_try_from_value_for_integer!(i16);
