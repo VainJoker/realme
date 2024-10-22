@@ -49,13 +49,21 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
             return Ok(Value::Table(Map::new()));
         }
         let mut map = Map::new();
-        for (key, value) in std::env::vars() {
-            if key.to_lowercase().starts_with(&args.to_lowercase()) {
+        for (key, value) in std::env::vars_os() {
+            if key
+                .to_ascii_lowercase()
+                .to_string_lossy()
+                .starts_with(&args.to_ascii_lowercase())
+            {
                 let key = key
-                    .to_lowercase()
-                    .trim_start_matches(&args.to_lowercase())
+                    .to_ascii_lowercase()
+                    .to_string_lossy()
+                    .trim_start_matches(&args.to_ascii_lowercase())
                     .to_string();
-                map.insert(key, Value::String(value));
+                map.insert(
+                    key,
+                    Value::String(value.to_string_lossy().to_string()),
+                );
             }
         }
         Ok(Value::Table(map))

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Introduce hierarchical configuration profiles - ([8a32a1f](https://github.com/vainjoker/realme/commit/8a32a1fe56ead9c229908d12e33f6d38c095716c))
 - Add realme functionality - ([ff1c6fc](https://github.com/vainjoker/realme/commit/ff1c6fca9cdc1c0ee16058b87e63e202d0ece04b))
 - Add Adaptor Module - ([c1dffd6](https://github.com/vainjoker/realme/commit/c1dffd6873ed8af1cdc76f02023672e115ed9635))
 - Implement: Add merge functionality to `Value::Table`    - ([1e297e0](https://github.com/vainjoker/realme/commit/1e297e080422e321d7066bf0cc659912c62088fb))
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🪶 Miscellaneous Tasks
 
+- Fix formatting inconsistencies - ([5cec73d](https://github.com/vainjoker/realme/commit/5cec73dafb0a623a7c68c935f4945cfc87a6caf5))
 - Add tests for various configuration file formats - ([a07eb99](https://github.com/vainjoker/realme/commit/a07eb993144a71d23ce7545cb94a27917ebf2e7a))
 - Implement example code    - ([a5a0e54](https://github.com/vainjoker/realme/commit/a5a0e5490aed1a6086f6249605b8c89eeb32d36f))
 - Improve debugging output for Realme struct - ([e3e9faf](https://github.com/vainjoker/realme/commit/e3e9faf8ae2f448a7d10aebd4a06655b8a662cc5))
