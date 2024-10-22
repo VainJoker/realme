@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🪶 Miscellaneous Tasks
 
+- Add tests for various configuration file formats - ([a07eb99](https://github.com/vainjoker/realme/commit/a07eb993144a71d23ce7545cb94a27917ebf2e7a))
 - Implement example code    - ([a5a0e54](https://github.com/vainjoker/realme/commit/a5a0e5490aed1a6086f6249605b8c89eeb32d36f))
 - Improve debugging output for Realme struct - ([e3e9faf](https://github.com/vainjoker/realme/commit/e3e9faf8ae2f448a7d10aebd4a06655b8a662cc5))
 - Improve code clarity and maintainability - ([fc6efb8](https://github.com/vainjoker/realme/commit/fc6efb8a7e6f8d53c6ca0cd193f58277bc06f007))

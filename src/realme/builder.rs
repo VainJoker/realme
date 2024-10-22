@@ -41,6 +41,7 @@ impl RealmeBuilder {
         self
     }
 
+    #[must_use]
     pub fn profile(mut self, profile: impl Into<String>) -> Self {
         self.profile = Some(profile.into());
         self

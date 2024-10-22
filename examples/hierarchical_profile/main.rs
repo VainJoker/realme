@@ -9,8 +9,7 @@ fn main() {
         // differences in other profiles.
         .load(Adaptor::new(FileSource::<TomlParser>::new(
             "./examples/hierarchical_profile/config/default.toml",
-            ))
-        )
+        )))
         .load(
             Adaptor::new(FileSource::<TomlParser>::new(
                 "./examples/hierarchical_profile/config/dev.toml",
