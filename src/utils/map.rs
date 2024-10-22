@@ -80,7 +80,7 @@ where
         self.inner.entry(k)
     }
 
-    fn iter(&self) -> <&Self as IntoIterator>::IntoIter {
+    pub(crate) fn iter(&self) -> <&Self as IntoIterator>::IntoIter {
         <&Self as IntoIterator>::into_iter(self)
     }
 }

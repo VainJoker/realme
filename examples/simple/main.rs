@@ -5,24 +5,20 @@ fn main() {
         Deserialize,
         Serialize,
     };
+
     #[derive(Debug, Serialize, Deserialize)]
     struct Person {
-        name: String,
-        age:  u32,
-        // birthday: std::time::DateTime<time::Utc>,
+        name:     String,
+        age:      u32,
+        birthday: chrono::DateTime<chrono::Utc>,
     }
 
-    // const CONFIGURATION1: &str = r#"
-    //     name = "John"
-    //     age = 30
-    //     birthday = 1993-01-01T00:00:00Z
-    // "#;
     let c = String::from(
         r#"
         name = "John"
         age = 30
         birthday = 1993-01-01T00:00:00Z
-    "#,
+        "#,
     );
 
     let realme = Realme::builder()

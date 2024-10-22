@@ -43,7 +43,7 @@ impl RealmeBuilder {
     // pub(crate) fn handle_adaptors(
     //     &mut self,
     //     cache: &mut RealmeCache,
-    // ) -> Result<(), RealmeError> {
+    // ) -> Result<(), Error> {
     //     self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
     //     for adaptor in self.adaptors.iter().rev() {
     //         let is_env = adaptor.source_type() == SourceType::Env;
@@ -57,7 +57,7 @@ impl RealmeBuilder {
     //     &mut self,
     //     cache: &mut RealmeCache,
     //     sender: &crossbeam::channel::Sender<()>,
-    // ) -> Result<(), RealmeError> {
+    // ) -> Result<(), Error> {
     //     self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
     //     for adaptor in self.adaptors.iter().rev() {
     //         let is_env = adaptor.source_type() == SourceType::Env;
@@ -106,7 +106,7 @@ impl RealmeBuilder {
     // #[cfg(feature = "hot_reload")]
     // pub fn shared_build(
     //     mut self,
-    // ) -> Result<super::shared::SharedRealme, RealmeError> {
+    // ) -> Result<super::shared::SharedRealme, Error> {
     //     let mut cache = RealmeCache::new();
     //     let (sender, receiver) = crossbeam::channel::unbounded::<()>();
 
