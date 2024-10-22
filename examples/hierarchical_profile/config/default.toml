@@ -1,0 +1,6 @@
+[app]
+name = "realme-default"
+debug = false
+
+[common]
+common = "common"

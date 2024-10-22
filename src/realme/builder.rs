@@ -11,6 +11,7 @@ use crate::{
 #[derive(Default, Clone)]
 pub struct RealmeBuilder {
     adaptors: Vec<Adaptor>,
+    profile:  Option<String>,
 }
 
 impl RealmeBuilder {
@@ -40,17 +41,10 @@ impl RealmeBuilder {
         self
     }
 
-    // pub(crate) fn handle_adaptors(
-    //     &mut self,
-    //     cache: &mut RealmeCache,
-    // ) -> Result<(), Error> {
-    //     self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
-    //     for adaptor in self.adaptors.iter().rev() {
-    //         let is_env = adaptor.source_type() == SourceType::Env;
-    //         cache.handle_adaptor(adaptor, is_env)?;
-    //     }
-    //     Ok(())
-    // }
+    pub fn profile(mut self, profile: impl Into<String>) -> Self {
+        self.profile = Some(profile.into());
+        self
+    }
 
     // #[cfg(feature = "hot_reload")]
     // pub(crate) fn handle_shared_adaptors(
@@ -68,6 +62,26 @@ impl RealmeBuilder {
     // }
 
     pub fn build(mut self) -> Result<Realme, Error> {
+        // let mut needed_adaptors = Vec::with_capacity(self.adaptors.len());
+        let mut flag = self.profile.is_some();
+        self.adaptors.retain(|adaptor| {
+            match (&adaptor.profile, &self.profile) {
+                (None, _) => true,
+                (Some(adaptor_profile), Some(self_profile))
+                    if adaptor_profile == self_profile =>
+                {
+                    flag = false;
+                    true
+                }
+                _ => false,
+            }
+        });
+        if flag {
+            return Err(Error::new_build_error(format!(
+                "Can not find profile {}",
+                self.profile.expect("Profile is not set")
+            )));
+        }
         self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
         let mut cache = Map::new();
         for adaptor in self.adaptors.iter().rev() {

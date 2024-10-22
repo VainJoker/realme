@@ -20,6 +20,7 @@ pub struct Adaptor {
     source:       Arc<dyn Source<Error = Error, Value = Value>>,
     pub priority: Option<usize>,
     pub watcher:  bool,
+    pub profile:  Option<String>,
 }
 
 impl std::fmt::Debug for Adaptor {
@@ -38,6 +39,7 @@ impl Adaptor {
             source:   Arc::new(source),
             priority: None,
             watcher:  false,
+            profile:  None,
         }
     }
 
@@ -62,6 +64,12 @@ impl Adaptor {
     #[must_use]
     pub const fn priority(mut self, priority: usize) -> Self {
         self.priority = Some(priority);
+        self
+    }
+
+    #[must_use]
+    pub fn profile(mut self, profile: impl Into<String>) -> Self {
+        self.profile = Some(profile.into());
         self
     }
 }
