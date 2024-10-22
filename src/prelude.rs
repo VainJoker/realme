@@ -1,6 +1,5 @@
 //! Prelude for the crate
 pub use crate::{
-    Map,
     Realme,
     RealmeBuilder,
     Value,
@@ -27,5 +26,8 @@ pub use crate::{
             string::StringSource,
         },
     },
-    utils::W,
+    utils::{
+        Map,
+        W,
+    },
 };

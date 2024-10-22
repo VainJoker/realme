@@ -16,7 +16,7 @@ full = [
   "file",
   "string",
   "cmd",
-  "env_with_replace",
+  "env",
   "toml",
   "json",
   "yaml",
@@ -24,7 +24,7 @@ full = [
   "ron",
   "ini",
   "tracing",
-  "hot_reload",
+  "watch",
 ]
 file = []
 string = []
@@ -38,7 +38,7 @@ json5 = ["dep:serde_json5"]
 ron = ["dep:ron"]
 ini = ["dep:rust-ini"]
 tracing = ["dep:tracing"]
-hot_reload = ["dep:notify", "dep:crossbeam"]
+watch = ["dep:notify", "dep:crossbeam"]
 
 [dependencies]
 thiserror = "1.0"

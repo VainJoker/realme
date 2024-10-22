@@ -1,7 +1,4 @@
-use std::{
-    fmt::Formatter,
-    sync::Arc,
-};
+use std::sync::Arc;
 
 use source::Source;
 
@@ -14,20 +11,13 @@ pub mod parser;
 pub mod source;
 
 /// Represents an adaptor that wraps a source of configuration data.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Adaptor {
     /// The underlying source of configuration data.
     source:       Arc<dyn Source<Error = Error, Value = Value>>,
     pub priority: Option<usize>,
     pub watcher:  bool,
     pub profile:  Option<String>,
-}
-
-impl std::fmt::Debug for Adaptor {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        // TODO
-        write!(f, "Adaptor {{ priority: {:?} }}", 1)
-    }
 }
 
 impl Adaptor {

@@ -22,10 +22,10 @@ Add this to your `Cargo.toml`:
 [dependencies]
 realme = {version = "0.1.4", features = ["toml"]}
 ```
-You can also enable other features, for example, to use hot reloading feature, you need to enable `json` and`hot_reload` feature:
+You can also enable other features, for example, to use hot reloading feature, you need to enable `json` and`watch` feature:
 
 ```toml
-realme = {version = "0.1.4", features = ["toml", "json", "hot_reload"]}
+realme = {version = "0.1.4", features = ["toml", "json", "watch"]}
 ```
 
 ## Usage

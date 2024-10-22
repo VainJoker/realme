@@ -7,6 +7,7 @@ use std::{
 use crate::{
     Error,
     prelude::*,
+    source_debug,
 };
 
 /// Represents a source that reads configuration data from a file.
@@ -20,13 +21,14 @@ use crate::{
 /// * `T`: The parser type that implements the `Parser` trait for parsing file
 ///   contents.
 /// * `U`: The path type that implements `AsRef<Path>`, defaults to `PathBuf`.
-#[derive(Debug)]
 pub struct FileSource<T> {
     /// The path to the configuration file.
     path:    PathBuf,
     /// Phantom data to hold the parser type.
     _marker: PhantomData<T>,
 }
+
+source_debug!(FileSource<T>);
 
 impl<T> FileSource<T> {
     /// Constructs a new `FileSource` with the specified file path.
@@ -74,7 +76,7 @@ where
             .and_then(|v| Value::try_serialize(&v))
     }
 
-    #[cfg(feature = "hot_reload")]
+    #[cfg(feature = "watch")]
     fn watch(
         &self,
         s: crossbeam::channel::Sender<()>,

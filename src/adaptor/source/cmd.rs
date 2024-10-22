@@ -4,13 +4,13 @@ use std::marker::PhantomData;
 use crate::{
     Error,
     prelude::*,
+    source_debug,
 };
 
 /// A source that parses command output into a `Value`.
 ///
 /// This struct implements the `Source` trait and is used to parse
 /// command output into a `Value`.
-#[derive(Debug)]
 pub struct CmdSource<T> {
     /// The options or arguments for the command.
     options: String,
@@ -29,6 +29,8 @@ impl<T> CmdSource<T> {
         }
     }
 }
+
+source_debug!(CmdSource<T>);
 
 impl<T> Source for CmdSource<T>
 where
@@ -53,7 +55,7 @@ where
             .and_then(|v| Value::try_serialize(&v))
     }
 
-    #[cfg(feature = "hot_reload")]
+    #[cfg(feature = "watch")]
     fn watch(
         &self,
         _s: crossbeam::channel::Sender<()>,

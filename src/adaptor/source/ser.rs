@@ -5,9 +5,9 @@ use serde::Serialize;
 use crate::{
     Error,
     prelude::*,
+    source_debug,
 };
 
-#[derive(Debug)]
 pub struct SerSource<T, V> {
     meta:    V,
     /// Phantom data to hold the parser type.
@@ -22,6 +22,8 @@ impl<T, V> SerSource<T, V> {
         }
     }
 }
+
+source_debug!(SerSource<T, V>);
 
 impl<T, V> Source for SerSource<T, V>
 where
@@ -39,7 +41,7 @@ where
         Value::try_serialize(&self.meta)
     }
 
-    #[cfg(feature = "hot_reload")]
+    #[cfg(feature = "watch")]
     fn watch(
         &self,
         _s: crossbeam::channel::Sender<()>,

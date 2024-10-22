@@ -12,7 +12,7 @@ use crate::{
     Error,
     prelude::*,
 };
-// #[cfg(feature = "hot_reload")]
+// #[cfg(feature = "watch")]
 // mod shared;
 
 /// Represents a configuration realme with a cache for storing configuration

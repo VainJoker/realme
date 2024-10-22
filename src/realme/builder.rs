@@ -47,7 +47,7 @@ impl RealmeBuilder {
         self
     }
 
-    // #[cfg(feature = "hot_reload")]
+    // #[cfg(feature = "watch")]
     // pub(crate) fn handle_shared_adaptors(
     //     &mut self,
     //     cache: &mut RealmeCache,
@@ -118,7 +118,7 @@ impl RealmeBuilder {
         })
     }
 
-    // #[cfg(feature = "hot_reload")]
+    // #[cfg(feature = "watch")]
     // pub fn shared_build(
     //     mut self,
     // ) -> Result<super::shared::SharedRealme, Error> {

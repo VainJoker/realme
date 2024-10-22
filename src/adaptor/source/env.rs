@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use crate::{
     Error,
     prelude::*,
+    source_debug,
 };
 
 /// Represents a source for environment variables with a specific prefix.
@@ -11,13 +12,14 @@ use crate::{
 /// This struct is used to fetch and parse environment variables that start with
 /// a given prefix. It implements the `Source` trait, allowing environment
 /// variables to be parsed into a specified type `T` using a parser `U`.
-#[derive(Debug)]
 pub struct EnvSource<T> {
     /// The prefix used for filtering environment variables.
     prefix:  String,
     /// Phantom data to hold the lifetime and parser type.
     _marker: PhantomData<T>,
 }
+
+source_debug!(EnvSource<T>);
 
 impl<T> EnvSource<T> {
     pub fn new<U: Into<String>>(prefix: U) -> Self {
@@ -42,7 +44,7 @@ where
             .and_then(|v| Value::try_serialize(&v))
     }
 
-    #[cfg(feature = "hot_reload")]
+    #[cfg(feature = "watch")]
     fn watch(
         &self,
         _s: crossbeam::channel::Sender<()>,

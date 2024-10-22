@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use crate::{
     Error,
     prelude::*,
+    source_debug,
 };
 
 /// A `Source` implementation that reads from a string buffer.
@@ -11,11 +12,12 @@ use crate::{
 /// This struct holds a reference to a string buffer and parses it using a
 /// specified parser. The generic type `T` represents the parser, and `U` is the
 /// type of the buffer which must implement `AsRef<str>` and `Clone`.
-#[derive(Debug)]
 pub struct StringSource<T> {
     buffer:  String,
     _marker: PhantomData<T>,
 }
+
+source_debug!(StringSource<T>);
 
 impl<T> StringSource<T> {
     /// Constructs a new `StringSource` with the given buffer.
@@ -49,7 +51,7 @@ where
             .and_then(|v| Value::try_serialize(&v))
     }
 
-    #[cfg(feature = "hot_reload")]
+    #[cfg(feature = "watch")]
     fn watch(
         &self,
         _s: crossbeam::channel::Sender<()>,
