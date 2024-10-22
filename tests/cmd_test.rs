@@ -1,5 +1,6 @@
 #![cfg(all(feature = "cmd", feature = "toml"))]
 
+use pretty_assertions::assert_eq;
 use realme::prelude::*;
 use serde::{
     Deserialize,
@@ -100,11 +101,11 @@ fn cmd_parse() -> anyhow::Result<()> {
     let realme = Realme::builder()
         .load(
             Adaptor::new(FileSource::<TomlParser>::new(path.as_str()))
-                .priority(2),
+                .priority(1),
         )
         .load(
             Adaptor::new(CmdSource::<CmdParser>::new("owner.name=Jasper"))
-                .priority(1),
+                .priority(2),
         )
         .build()
         .expect("Building configuration object");

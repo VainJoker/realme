@@ -85,7 +85,7 @@ impl RealmeBuilder {
         }
         self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
         let mut cache = Map::new();
-        for adaptor in self.adaptors.iter().rev() {
+        for adaptor in &self.adaptors {
             match adaptor.parse() {
                 Ok(Value::Table(table)) => {
                     for (k, v) in table {
