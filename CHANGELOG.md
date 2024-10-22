@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Prioritize configuration sources using unsigned integers    - ([c6bb12f](https://github.com/vainjoker/realme/commit/c6bb12f8e915a06f7edd438ce245a534c408f033))
 - Implement Debug for Adaptor    - ([93169f8](https://github.com/vainjoker/realme/commit/93169f8547339c0db4381ca7143377e6bef45a2f))
 - Introduce hierarchical configuration profiles - ([8a32a1f](https://github.com/vainjoker/realme/commit/8a32a1fe56ead9c229908d12e33f6d38c095716c))
 - Add realme functionality - ([ff1c6fc](https://github.com/vainjoker/realme/commit/ff1c6fca9cdc1c0ee16058b87e63e202d0ece04b))
