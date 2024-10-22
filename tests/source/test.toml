@@ -1,0 +1,69 @@
+# This is a TOML document.
+
+# Title
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00Z
+
+# This is an array
+[database]
+server = "192.168.1.1"
+ports = [ 8001, 8002, 8003 ]
+connection_max = "5000"
+enabled = true
+
+# Nested table
+[servers]
+[servers.alpha]
+ip = "10.0.0.1"
+dc = "eqdc1"
+
+[servers.beta]
+ip = "10.0.0.2"
+dc = "eqdc2"
+
+# Table title
+[products]
+name = "A"
+description = "A product"
+price = 19.99
+
+[products.features]
+color = "red"
+size = "medium"
+
+# Subtable
+[[products.reviews]]
+reviewer = "John"
+comment = "Great product!"
+
+[[products.reviews]]
+reviewer = "Jane"
+comment = "Not bad."
+
+# Date time
+[logs]
+date_format = "2006-01-02T15:04:05Z07:00"
+
+# Float
+[metrics]
+ratio = 0.5
+threshold = 1.0
+
+# String
+[settings]
+title = "Sample Config"
+description = 'This is a "description" with escaped quotes.'
+
+# Custom time
+[custom]
+time = 2024-09-01T13:45:30
+
+# Expression
+[[expressions]]
+name = "simple"
+value = "2 + 2"
+
+[[expressions]]
+name = "complex"
+value = "sin(x) * cos(y)"

@@ -106,7 +106,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
 
 /// Custom deserializer implementation for `Value`.
 impl<'de> serde::Deserializer<'de> for Value {
-    type Error = crate::error::DeserializeError;
+    type Error = crate::errors::DeserializeError;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
@@ -481,7 +481,7 @@ impl MapDeserializer {
 }
 
 impl<'de> de::MapAccess<'de> for MapDeserializer {
-    type Error = crate::error::DeserializeError;
+    type Error = crate::errors::DeserializeError;
 
     fn next_key_seed<T>(
         &mut self,
@@ -524,7 +524,7 @@ struct SeqDeserializer {
 }
 
 impl<'de> de::SeqAccess<'de> for SeqDeserializer {
-    type Error = crate::error::DeserializeError;
+    type Error = crate::errors::DeserializeError;
 
     fn next_element_seed<T>(
         &mut self,
@@ -577,7 +577,7 @@ impl EnumDeserializer {
 struct EnumVariantDeserializer;
 
 impl<'de> de::VariantAccess<'de> for EnumVariantDeserializer {
-    type Error = crate::error::DeserializeError;
+    type Error = crate::errors::DeserializeError;
 
     fn unit_variant(self) -> Result<(), Self::Error> {
         Ok(())
@@ -614,7 +614,7 @@ impl<'de> de::VariantAccess<'de> for EnumVariantDeserializer {
 }
 
 impl<'de> de::EnumAccess<'de> for EnumDeserializer {
-    type Error = crate::error::DeserializeError;
+    type Error = crate::errors::DeserializeError;
 
     type Variant = EnumVariantDeserializer;
 
@@ -641,7 +641,7 @@ impl<'de> de::EnumAccess<'de> for EnumDeserializer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::error::Error;
+    use crate::errors::Error;
 
     #[test]
     fn test_deserialize_string() -> anyhow::Result<()> {

@@ -51,7 +51,7 @@ impl Serialize for Value {
 /// A custom serializer that transforms various types into `Value`.
 impl Serializer for ValueSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     type SerializeSeq = SeqSerializer;
     type SerializeTuple = TupleSerializer;
@@ -308,7 +308,7 @@ impl StructVariantSerializer {
 
 impl SerializeSeq for SeqSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_element<T: ?Sized + Serialize>(
         &mut self,
@@ -326,7 +326,7 @@ impl SerializeSeq for SeqSerializer {
 
 impl SerializeTuple for TupleSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_element<T: ?Sized + Serialize>(
         &mut self,
@@ -342,7 +342,7 @@ impl SerializeTuple for TupleSerializer {
 
 impl SerializeTupleStruct for TupleStructSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
@@ -358,7 +358,7 @@ impl SerializeTupleStruct for TupleStructSerializer {
 
 impl SerializeTupleVariant for TupleVariantSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
@@ -374,7 +374,7 @@ impl SerializeTupleVariant for TupleVariantSerializer {
 
 impl SerializeMap for MapSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_key<K: ?Sized + Serialize>(
         &mut self,
@@ -410,7 +410,7 @@ impl SerializeMap for MapSerializer {
 
 impl SerializeStruct for StructSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,
@@ -456,7 +456,7 @@ impl SerializeStruct for StructSerializer {
 
 impl SerializeStructVariant for StructVariantSerializer {
     type Ok = Value;
-    type Error = crate::error::SerializeError;
+    type Error = crate::errors::SerializeError;
 
     fn serialize_field<T: ?Sized + Serialize>(
         &mut self,

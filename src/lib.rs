@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 mod adaptor;
-pub mod error;
+pub mod errors;
 pub mod prelude;
 pub mod utils;
 
@@ -30,8 +30,8 @@ pub use adaptor::{
         string::StringSource,
     },
 };
-pub use error::Error;
-pub(crate) use error::Result;
+pub use errors::Error;
+pub(crate) use errors::Result;
 pub use realme::{
     Realme,
     builder::RealmeBuilder,
