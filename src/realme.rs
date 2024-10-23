@@ -9,7 +9,7 @@ use serde::{
 };
 
 use crate::{
-    Error,
+    Result,
     prelude::*,
 };
 // #[cfg(feature = "watch")]
@@ -24,7 +24,6 @@ pub struct Realme {
     default: Option<Value>,
     #[serde(skip)]
     builder: RealmeBuilder,
-    // profile: Option<String>,
 }
 
 impl std::fmt::Debug for Realme {
@@ -68,7 +67,7 @@ impl Realme {
     /// Returns a `Result<T, Error>` which is `Ok` containing the
     /// deserialized type if successful, or an `Err` containing a `Error`
     /// if the operation fails.
-    pub fn try_deserialize<T: DeserializeOwned>(&self) -> Result<T, Error> {
+    pub fn try_deserialize<T: DeserializeOwned>(&self) -> Result<T> {
         self.cache.clone().try_deserialize()
     }
 
@@ -89,7 +88,7 @@ impl Realme {
     /// Returns a `Result<Self, Error>` which is `Ok` containing a new
     /// `Realme` instance if successful, or an `Err` containing a `Error`
     /// if the operation fails.
-    pub(crate) fn try_serialize<T: Serialize>(from: &T) -> Result<Self, Error> {
+    pub(crate) fn try_serialize<T: Serialize>(from: &T) -> Result<Self> {
         let cache = Value::try_serialize(from)?;
         Ok(Self {
             cache:   cache.clone(),
@@ -99,23 +98,13 @@ impl Realme {
     }
 
     /// Reloads the Realme instance from its builder.
-    ///
-    /// This method creates a new `Realme` instance by reloading configuration
-    /// from the sources specified in the builder. It only reloads data that
-    /// was originally loaded through the builder's `load` method. Any
-    /// values set programmatically after the initial build are preserved.
-    ///
-    /// # Returns
-    ///
-    /// Returns a `Result<Self, Error>` containing either:
-    /// - `Ok(Self)`: A new `Realme` instance with reloaded configuration.
-    /// - `Err(Error)`: An error if the reload operation fails.
-    pub fn reload(self) -> Result<Self, Error> {
-        let mut new_realme = self.builder.build()?;
-        if let Some(default) = self.default {
+    pub fn reload(&mut self) -> Result<()> {
+        let mut new_realme = self.builder.clone().build()?;
+        if let Some(default) = self.default.take() {
             new_realme.cache.merge(&default);
             new_realme.default = Some(default);
         }
-        Ok(new_realme)
+        *self = new_realme;
+        Ok(())
     }
 }

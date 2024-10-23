@@ -63,8 +63,14 @@ where
     /// This method returns `Err(Error)` if the file cannot be read or if
     /// the parsing fails.
     fn parse(&self) -> Result<Value, Error> {
-        let buffer = std::fs::read_to_string(self.path.clone())
-            .map_err(|e| Error::ReadFileError(e.to_string()))?;
+        let buffer =
+            std::fs::read_to_string(self.path.clone()).map_err(|e| {
+                Error::ReadFileError(format!(
+                    "Failed to read file: {}, error: {}",
+                    self.path.display(),
+                    e
+                ))
+            })?;
 
         T::parse(&buffer)
             .map_err(|e| {

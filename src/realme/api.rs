@@ -33,7 +33,14 @@ impl Realme {
         value: V,
     ) -> Result<()> {
         let value = Value::try_serialize(&value)?;
-        self.cache.set(key.as_ref().to_string(), value)?;
+        self.cache.set(key.as_ref(), value.clone())?;
+        if let Some(default) = &mut self.default {
+            default.set(key.as_ref(), value)?;
+        } else {
+            let mut default = Map::new();
+            default.insert(key.as_ref().to_string(), value);
+            self.default = Some(Value::Table(default));
+        }
         Ok(())
     }
 

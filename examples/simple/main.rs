@@ -17,7 +17,7 @@ fn main() {
         r#"
         name = "John"
         age = 30
-        birthday = 1993-01-01T00:00:00Z
+        Birthday = 1993-01-01T00:00:00Z
         "#,
     );
 
