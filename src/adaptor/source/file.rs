@@ -106,7 +106,7 @@ where
     }
 
     #[cfg(feature = "watch")]
-    fn watch(
+    fn watcher(
         &self,
         s: crossbeam::channel::Sender<()>,
     ) -> std::result::Result<(), Self::Error> {
@@ -131,7 +131,6 @@ where
                 Error::WatcherError(e.to_string())
             })?;
 
-            // 开始监视文件
             notify::Watcher::watch(
                 &mut watcher,
                 &path,

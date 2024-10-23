@@ -27,7 +27,7 @@ pub trait Source: Send + Sync + Debug {
 
     #[cfg(feature = "watch")]
     /// Watch the source for changes
-    fn watch(
+    fn watcher(
         &self,
         s: crossbeam::channel::Sender<()>,
     ) -> Result<(), Self::Error>;

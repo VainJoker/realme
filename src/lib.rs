@@ -34,7 +34,8 @@ pub use errors::Error;
 pub(crate) use errors::Result;
 pub use realme::{
     Realme,
-    builder::RealmeBuilder,
+    RealmeBuilder,
+    SharedRealme,
 };
 pub use utils::Map;
 pub use value::Value;

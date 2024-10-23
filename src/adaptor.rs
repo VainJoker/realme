@@ -4,6 +4,7 @@ use source::Source;
 
 use crate::{
     Error,
+    Result,
     Value,
 };
 
@@ -16,7 +17,7 @@ pub struct Adaptor {
     /// The underlying source of configuration data.
     source:       Arc<dyn Source<Error = Error, Value = Value>>,
     pub priority: u8,
-    pub watcher:  bool,
+    pub watch:    bool,
     pub profile:  Option<String>,
 }
 
@@ -28,7 +29,7 @@ impl Adaptor {
         Self {
             source:   Arc::new(source),
             priority: 0,
-            watcher:  false,
+            watch:    false,
             profile:  None,
         }
     }
@@ -39,7 +40,7 @@ impl Adaptor {
     ///
     /// Returns a `Result` containing either the parsed `Value` or a
     /// `Error`.
-    pub fn parse(&self) -> Result<Value, Error> {
+    pub fn parse(&self) -> Result<Value> {
         self.source.parse()
     }
 
@@ -61,5 +62,24 @@ impl Adaptor {
     pub fn profile(mut self, profile: impl Into<String>) -> Self {
         self.profile = Some(profile.into());
         self
+    }
+
+    #[cfg(feature = "watch")]
+    #[must_use]
+    pub const fn watch(mut self) -> Self {
+        self.watch = true;
+        self
+    }
+
+    #[cfg(feature = "watch")]
+    pub(crate) fn watcher(
+        &self,
+        s: crossbeam::channel::Sender<()>,
+    ) -> Result<()> {
+        if self.watch {
+            self.source.watcher(s)
+        } else {
+            Ok(())
+        }
     }
 }

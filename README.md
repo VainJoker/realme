@@ -83,7 +83,7 @@ I am impressed by the following libraries:
 And compared to them, Realme has the following features:
 - Realme value conversion is all based on `serde`, so you can convert to any type that implements `serde::Serialize` and `serde::Deserialize` trait
 - Realme has a flexible adaptor system, you can easily add your own adaptor by implementing the `Parser` and `Source` trait
-- Realme supports hot reloading, you can reload the configuration file at runtime
+- Realme supports file source hot reloading, you can reload the configuration file at runtime
 
 But Realme has the following drawbacks:
 - Newer project, less documentations, less tests

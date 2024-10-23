@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Introduce hot reloading for file-based configuration sources - ([b909934](https://github.com/vainjoker/realme/commit/b9099344dac6adb089213dc11e64f3daa97a8c39))
 - Add placeholder feature - ([e669516](https://github.com/vainjoker/realme/commit/e66951668633b3632087112372db34a956d6de44))
 - Introduce configuration reload functionality - ([5dc38a3](https://github.com/vainjoker/realme/commit/5dc38a34d71c22a6e7f103eb743d6492f1b30bf2))
 - Prioritize configuration sources using unsigned integers    - ([c6bb12f](https://github.com/vainjoker/realme/commit/c6bb12f8e915a06f7edd438ce245a534c408f033))
@@ -15,11 +16,22 @@ All notable changes to this project will be documented in this file.
 - Add Adaptor Module - ([c1dffd6](https://github.com/vainjoker/realme/commit/c1dffd6873ed8af1cdc76f02023672e115ed9635))
 - Implement: Add merge functionality to `Value::Table`    - ([1e297e0](https://github.com/vainjoker/realme/commit/1e297e080422e321d7066bf0cc659912c62088fb))
 - Introduce expression language for key access    - ([de34124](https://github.com/vainjoker/realme/commit/de34124db87232cc6bdd15021f88ed8dd3b5ec7e))
-- Prepare for v0.2 - ([3d2ba77](https://github.com/vainjoker/realme/commit/3d2ba776198180a81f67b6ecd4b65cb5166be6c5))
+- Prepare for v0.2    - ([3d2ba77](https://github.com/vainjoker/realme/commit/3d2ba776198180a81f67b6ecd4b65cb5166be6c5))
+- Introduce support for reloading configurations - ([1e37ed9](https://github.com/vainjoker/realme/commit/1e37ed902a27c908559e16e0c9264a9e934805b5))
 
 ### 🐛 Bug Fixes
 
 - Handle non-UTF-8 environment variables - ([9eeb43e](https://github.com/vainjoker/realme/commit/9eeb43e31c55772f34f9e06c84a2e2a7e20df18f))
+- Fix parsing of empty inputs for env and cmd adaptors - ([55a4f93](https://github.com/vainjoker/realme/commit/55a4f93e5b3260eebe56476aad1cdb31a91bfeed))
+- Introduce merge functionality for Value types - ([98d8c16](https://github.com/vainjoker/realme/commit/98d8c16a5e93a5f004dbeab30f5103846cbc2aed))
+
+### 🚜 Refactor
+
+- Improve: Simplify configuration source construction    - ([abdc64e](https://github.com/vainjoker/realme/commit/abdc64eca8e3eb878e703231158b35e450974d5d))
+
+### 📚 Documentation
+
+- Add viper to list of impressive libraries - ([9fc84c8](https://github.com/vainjoker/realme/commit/9fc84c8480237e9143f0c077c63dc17797d23770))
 
 ### ✅ Testing
 
@@ -27,53 +39,18 @@ All notable changes to this project will be documented in this file.
 
 ### 🪶 Miscellaneous Tasks
 
+- Introduce benchmarks for TOML parsing performance - ([d4b3d51](https://github.com/vainjoker/realme/commit/d4b3d51f4247e8cf14440b4aec52e8b2602cdfa6))
 - Fix formatting inconsistencies - ([5cec73d](https://github.com/vainjoker/realme/commit/5cec73dafb0a623a7c68c935f4945cfc87a6caf5))
 - Add tests for various configuration file formats - ([a07eb99](https://github.com/vainjoker/realme/commit/a07eb993144a71d23ce7545cb94a27917ebf2e7a))
 - Implement example code    - ([a5a0e54](https://github.com/vainjoker/realme/commit/a5a0e5490aed1a6086f6249605b8c89eeb32d36f))
 - Improve debugging output for Realme struct - ([e3e9faf](https://github.com/vainjoker/realme/commit/e3e9faf8ae2f448a7d10aebd4a06655b8a662cc5))
 - Improve code clarity and maintainability - ([fc6efb8](https://github.com/vainjoker/realme/commit/fc6efb8a7e6f8d53c6ca0cd193f58277bc06f007))
-
-## [0.1.10](https://github.com/vainjoker/realme/compare/v0.1.9..v0.1.10) - 2024-10-18
-
-### ✨ Features
-
-- Introduce support for reloading configurations - ([1e37ed9](https://github.com/vainjoker/realme/commit/1e37ed902a27c908559e16e0c9264a9e934805b5))
-
-### 🪶 Miscellaneous Tasks
-
 - Release v0.1.10 - ([a1841eb](https://github.com/vainjoker/realme/commit/a1841eba7acbee4d1ff85912f85900e5e0a35810))
-
-## [0.1.9](https://github.com/vainjoker/realme/compare/v0.1.8..v0.1.9) - 2024-10-17
-
-### 🐛 Bug Fixes
-
-- Fix parsing of empty inputs for env and cmd adaptors - ([55a4f93](https://github.com/vainjoker/realme/commit/55a4f93e5b3260eebe56476aad1cdb31a91bfeed))
-
-### 🪶 Miscellaneous Tasks
-
 - Release v0.1.9 - ([a92b5f5](https://github.com/vainjoker/realme/commit/a92b5f526ee26e25b336de5c5acdcd95118cc1be))
-
-## [0.1.8](https://github.com/vainjoker/realme/compare/v0.1.7..v0.1.8) - 2024-10-17
-
-### 🐛 Bug Fixes
-
-- Introduce merge functionality for Value types - ([98d8c16](https://github.com/vainjoker/realme/commit/98d8c16a5e93a5f004dbeab30f5103846cbc2aed))
-
-### 🪶 Miscellaneous Tasks
-
 - Release v0.1.8 - ([a5ecd2b](https://github.com/vainjoker/realme/commit/a5ecd2b462354bf401022073d436499864a89633))
-
-## [0.1.7](https://github.com/vainjoker/realme/compare/v0.1.6..v0.1.7) - 2024-10-16
-
-### 🚜 Refactor
-
-- Improve: Simplify configuration source construction    - ([abdc64e](https://github.com/vainjoker/realme/commit/abdc64eca8e3eb878e703231158b35e450974d5d))
-
-### 🪶 Miscellaneous Tasks
-
 - Release v0.1.7 - ([3e660d8](https://github.com/vainjoker/realme/commit/3e660d8b11ef1e8ae7917548b6113637446565ba))
 - Remove unused profile configurations    - ([c3d5dc5](https://github.com/vainjoker/realme/commit/c3d5dc500ca052d816d93eb36cd333046f2f7637))
-- Format the code and add more github action - ([4243dfb](https://github.com/vainjoker/realme/commit/4243dfb52c5b8aa3e49bd2010f4fbc47a3c311d4))
+- Format the code and add more github action    - ([4243dfb](https://github.com/vainjoker/realme/commit/4243dfb52c5b8aa3e49bd2010f4fbc47a3c311d4))
 
 ### 📦️ Build
 

@@ -45,7 +45,7 @@ where
     }
 
     #[cfg(feature = "watch")]
-    fn watch(
+    fn watcher(
         &self,
         _s: crossbeam::channel::Sender<()>,
     ) -> Result<(), Self::Error> {

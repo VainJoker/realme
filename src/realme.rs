@@ -1,7 +1,13 @@
 pub mod api;
 pub mod builder;
+#[cfg(feature = "watch")]
+mod shared;
 
-use builder::RealmeBuilder;
+use std::sync::{
+    Arc,
+    RwLock,
+};
+
 use serde::{
     Deserialize,
     Serialize,
@@ -12,8 +18,6 @@ use crate::{
     Result,
     prelude::*,
 };
-// #[cfg(feature = "watch")]
-// mod shared;
 
 /// Represents a configuration realme with a cache for storing configuration
 /// values.
@@ -25,6 +29,17 @@ pub struct Realme {
     #[serde(skip)]
     builder: RealmeBuilder,
 }
+
+#[derive(Default, Clone, Debug)]
+pub struct RealmeBuilder {
+    adaptors: Vec<Adaptor>,
+    profile:  Option<String>,
+}
+
+#[cfg(feature = "watch")]
+pub type SharedRealme = Arc<RwLock<Realme>>;
+// #[derive(Debug, Clone)]
+// pub struct SharedRealme(pub Arc<RwLock<Realme>>);
 
 impl std::fmt::Debug for Realme {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
