@@ -1,0 +1,3 @@
+secret_key = '{{ env(name="SECRET_KEY") }}'
+default = '{{ env(name="DEBUG", default="true") }}'
+empty = '{{ env(name="EMPTY") }}'

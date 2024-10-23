@@ -4,10 +4,14 @@ use std::{
     path::PathBuf,
 };
 
+use tera::Tera;
+
 use crate::{
     Error,
+    Result,
     prelude::*,
     source_debug,
+    utils,
 };
 
 /// Represents a source that reads configuration data from a file.
@@ -42,27 +46,8 @@ impl<T> FileSource<T> {
             _marker: PhantomData,
         }
     }
-}
 
-impl<T> Source for FileSource<T>
-where
-    T: for<'a> Parser<&'a str> + Send + Sync,
-{
-    type Error = Error;
-    type Value = Value;
-    /// Parses the file at the specified path using the parser type `T`.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(Value)` - If the file is successfully read and parsed.
-    /// * `Err(Error)` - If there is an error reading the file or parsing its
-    ///   contents.
-    ///
-    /// # Errors
-    ///
-    /// This method returns `Err(Error)` if the file cannot be read or if
-    /// the parsing fails.
-    fn parse(&self) -> Result<Value, Error> {
+    fn get_buffer(&self) -> Result<String> {
         let buffer =
             std::fs::read_to_string(self.path.clone()).map_err(|e| {
                 Error::ReadFileError(format!(
@@ -72,6 +57,44 @@ where
                 ))
             })?;
 
+        #[cfg(feature = "placeholder")]
+        {
+            let mut tera = Tera::default();
+            tera.register_function("env", utils::get_env());
+            tera.add_raw_template("config", &buffer).map_err(|e| {
+                Error::new_parse_error(
+                    self.path.display().to_string(),
+                    format!("Failed to add template: {e}"),
+                )
+            })?;
+
+            let context = tera::Context::new();
+            let rendered = tera.render("config", &context).map_err(|e| {
+                Error::new_parse_error(
+                    self.path.display().to_string(),
+                    format!("Failed to render template: {e}"),
+                )
+            })?;
+            Ok(rendered)
+        }
+        #[cfg(not(feature = "placeholder"))]
+        {
+            Ok(buffer)
+        }
+    }
+}
+
+impl<T> Source for FileSource<T>
+where
+    T: for<'a> Parser<&'a str> + Send + Sync,
+{
+    type Error = Error;
+    type Value = Value;
+
+    fn parse(&self) -> Result<Value> {
+        let buffer = self.get_buffer()?;
+
+        // Parse the rendered content
         T::parse(&buffer)
             .map_err(|e| {
                 Error::new_parse_error(
@@ -86,10 +109,10 @@ where
     fn watch(
         &self,
         s: crossbeam::channel::Sender<()>,
-    ) -> Result<(), Self::Error> {
+    ) -> std::result::Result<(), Self::Error> {
         let path = std::sync::Arc::new(self.path.clone());
 
-        std::thread::spawn(move || -> Result<(), Self::Error> {
+        std::thread::spawn(move || -> std::result::Result<(), Self::Error> {
             let (tx, rx) = crossbeam::channel::unbounded();
 
             let mut watcher = notify::recommended_watcher(

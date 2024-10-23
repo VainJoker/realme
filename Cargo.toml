@@ -25,6 +25,7 @@ full = [
   "ini",
   "tracing",
   "watch",
+  "placeholder",
 ]
 file = []
 string = []
@@ -44,7 +45,7 @@ watch = ["dep:notify", "dep:crossbeam"]
 thiserror = "1.0"
 serde = { version = "1", features = ["derive"] }
 itertools = { version = "0.13.0" }
-tera = { version = "1", default-features = false, optional = true }
+tera = { version = "1.19.0", default-features = false, optional = true }
 toml = { version = "0.8.19", optional = true }
 serde_json = { version = "1.0", optional = true }
 serde_yaml2 = { version = "0.1.2", optional = true }

@@ -21,6 +21,8 @@ pub enum Error {
     BuildError(String),
     #[error("Read file error: {0}")]
     ReadFileError(String),
+    #[error("Tera error: {0}")]
+    TeraError(String),
     #[error("Watcher error: {0}")]
     WatcherError(String),
     #[error("Lock error: {0}")]
