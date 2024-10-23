@@ -37,9 +37,9 @@ impl Realme {
         if let Some(default) = &mut self.default {
             default.set(key.as_ref(), value)?;
         } else {
-            let mut default = Map::new();
-            default.insert(key.as_ref().to_string(), value);
-            self.default = Some(Value::Table(default));
+            let mut tmp = Value::Table(Map::new());
+            tmp.set(key.as_ref(), value)?;
+            self.default = Some(tmp);
         }
         Ok(())
     }

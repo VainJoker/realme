@@ -29,7 +29,6 @@ impl RealmeBuilder {
         }));
 
         let shared_realme_clone = shared_realme.clone();
-        let builder_clone = std::sync::RwLock::new(self);
 
         std::thread::spawn(move || -> Result<()> {
             // To avoid too many updates, set a debounce time
@@ -58,11 +57,7 @@ impl RealmeBuilder {
                 {
                     // Update shared_realme
                     if let Ok(mut realme) = shared_realme_clone.write() {
-                        if let Ok(builder) = builder_clone.read() {
-                            let new_cache =
-                                update_cache(&builder.adaptors, &sender)?;
-                            realme.cache = new_cache;
-                        }
+                        realme.reload()?;
                     }
                     last_update = now;
                     should_update = false;

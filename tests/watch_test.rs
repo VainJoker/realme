@@ -12,6 +12,7 @@ fn test_watch_integration() -> anyhow::Result<()> {
     let initial_content = r#"
         [section]
         key = "initial value"
+        should_not_change = "0"
     "#;
     std::fs::write(&temp_file, initial_content)?;
 
@@ -27,17 +28,26 @@ fn test_watch_integration() -> anyhow::Result<()> {
         .shared_build()
         .expect("Building configuration object");
 
-    println!("Initial configuration: {realme:?}");
+    eprintln!("Initial configuration: {realme:?}");
+    assert_eq!(
+        realme
+            .read()
+            .expect("get realme")
+            .get_as::<String, _>("section.should_not_change")
+            .expect("get value"),
+        "0"
+    );
 
     let updated_content = r#"
         [section]
         key = "updated value"
+        should_not_change = "should not change"
     "#;
     std::fs::write(&temp_file, updated_content)?;
 
     thread::sleep(Duration::from_secs(2));
 
-    println!("Updated configuration: {realme:?}");
+    eprintln!("First updated configuration: {realme:?}");
 
     let realme_clone = realme.clone();
     let handle = thread::spawn(move || {
@@ -49,6 +59,13 @@ fn test_watch_integration() -> anyhow::Result<()> {
                 .expect("get value");
         }
     });
+
+    realme
+        .write()
+        .expect("set realme")
+        .set("section.should_not_change", "1")?;
+
+    eprintln!("Second updated configuration: {realme:?}");
 
     for _ in 0..1000 {
         let _ = realme
@@ -63,11 +80,20 @@ fn test_watch_integration() -> anyhow::Result<()> {
     let final_content = r#"
         [section]
         key = "final value"
+        should_not_change = "2"
     "#;
     std::fs::write(&temp_file, final_content)?;
 
     thread::sleep(Duration::from_secs(2));
 
-    println!("Final configuration: {realme:?}");
+    eprintln!("Final configuration: {realme:?}");
+    assert_eq!(
+        realme
+            .read()
+            .expect("get realme")
+            .get_as::<String, _>("section.should_not_change")
+            .expect("get value"),
+        "1"
+    );
     Ok(())
 }
