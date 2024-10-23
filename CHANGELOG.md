@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Add placeholder feature - ([e669516](https://github.com/vainjoker/realme/commit/e66951668633b3632087112372db34a956d6de44))
 - Introduce configuration reload functionality - ([5dc38a3](https://github.com/vainjoker/realme/commit/5dc38a34d71c22a6e7f103eb743d6492f1b30bf2))
 - Prioritize configuration sources using unsigned integers    - ([c6bb12f](https://github.com/vainjoker/realme/commit/c6bb12f8e915a06f7edd438ce245a534c408f033))
 - Implement Debug for Adaptor    - ([93169f8](https://github.com/vainjoker/realme/commit/93169f8547339c0db4381ca7143377e6bef45a2f))
