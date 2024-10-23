@@ -78,6 +78,7 @@ I am impressed by the following libraries:
 - [config-rs](https://github.com/mehcode/config-rs)
 - [toml](https://github.com/toml-rs/toml)
 - [figment](https://github.com/SergioBenitez/Figment)
+- [viper](https://github.com/spf13/viper)
 
 And compared to them, Realme has the following features:
 - Realme value conversion is all based on `serde`, so you can convert to any type that implements `serde::Serialize` and `serde::Deserialize` trait
