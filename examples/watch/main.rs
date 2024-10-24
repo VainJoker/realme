@@ -8,11 +8,7 @@ fn main() {
     use realme::prelude::*;
 
     fn modify_config_file(path: &str, time: u32) {
-        let content = format!(
-            r#"
-    changed_time = {time}
-            "#
-        );
+        let content = format!("changed_time = {time}");
         std::fs::write(path, content).expect("Writing to file");
     }
 

@@ -9,7 +9,7 @@ use crate::{
 /// This struct collects adaptors from various sources and constructs a `Realme`
 /// with a configured environment.
 impl RealmeBuilder {
-    /// Creates a new `RealmeBuilder` instance with default values.
+    /// Creates a default `RealmeBuilder` instance.
     pub fn new() -> Self {
         Self::default()
     }
@@ -35,12 +35,39 @@ impl RealmeBuilder {
         self
     }
 
+    /// Sets the profile for the `Realme` instance.
+    ///
+    /// This method takes ownership of the builder and returns it after
+    /// modifying, allowing for method chaining.
+    ///
+    /// # Arguments
+    ///
+    /// * `profile` - The profile to be set for the `Realme` instance. e.g.
+    ///   `dev`, `prod`. which you have seted in the adaptor.
+    ///
+    /// # Examples
+    ///
+    /// ```rust ignore
+    /// let builder = RealmeBuilder::new().load(...).profile("dev").build();
+    /// ```
     #[must_use]
     pub fn profile(mut self, profile: impl Into<String>) -> Self {
         self.profile = Some(profile.into());
         self
     }
 
+    /// Constructs a `Realme` instance using the accumulated adaptors and
+    /// profile.
+    ///
+    /// This method verifies the profile, orders adaptors by priority, and
+    /// assembles the `Realme` instance.
+    ///
+    /// If any adaptor has a watch set, use the `shared_build` method instead.
+    ///
+    /// # Returns
+    ///
+    /// * `Result<Realme, Error>` - A `Result` containing the constructed
+    ///   `Realme` instance or an `Error` if the build process fails.
     pub fn build(mut self) -> Result<Realme, Error> {
         self.check_profile()?;
         self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));

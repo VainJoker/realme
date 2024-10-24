@@ -49,21 +49,37 @@ impl Adaptor {
     /// # Returns
     ///
     /// Returns the adaptor with the priority set.
-    /// The larger the priority, the earlier it will be parsed.
+    /// The larger the priority, the later it will be parsed.
     /// If the priority is not set, it will be parsed first.
-    /// If all adaptors are not set priority, it will be parsed from the last.
+    /// If all adaptors are not set priority, it will be parsed from the last
+    /// one you loaded.
     #[must_use]
     pub const fn priority(mut self, priority: u8) -> Self {
         self.priority = priority;
         self
     }
 
+    /// Set the profile for the adaptor.
+    ///
+    /// # Returns
+    ///
+    /// Returns the adaptor with the profile set.
     #[must_use]
     pub fn profile(mut self, profile: impl Into<String>) -> Self {
         self.profile = Some(profile.into());
         self
     }
 
+    /// Set the watch for the adaptor.
+    ///
+    /// With watch set, the adaptor will watch the source file and reload the
+    /// configuration when the file changes. For now, only support file
+    /// source. Once the adaptor is set with watch, use
+    /// `Realme::shared_build` method to build the `Realme` instance.
+    ///
+    /// # Returns
+    ///
+    /// Returns the adaptor with the watch set.
     #[cfg(feature = "watch")]
     #[must_use]
     pub const fn watch(mut self) -> Self {

@@ -17,6 +17,15 @@ use crate::{
 };
 
 impl RealmeBuilder {
+    /// Builds the `SharedRealme` instance.
+    ///
+    /// This method checks the profile, sorts the adaptors by priority,
+    /// and constructs the `SharedRealme` instance.
+    ///
+    /// # Returns
+    ///
+    /// * `Result<SharedRealme, Error>` - A `Result` containing the built
+    ///   `SharedRealme` instance or an `Error` if the build process fails.
     pub fn shared_build(mut self) -> Result<SharedRealme> {
         self.check_profile()?;
         self.adaptors.sort_by(|a, b| a.priority.cmp(&b.priority));
