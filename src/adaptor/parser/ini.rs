@@ -34,20 +34,12 @@ impl<T: AsRef<str>> Parser<T> for IniParser {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use realme::{
-    ///     IniParser,
-    ///     Parser,
-    ///     Value,
-    /// };
+    /// ```rust
+    /// use realme::prelude::*;
     ///
     /// let ini_str = r#"
     /// [section1]
     /// key1 = value1
-    /// key2 = value2
-    ///
-    /// [section2]
-    /// key3 = value3
     /// "#;
     ///
     /// let result = IniParser::parse(ini_str);

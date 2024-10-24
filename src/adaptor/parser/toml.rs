@@ -25,11 +25,13 @@ impl<T: AsRef<str>> Parser<T> for TomlParser {
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
     ///   parsed `toml::Value` or a `Error` if parsing fails.
     ///
-    /// # Errors
-    ///
-    /// This function will return an error if the input string is not valid
-    /// TOML. The error will be wrapped in a `Error::ParseError`
-    /// variant.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let toml_str = r#"name = "John""#;
+    /// let result = TomlParser::parse(toml_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         toml::from_str(args).map_err(|e| {

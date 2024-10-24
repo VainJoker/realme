@@ -1,14 +1,15 @@
 /// Module for command-related functionality
+#[cfg(feature = "cmd")]
 pub mod cmd;
 /// Module for environment-related functionality
+#[cfg(feature = "env")]
 pub mod env;
 /// Module for file-related functionality
 pub mod file;
-/// Module for string-related functionality
-pub mod string;
-
 /// Module for ser-related functionality
 pub mod ser;
+/// Module for string-related functionality
+pub mod string;
 
 use std::fmt::Debug;
 

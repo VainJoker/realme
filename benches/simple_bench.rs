@@ -1,4 +1,3 @@
-#![cfg(feature = "toml")]
 use criterion::{
     Criterion,
     criterion_group,
@@ -10,7 +9,7 @@ use serde::{
     Serialize,
 };
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct MyConfig {
     pub owner:       Owner,
     pub database:    Database,
@@ -23,13 +22,13 @@ pub struct MyConfig {
     pub expressions: Vec<Expression>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Owner {
     pub name: String,
     pub dob:  String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Database {
     pub server:         String,
     pub ports:          Vec<u16>,
@@ -37,19 +36,19 @@ pub struct Database {
     pub enabled:        bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Servers {
     pub alpha: Server,
     pub beta:  Server,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Server {
     pub ip: String,
     pub dc: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Products {
     pub name:        String,
     pub description: String,
@@ -58,53 +57,49 @@ pub struct Products {
     pub reviews:     Vec<Review>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Features {
     pub color: String,
     pub size:  String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Review {
     pub reviewer: String,
     pub comment:  String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Logs {
     pub date_format: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Metrics {
     pub ratio:     f64,
     pub threshold: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Settings {
     pub title:       String,
     pub description: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Custom {
     pub time: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Default, Clone)]
 pub struct Expression {
     pub name:  String,
     pub value: String,
 }
 
-fn read_file() -> String {
-    std::fs::read_to_string("benches/simple.toml").expect("Reading file")
-}
-
-fn parse_config(content: &str) -> MyConfig {
+fn parse_config(config: MyConfig) -> MyConfig {
     let realme = Realme::builder()
-        .load(Adaptor::new(StringSource::<TomlParser>::new(content)))
+        .load(Adaptor::new(SerSource::<SerParser, _>::new(config)))
         .build()
         .expect("Building configuration object");
 
@@ -112,8 +107,10 @@ fn parse_config(content: &str) -> MyConfig {
 }
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let content = read_file();
-    c.bench_function("parse_config", |b| b.iter(|| parse_config(&content)));
+    let config = MyConfig::default();
+    c.bench_function("parse_config", |b| {
+        b.iter(|| parse_config(config.clone()));
+    });
 }
 
 criterion_group!(benches, criterion_benchmark);

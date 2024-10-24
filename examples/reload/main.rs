@@ -1,6 +1,47 @@
 #[cfg(feature = "toml")]
-use realme::prelude::*;
 fn main() {
+    use realme::prelude::*;
+    fn initialize_realme() -> Realme {
+        Realme::builder()
+            .load(Adaptor::new(FileSource::<TomlParser>::new(
+                "examples/reload/reload.toml",
+            )))
+            .build()
+            .expect("Building configuration object")
+    }
+
+    fn update_configuration(realme: &mut Realme) {
+        realme.set("name", "VJ").expect("Setting name");
+    }
+
+    fn modify_config_file(path: &str, reload_value: u32, name: &str) {
+        let content = format!(
+            r#"
+    reload = {reload_value}
+    name = "{name}"
+            "#
+        );
+        std::fs::write(path, content).expect("Writing to file");
+    }
+
+    fn reload_configuration(realme: &mut Realme) {
+        realme.reload().expect("Reloading configuration object");
+        println!("Reloaded configuration: {realme:?}");
+    }
+
+    fn verify_configuration(realme: &Realme) {
+        assert_eq!(
+            realme.get_as::<u32, _>("reload").expect("Getting reload"),
+            2,
+            "Reload value should be 2"
+        );
+        assert_eq!(
+            realme.get_as::<String, _>("name").expect("Getting name"),
+            "VJ",
+            "Name should remain 'VJ' after reload"
+        );
+    }
+
     // Initialize Realme configuration
     let mut realme = initialize_realme();
     println!("Initial configuration: {realme:?}");
@@ -22,49 +63,8 @@ fn main() {
     modify_config_file("examples/reload/reload.toml", 1, "Jasper");
 }
 
-fn initialize_realme() -> Realme {
-    Realme::builder()
-        .load(Adaptor::new(FileSource::<TomlParser>::new(
-            "examples/reload/reload.toml",
-        )))
-        .build()
-        .expect("Building configuration object")
-}
-
-fn update_configuration(realme: &mut Realme) {
-    realme.set("name", "VJ").expect("Setting name");
-}
-
-fn modify_config_file(path: &str, reload_value: u32, name: &str) {
-    let content = format!(
-        r#"
-reload = {reload_value}
-name = "{name}"
-        "#
-    );
-    std::fs::write(path, content).expect("Writing to file");
-}
-
-fn reload_configuration(realme: &mut Realme) {
-    realme.reload().expect("Reloading configuration object");
-    println!("Reloaded configuration: {realme:?}");
-}
-
-fn verify_configuration(realme: &Realme) {
-    assert_eq!(
-        realme.get_as::<u32, _>("reload").expect("Getting reload"),
-        2,
-        "Reload value should be 2"
-    );
-    assert_eq!(
-        realme.get_as::<String, _>("name").expect("Getting name"),
-        "VJ",
-        "Name should remain 'VJ' after reload"
-    );
-}
-
 #[cfg(not(feature = "toml"))]
 fn main() {
     println!("Please enable toml feature");
-    println!("cargo run --example simple --features toml");
+    println!("cargo run --example reload --features toml");
 }

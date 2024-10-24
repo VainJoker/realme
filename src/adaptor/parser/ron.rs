@@ -25,11 +25,13 @@ impl<T: AsRef<str>> Parser<T> for RonParser {
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
     ///   parsed `ron::Value` or a `Error`.
     ///
-    /// # Errors
-    ///
-    /// This function will return an error if:
-    /// * The input string is not a valid RON format.
-    /// * There are any issues during the parsing process.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let ron_str = r#"{"name": "John", "age": 30}"#;
+    /// let result = RonParser::parse(ron_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         let v = ron::from_str(args).map_err(|e| {

@@ -89,6 +89,7 @@ impl RealmeBuilder {
     }
 }
 
+#[cfg(feature = "toml")]
 #[cfg(test)]
 mod tests {
     use std::io::Write;

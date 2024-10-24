@@ -24,11 +24,13 @@ impl<T: AsRef<str>> Parser<T> for JsonParser {
     ///
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
     ///   parsed JSON value or a `Error` if parsing fails.
-    ///
-    /// # Errors
-    ///
-    /// This function will return an error if the input string is not valid
-    /// JSON. The error will be wrapped in a `Error::new_parse_error`.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let json_str = r#"{"name": "John", "age": 30}"#;
+    /// let result = JsonParser::parse(json_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         serde_json::from_str(args).map_err(|e| {

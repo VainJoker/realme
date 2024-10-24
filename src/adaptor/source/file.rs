@@ -1,9 +1,9 @@
-#![cfg(feature = "file")]
 use std::{
     marker::PhantomData,
     path::PathBuf,
 };
 
+#[cfg(feature = "placeholder")]
 use tera::Tera;
 
 use crate::{
@@ -11,7 +11,6 @@ use crate::{
     Result,
     prelude::*,
     source_debug,
-    utils,
 };
 
 /// Represents a source that reads configuration data from a file.
@@ -60,7 +59,7 @@ impl<T> FileSource<T> {
         #[cfg(feature = "placeholder")]
         {
             let mut tera = Tera::default();
-            tera.register_function("env", utils::get_env());
+            tera.register_function("env", crate::utils::get_env());
             tera.add_raw_template("config", &buffer).map_err(|e| {
                 Error::new_parse_error(
                     self.path.display().to_string(),
@@ -118,6 +117,7 @@ where
             let mut watcher = notify::recommended_watcher(
                 move |res: notify::Result<notify::Event>| {
                     if let Ok(event) = res {
+                        #[allow(unused_variables)]
                         if let Err(e) = tx.send(event) {
                             #[cfg(feature = "tracing")]
                             tracing::error!("Send event error: {:?}", e);
@@ -143,6 +143,7 @@ where
             })?;
 
             while let Ok(_event) = rx.recv() {
+                #[allow(unused_variables)]
                 if let Err(e) = s.send(()) {
                     #[cfg(feature = "tracing")]
                     tracing::error!("Send event error: {:?}", e);

@@ -33,3 +33,9 @@ fn main() {
         .expect("Building configuration object");
     println!("{realme:#?}");
 }
+
+#[cfg(not(all(feature = "toml")))]
+fn main() {
+    println!("Please enable toml feature");
+    println!("cargo run --example hierarchical_profile --features toml");
+}

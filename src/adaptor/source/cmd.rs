@@ -1,4 +1,3 @@
-#![cfg(feature = "cmd")]
 use std::marker::PhantomData;
 
 use crate::{
@@ -7,10 +6,9 @@ use crate::{
     source_debug,
 };
 
-/// A source that parses command output into a `Value`.
-///
 /// This struct implements the `Source` trait and is used to parse
 /// command output into a `Value`.
+/// Recommend working with `CmdParser`.
 pub struct CmdSource<T> {
     /// The options or arguments for the command.
     options: String,
@@ -38,15 +36,6 @@ where
 {
     type Error = Error;
     type Value = Value;
-    /// Parses the command output into a `Value`.
-    ///
-    /// This method executes the command with the given options,
-    /// parses the output using the specified parser, and returns
-    /// the result as a `Value`.
-    ///
-    /// # Returns
-    ///
-    /// A `Result` containing either the parsed `Value` or a `Error`.
     fn parse(&self) -> Result<Value, Self::Error> {
         T::parse(&self.options)
             .map_err(|e| {

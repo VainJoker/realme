@@ -2,7 +2,7 @@ pub mod api;
 pub mod builder;
 #[cfg(feature = "watch")]
 mod shared;
-
+#[cfg(feature = "watch")]
 use std::sync::{
     Arc,
     RwLock,

@@ -25,9 +25,13 @@ impl<T: AsRef<str>> Parser<T> for Json5Parser {
     /// * `Result<Self::Item, Self::Error>` - A `Result` containing either the
     ///   parsed `Value` or a `Error`.
     ///
-    /// # Errors
-    ///
-    /// Returns a `Error` if the input cannot be parsed as valid JSON5.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let json5_str = r#"{"name": "John", "age": 30}"#;
+    /// let result = Json5Parser::parse(json5_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         serde_json5::from_str(args).map_err(|e| {

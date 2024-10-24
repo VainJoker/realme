@@ -1,4 +1,3 @@
-#![cfg(feature = "string")]
 use std::marker::PhantomData;
 
 use crate::{
@@ -23,7 +22,7 @@ impl<T> StringSource<T> {
     /// Constructs a new `StringSource` with the given buffer.
     ///
     /// # Arguments
-    /// * `buffer` - The buffer to parse.
+    /// * `buffer` - The string to parse.
     pub fn new<U: Into<String>>(buffer: U) -> Self {
         Self {
             buffer:  buffer.into(),
@@ -38,11 +37,6 @@ where
 {
     type Error = Error;
     type Value = Value;
-    /// Parses the buffer using the specified parser and returns the parsed
-    /// value or an error.
-    ///
-    /// This method attempts to parse the buffer into a `Value` using the parser
-    /// `T`. If parsing fails, it wraps the error into a `Error`.
     fn parse(&self) -> Result<Value, Error> {
         T::parse(&self.buffer)
             .map_err(|e| {

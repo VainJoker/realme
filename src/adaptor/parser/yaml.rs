@@ -24,11 +24,13 @@ impl<T: AsRef<str>> Parser<T> for YamlParser {
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
     ///   parsed YAML as a `YamlNodeWrapper`, or a `Error` if parsing fails.
     ///
-    /// # Errors
-    ///
-    /// This function will return an error if the YAML parsing fails. The error
-    /// will be wrapped in a `Error` with additional context about the
-    /// parsing attempt.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let yaml_str = r#"name: John"#;
+    /// let result = YamlParser::parse(yaml_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         serde_yaml2::from_str(args).map_err(|e| {

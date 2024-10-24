@@ -15,7 +15,7 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     ///
     /// This function filters environment variables that start with the given
     /// prefix, removes the prefix from the key, converts the key to
-    /// lowercase, and stores the resulting key-value pairs in a `Map`.
+    /// lowercase, and stores the resulting key-value pairs in a `Value`.
     ///
     /// # Arguments
     ///
@@ -32,13 +32,14 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     ///
     /// # Examples
     ///
-    /// ```
-    /// use realme::{
-    ///     EnvParser,
-    ///     Parser,
-    /// };
+    /// ```rust
+    /// use std::env;
+    ///
+    /// use realme::prelude::*;
     ///
     /// // Assuming environment variables: APP_NAME=MyApp, APP_VERSION=1.0
+    /// env::set_var("APP_NAME", "MyApp");
+    /// env::set_var("APP_VERSION", "1.0");
     /// let result = EnvParser::parse("APP_");
     /// assert!(result.is_ok());
     /// // The resulting map would contain: {"name": "MyApp", "version": "1.0"}

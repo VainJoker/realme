@@ -1,4 +1,3 @@
-#![cfg(feature = "env")]
 use std::marker::PhantomData;
 
 use crate::{

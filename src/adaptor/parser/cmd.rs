@@ -178,6 +178,14 @@ impl<T: AsRef<str>> Parser<T> for CmdParser {
     /// # Returns
     ///
     /// * `Result` - A result containing the parsed `Value` or a `Error`.
+    ///
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let cmd_str = "age=30, name.first=John, name.last=Doe";
+    /// let result = CmdParser::parse(cmd_str);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         let args = args.as_ref().trim();
         if args.is_empty() {

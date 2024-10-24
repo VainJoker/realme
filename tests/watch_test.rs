@@ -1,3 +1,5 @@
+#![cfg(feature = "watch")]
+
 use std::{
     thread,
     time::Duration,

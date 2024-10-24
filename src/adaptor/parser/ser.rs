@@ -16,22 +16,24 @@ impl<T: Serialize> Parser<T> for SerParser {
     type Item = T;
     type Error = Error;
 
-    /// Parses a TOML string into a `toml::Value`.
+    /// Parses a serializable value into a `T`.
     ///
     /// # Arguments
     ///
-    /// * `args` - A string-like type that can be converted to a string slice.
+    /// * `args` - A serializable value.
     ///
     /// # Returns
     ///
     /// * `Result<Self::Item, Self::Error>` - A Result containing either the
-    ///   parsed `toml::Value` or a `Error` if parsing fails.
+    ///   parsed `T` or a `Error` if parsing fails.
     ///
-    /// # Errors
-    ///
-    /// This function will return an error if the input string is not valid
-    /// TOML. The error will be wrapped in a `Error::ParseError`
-    /// variant.
+    /// # Examples
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let value = 1;
+    /// let result = SerParser::parse(value);
+    /// assert!(result.is_ok());
+    /// ```
     fn parse(args: T) -> Result<Self::Item, Self::Error> {
         Ok(args)
     }

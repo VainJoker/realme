@@ -1,12 +1,21 @@
-use std::{
-    thread,
-    time::Duration,
-};
-
-#[cfg(feature = "toml")]
-use realme::prelude::*;
-
+#[cfg(all(feature = "toml", feature = "watch"))]
 fn main() {
+    use std::{
+        thread,
+        time::Duration,
+    };
+
+    use realme::prelude::*;
+
+    fn modify_config_file(path: &str, time: u32) {
+        let content = format!(
+            r#"
+    changed_time = {time}
+            "#
+        );
+        std::fs::write(path, content).expect("Writing to file");
+    }
+
     let realme = Realme::builder()
         .load(
             Adaptor::new(FileSource::<TomlParser>::new(
@@ -28,17 +37,8 @@ fn main() {
     modify_config_file("examples/watch/watch.toml", 1);
 }
 
-fn modify_config_file(path: &str, time: u32) {
-    let content = format!(
-        r#"
-changed_time = {time}
-        "#
-    );
-    std::fs::write(path, content).expect("Writing to file");
-}
-
-#[cfg(not(feature = "toml"))]
+#[cfg(not(all(feature = "toml", feature = "watch")))]
 fn main() {
-    println!("Please enable toml feature");
-    println!("cargo run --example simple --features toml");
+    println!("Please enable toml and watch feature");
+    println!("cargo run --example watch --features toml,watch");
 }
