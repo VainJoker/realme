@@ -11,7 +11,7 @@ homepage = "https://github.com/vainjoker/realme"
 description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
-default = ["env"]
+default = ["env", "macros"]
 full = [
   "cmd",
   "env",
@@ -23,9 +23,11 @@ full = [
   "ini",
   "tracing",
   "watch",
+  "macros",
   "placeholder",
 ]
 env = []
+macros = ["dep:realme_macros"]
 placeholder = ["dep:tera"]
 cmd = ["dep:clap", "dep:nom"]
 toml = ["dep:toml"]
@@ -41,6 +43,7 @@ watch = ["dep:notify", "dep:crossbeam"]
 thiserror = "1.0"
 serde = { version = "1", features = ["derive"] }
 itertools = { version = "0.13.0" }
+realme_macros = { path = "./realme_macros", optional = true }
 tera = { version = "1.19.0", default-features = false, optional = true }
 toml = { version = "0.8.19", optional = true }
 serde_json = { version = "1.0", optional = true }
