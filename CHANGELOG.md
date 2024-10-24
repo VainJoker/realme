@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ### 📚 Documentation
 
+- Update author email address - ([ad0c08c](https://github.com/vainjoker/realme/commit/ad0c08ce8a5646123be50a233c241fffc7cae9b5))
 - Add viper to list of impressive libraries - ([9fc84c8](https://github.com/vainjoker/realme/commit/9fc84c8480237e9143f0c077c63dc17797d23770))
 
 ### ✅ Testing
@@ -39,6 +40,10 @@ All notable changes to this project will be documented in this file.
 - Implement example code    - ([a5a0e54](https://github.com/vainjoker/realme/commit/a5a0e5490aed1a6086f6249605b8c89eeb32d36f))
 - Improve debugging output for Realme struct - ([e3e9faf](https://github.com/vainjoker/realme/commit/e3e9faf8ae2f448a7d10aebd4a06655b8a662cc5))
 - Improve code clarity and maintainability - ([fc6efb8](https://github.com/vainjoker/realme/commit/fc6efb8a7e6f8d53c6ca0cd193f58277bc06f007))
+
+### 📦️ Build
+
+- Update examples for clarity and feature consistency - ([772d8c7](https://github.com/vainjoker/realme/commit/772d8c7edc6f2210f38b1d5bc714be445f428c97))
 
 ## [0.1.10](https://github.com/vainjoker/realme/compare/v0.1.9..v0.1.10) - 2024-10-18
 

@@ -1,3 +1,5 @@
+//! This module contains the core `Realme` struct and its builder.
+
 pub mod api;
 pub mod builder;
 #[cfg(feature = "watch")]
@@ -23,23 +25,28 @@ use crate::{
 /// values.
 #[derive(Deserialize, Clone)]
 pub struct Realme {
+    /// The cache storing configuration values.
     cache:   Value,
+    /// The default configuration values.
     #[serde(skip)]
     default: Option<Value>,
+    /// The builder used to construct this Realme instance.
     #[serde(skip)]
     builder: RealmeBuilder,
 }
 
+/// Builder for constructing a `Realme` instance.
 #[derive(Default, Clone, Debug)]
 pub struct RealmeBuilder {
+    /// List of adaptors used to load configuration.
     adaptors: Vec<Adaptor>,
+    /// Optional profile name for configuration.
     profile:  Option<String>,
 }
 
 #[cfg(feature = "watch")]
+/// A thread-safe shared reference to a `Realme` instance.
 pub type SharedRealme = Arc<RwLock<Realme>>;
-// #[derive(Debug, Clone)]
-// pub struct SharedRealme(pub Arc<RwLock<Realme>>);
 
 impl std::fmt::Debug for Realme {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -79,15 +86,15 @@ impl Realme {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<T, Error>` which is `Ok` containing the
-    /// deserialized type if successful, or an `Err` containing a `Error`
-    /// if the operation fails.
+    /// Returns a `Result<T, Error>` which is `Ok` containing the deserialized
+    /// type if successful, or an `Err` containing a `Error` if the
+    /// operation fails.
     pub fn try_deserialize<T: DeserializeOwned>(&self) -> Result<T> {
         self.cache.clone().try_deserialize()
     }
 
     /// Attempts to serialize a given object into a new `Realme` instance.
-    /// It is not recommended to use this method.
+    /// It is not recommended to use this method directly.
     ///
     /// # Arguments
     ///
@@ -100,9 +107,9 @@ impl Realme {
     ///
     /// # Returns
     ///
-    /// Returns a `Result<Self, Error>` which is `Ok` containing a new
-    /// `Realme` instance if successful, or an `Err` containing a `Error`
-    /// if the operation fails.
+    /// Returns a `Result<Self, Error>` which is `Ok` containing a new `Realme`
+    /// instance if successful, or an `Err` containing a `Error` if the
+    /// operation fails.
     pub(crate) fn try_serialize<T: Serialize>(from: &T) -> Result<Self> {
         let cache = Value::try_serialize(from)?;
         Ok(Self {
@@ -113,6 +120,14 @@ impl Realme {
     }
 
     /// Reloads the Realme instance from its builder.
+    ///
+    /// This method rebuilds the Realme instance using the current builder
+    /// configuration, and merges any default values if they exist.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result<(), Error>` which is `Ok(())` if the reload was
+    /// successful, or an `Err` containing a `Error` if the operation fails.
     pub fn reload(&mut self) -> Result<()> {
         let mut new_realme = self.builder.clone().build()?;
         if let Some(default) = self.default.take() {
