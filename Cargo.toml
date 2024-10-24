@@ -2,7 +2,7 @@
 name = "realme"
 version = "0.1.10"
 edition = "2021"
-authors = ["Jasper 张汉杰 <vainjoker@tuta.io>"]
+authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
 readme = "README.md"
 license = "GPL-3.0"
 exclude = [".github", "Makefile.toml", "CHANGELOG.md"]
