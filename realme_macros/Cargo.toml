@@ -1,5 +1,5 @@
 [package]
-name = "realme-macros"
+name = "realme_macros"
 version = "0.1.0"
 edition = "2021"
 authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
@@ -18,3 +18,4 @@ bench = false
 syn = { version = "2.0.8", features = ["full"] }
 quote = "1.0.9"
 proc-macro2 = "1.0.69"
+darling = "0.20.10"

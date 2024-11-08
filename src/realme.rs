@@ -20,7 +20,6 @@ use crate::{
     Result,
     prelude::*,
 };
-
 /// Represents a configuration realme with a cache for storing configuration
 /// values.
 #[derive(Deserialize, Clone)]
