@@ -20,7 +20,6 @@ use crate::{
     Result,
     prelude::*,
 };
-
 /// Represents a configuration realme with a cache for storing configuration
 /// values.
 #[derive(Deserialize, Clone)]
@@ -137,4 +136,8 @@ impl Realme {
         *self = new_realme;
         Ok(())
     }
+
+    // fn validate(&self) -> Result<()> {
+    //     self.cache.validate()
+    // }
 }

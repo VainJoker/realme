@@ -1,4 +1,7 @@
 //! Prelude for the crate
+#[cfg(feature = "macros")]
+pub use realme_macros::realme_file;
+
 #[cfg(feature = "watch")]
 pub use crate::SharedRealme;
 #[cfg(feature = "cmd")]

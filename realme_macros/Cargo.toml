@@ -1,0 +1,21 @@
+[package]
+name = "realme_macros"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
+readme = "README.md"
+license = "GPL-3.0"
+exclude = [".github", "Makefile.toml", "CHANGELOG.md"]
+repository = "https://github.com/vainjoker/realme"
+homepage = "https://github.com/vainjoker/realme"
+description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
+
+[lib]
+proc-macro = true
+bench = false
+
+[dependencies]
+syn = { version = "2.0.8", features = ["full"] }
+quote = "1.0.9"
+proc-macro2 = "1.0.69"
+darling = "0.20.10"
