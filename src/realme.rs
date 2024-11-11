@@ -136,4 +136,8 @@ impl Realme {
         *self = new_realme;
         Ok(())
     }
+
+    // fn validate(&self) -> Result<()> {
+    //     self.cache.validate()
+    // }
 }

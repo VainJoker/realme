@@ -10,6 +10,7 @@ fn main() {
     struct Person {
         name:     String,
         age:      u32,
+        #[serde(rename = "Birthday")]
         birthday: chrono::DateTime<chrono::Utc>,
     }
 
