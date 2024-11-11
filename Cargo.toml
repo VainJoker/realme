@@ -38,7 +38,7 @@ tracing = ["dep:tracing"]
 watch = ["dep:notify", "dep:crossbeam"]
 
 [dependencies]
-thiserror = "1.0"
+thiserror = "2.0"
 serde = { version = "1", features = ["derive"] }
 itertools = { version = "0.13.0" }
 tera = { version = "1.19.0", default-features = false, optional = true }
@@ -65,6 +65,7 @@ tracing-subscriber = "0.3.15"
 tempfile = "3.13.0"
 toml = { version = "0.8.19" }
 serde_json = { version = "1.0" }
+validator = { version = "0.19.0", features = ["derive"] }
 
 [[bench]]
 name = "simple_bench"
