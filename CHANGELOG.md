@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
-- Prepare for macro-based features - ([fa689eb](https://github.com/vainjoker/realme/commit/fa689ebe8e481b51ad4dd0f603ff7748853172ed))
+- Introduce macros support - ([0c8fe98](https://github.com/vainjoker/realme/commit/0c8fe9858bac23e6d2b4462dbc44904c8bab133f))
+- Prepare for macro-based features - ([5046524](https://github.com/vainjoker/realme/commit/50465246f1075c13e3f81027c7a2930336a0ddb5))
 - Introduce hot reloading for file-based configuration sources - ([2659933](https://github.com/vainjoker/realme/commit/2659933d4a7bf49ac0d6f9ab53bb16a9e912e6ef))
 - Add placeholder feature - ([e669516](https://github.com/vainjoker/realme/commit/e66951668633b3632087112372db34a956d6de44))
 - Introduce configuration reload functionality - ([5dc38a3](https://github.com/vainjoker/realme/commit/5dc38a34d71c22a6e7f103eb743d6492f1b30bf2))
@@ -35,7 +36,10 @@ All notable changes to this project will be documented in this file.
 
 ### 🪶 Miscellaneous Tasks
 
-- Implement builder macro - ([260492d](https://github.com/vainjoker/realme/commit/260492d8ed8e3ef39efb4caa7099801671b7aa34))
+- Clean up test suite - ([682fa67](https://github.com/vainjoker/realme/commit/682fa672646de59395b5f72e150a46cd5400a476))
+- Update default features - ([e836d5c](https://github.com/vainjoker/realme/commit/e836d5cbd241d32a12806038192f58a97b19ca98))
+- Implement builder macro - ([2e06a3b](https://github.com/vainjoker/realme/commit/2e06a3b120955086d17bf33664275f3d2a1a2dc0))
+- Introduce data validation example - ([8cc0b1f](https://github.com/vainjoker/realme/commit/8cc0b1fa9f42e74ca05d4450b96d9f3b3ec49f5e))
 - Release v0.1.11 - ([bc01134](https://github.com/vainjoker/realme/commit/bc01134910798a86aef17b752aee6c62811cc80a))
 - Bump version - ([ee2ecd0](https://github.com/vainjoker/realme/commit/ee2ecd0770aac3d2079aa42af40927242fef6cc1))
 - [**breaking**] Improve documentation for clarity - ([43b4537](https://github.com/vainjoker/realme/commit/43b4537d6e2493304b57f9b0a28b0e37fc1546e0))
@@ -48,6 +52,7 @@ All notable changes to this project will be documented in this file.
 
 ### 📦️ Build
 
+- *(deps)* Update notify requirement from 6.1.0 to 7.0.0 - ([ab613b4](https://github.com/vainjoker/realme/commit/ab613b4a632ca5539aad8c8f8b96d0fb0d23d7a5))
 - Update examples for clarity and feature consistency - ([772d8c7](https://github.com/vainjoker/realme/commit/772d8c7edc6f2210f38b1d5bc714be445f428c97))
 
 ## [0.1.10](https://github.com/vainjoker/realme/compare/v0.1.9..v0.1.10) - 2024-10-18
