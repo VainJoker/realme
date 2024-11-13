@@ -70,13 +70,6 @@ fn main() {
 
     println!("{realme:?}");
 
-    //  smart_type {
-    //     duration("timeout", default = "30s"),
-    //     size("max_upload", default = "10MB"),
-    //     network("allowed_ips", format = "CIDR"),
-    //     version("api_version", format = "semver")
-    // },
-
     // validate {
     //     dependency("db.url", requires = ["db.user", "db.pass"]),
     //     exclusive(["dev_mode", "prod_mode"]),

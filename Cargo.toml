@@ -4,7 +4,7 @@ version = "0.2.1"
 edition = "2021"
 authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
 readme = "README.md"
-license = "GPL-3.0"
+license = "MIT OR Apache-2.0"
 exclude = [".github", "Makefile.toml", "CHANGELOG.md"]
 repository = "https://github.com/vainjoker/realme"
 homepage = "https://github.com/vainjoker/realme"
@@ -108,17 +108,3 @@ use_self = "warn"
 
 [profile.release]
 strip = true
-
-[profile.dist]
-inherits = "release"
-lto = "thin"
-
-[workspace.metadata.dist]
-allow-dirty = ["ci", "msi"]
-cargo-dist-version = "0.22.1"
-ci = ["github"]
-installers = ["shell"]
-targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
-pr-run-mode = "upload"
-install-updater = false
-install-path = "CARGO_HOME"
