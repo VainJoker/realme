@@ -1,4 +1,11 @@
 #[cfg(all(feature = "toml", feature = "placeholder"))]
+///
+/// cargo run --example placeholder --features toml,placeholder
+/// The placeholder feature uses Tera for config file rendering,
+/// Therefore, it's recommended to avoid combining placeholder with reload feature.
+///
+/// The config file must contain valid syntax only. Any invalid syntax or template expressions
+/// could lead to runtime panics during rendering.
 fn main() {
     use realme::prelude::*;
     std::env::set_var("SECRET_KEY", "123123");
