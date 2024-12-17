@@ -1,6 +1,6 @@
 [package]
 name = "realme"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
 readme = "README.md"
