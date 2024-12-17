@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### ✨ Features
 
+- Introduce realme_macros builder! macro - ([2f9dca7](https://github.com/vainjoker/realme/commit/2f9dca72c3073f7119f44a7fbb9d7d0ab6fde099))
 - Introduce macros support - ([0c8fe98](https://github.com/vainjoker/realme/commit/0c8fe9858bac23e6d2b4462dbc44904c8bab133f))
 - Prepare for macro-based features - ([5046524](https://github.com/vainjoker/realme/commit/50465246f1075c13e3f81027c7a2930336a0ddb5))
 - Introduce hot reloading for file-based configuration sources - ([2659933](https://github.com/vainjoker/realme/commit/2659933d4a7bf49ac0d6f9ab53bb16a9e912e6ef))
@@ -27,6 +28,8 @@ All notable changes to this project will be documented in this file.
 
 ### 📚 Documentation
 
+- Document placeholder example and usage with Tera - ([a212f71](https://github.com/vainjoker/realme/commit/a212f71d90b530734b4fb319bb1fe6621bb81b5e))
+- Update license to MIT OR Apache-2.0 and remove GPL-3.0 - ([d14c931](https://github.com/vainjoker/realme/commit/d14c931b67af48c565f3e4b719c0f95cbcc2776b))
 - Update author email address - ([ad0c08c](https://github.com/vainjoker/realme/commit/ad0c08ce8a5646123be50a233c241fffc7cae9b5))
 - Add viper to list of impressive libraries - ([9fc84c8](https://github.com/vainjoker/realme/commit/9fc84c8480237e9143f0c077c63dc17797d23770))
 
@@ -52,6 +55,7 @@ All notable changes to this project will be documented in this file.
 
 ### 📦️ Build
 
+- *(deps)* Bump codecov/codecov-action from 4 to 5 - ([e7978bd](https://github.com/vainjoker/realme/commit/e7978bd1c2e9b0083922b30055605b5b97832098))
 - *(deps)* Update notify requirement from 6.1.0 to 7.0.0 - ([ab613b4](https://github.com/vainjoker/realme/commit/ab613b4a632ca5539aad8c8f8b96d0fb0d23d7a5))
 - Update examples for clarity and feature consistency - ([772d8c7](https://github.com/vainjoker/realme/commit/772d8c7edc6f2210f38b1d5bc714be445f428c97))
 

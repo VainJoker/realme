@@ -116,6 +116,20 @@ impl RealmeBuilder {
     }
 }
 
+#[cfg(feature = "macros")]
+#[macro_export]
+macro_rules! builder {
+    () => {
+        RealmeBuilder::new()
+    };
+    ($name:ident!($($args:tt)*)) => {
+        RealmeBuilder::new().load(realme_macros::$name!($($args)*))
+    };
+    ($name:ident!($($args:tt)*), $($rest:tt)*) => {
+        builder!($($rest)*).load(realme_macros::$name!($($args)*))
+    };
+}
+
 #[cfg(feature = "toml")]
 #[cfg(test)]
 mod tests {

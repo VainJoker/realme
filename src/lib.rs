@@ -48,5 +48,7 @@ pub use realme::{
     Realme,
     RealmeBuilder,
 };
+#[cfg(feature = "macros")]
+pub use realme_macros::*;
 pub use utils::Map;
 pub use value::Value;

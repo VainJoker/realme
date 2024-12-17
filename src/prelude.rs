@@ -1,6 +1,4 @@
 //! Prelude for the crate
-#[cfg(feature = "macros")]
-pub use realme_macros::realme_file;
 
 #[cfg(feature = "watch")]
 pub use crate::SharedRealme;
@@ -24,6 +22,8 @@ pub use crate::adaptor::parser::yaml::YamlParser;
 pub use crate::adaptor::source::cmd::CmdSource;
 #[cfg(feature = "env")]
 pub use crate::adaptor::source::env::EnvSource;
+#[cfg(feature = "macros")]
+pub use crate::builder;
 pub use crate::{
     Realme,
     RealmeBuilder,
