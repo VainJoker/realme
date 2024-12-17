@@ -27,6 +27,8 @@ All notable changes to this project will be documented in this file.
 
 ### 📚 Documentation
 
+- Document placeholder example and usage with Tera - ([a212f71](https://github.com/vainjoker/realme/commit/a212f71d90b530734b4fb319bb1fe6621bb81b5e))
+- Update license to MIT OR Apache-2.0 and remove GPL-3.0 - ([d14c931](https://github.com/vainjoker/realme/commit/d14c931b67af48c565f3e4b719c0f95cbcc2776b))
 - Update author email address - ([ad0c08c](https://github.com/vainjoker/realme/commit/ad0c08ce8a5646123be50a233c241fffc7cae9b5))
 - Add viper to list of impressive libraries - ([9fc84c8](https://github.com/vainjoker/realme/commit/9fc84c8480237e9143f0c077c63dc17797d23770))
 
