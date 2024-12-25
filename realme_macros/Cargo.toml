@@ -1,10 +1,10 @@
 [package]
 name = "realme_macros"
-version = "0.1.0"
+version = "0.2.2"
 edition = "2021"
 authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
 readme = "README.md"
-license = "GPL-3.0"
+license = "MIT OR Apache-2.0"
 exclude = [".github", "Makefile.toml", "CHANGELOG.md"]
 repository = "https://github.com/vainjoker/realme"
 homepage = "https://github.com/vainjoker/realme"
