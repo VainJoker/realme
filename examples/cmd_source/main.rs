@@ -89,8 +89,8 @@ fn main() {
                     .collect();
                 eprintln!("{name:?}");
                 Ok(Self {
-                    first: name.get("first").expect("first").to_string(),
-                    last:  name.get("last").expect("last").to_string(),
+                    first: name.get("first").expect("first").clone(),
+                    last:  name.get("last").expect("last").clone(),
                 })
             }
         }
