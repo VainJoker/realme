@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 📦️ Build
+
+- *(deps)* Update notify requirement from 7.0.0 to 8.0.0 - ([f708950](https://github.com/vainjoker/realme/commit/f7089509d092bcdfdff7e9e44ba9aa8a72cfdd83))
+- *(deps)* Update itertools requirement from 0.13.0 to 0.14.0 - ([6167ff2](https://github.com/vainjoker/realme/commit/6167ff2b26a0705f9c825edde1164f0ea083e3cd))
+- *(deps)* Update validator requirement from 0.19.0 to 0.20.0 - ([f608a3a](https://github.com/vainjoker/realme/commit/f608a3aef1b975d9ce29081b0b948e07e04fcfde))
+- *(deps)* Update serde_json5 requirement from 0.1.0 to 0.2.1 - ([8eb30c6](https://github.com/vainjoker/realme/commit/8eb30c680e78ca9185a8788c428c7657316b3dac))
+- *(deps)* Update ron requirement from 0.8.1 to 0.9.0 - ([4905997](https://github.com/vainjoker/realme/commit/4905997877733f3f8d907b4f6d274b62ad3defbf))
+
+## [0.2.2](https://github.com/vainjoker/realme/compare/realme_macros-v0.1.0..v0.2.2) - 2024-12-25
+
 ### ✨ Features
 
 - Introduce realme_macros builder! macro - ([709b7cc](https://github.com/vainjoker/realme/commit/709b7cc14ce023861320bbf9649dbfa427c6b42c))
@@ -15,6 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🪶 Miscellaneous Tasks
 
+- Bump version of realme_macros to 0.2.2 - ([a639840](https://github.com/vainjoker/realme/commit/a639840c36238d98971db084dffaef9d2b019bdc))
 - Update license and version - ([7a00e41](https://github.com/vainjoker/realme/commit/7a00e41da7c8ffad778090b2027e0b4cb11a1caf))
 - Release v0.2.2 - ([0d54259](https://github.com/vainjoker/realme/commit/0d5425903ddc98c7bdd7a02df88fe542eea6ed73))
 

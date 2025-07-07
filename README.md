@@ -1,109 +1,164 @@
 # Realme
 
-[![Build](https://github.com/VainJoker/realme/actions/workflows/integration.yml/badge.svg)](https://github.com/VainJoker/realme/actions/workflows/integration.yml) 
-[![License: GPLv3](https://img.shields.io/badge/License-GPL-green.svg)](https://opensource.org/license/gpl-3-0) 
-[![Latest Version](https://img.shields.io/crates/v/realme.svg)](https://crates.io/crates/realme) 
+[![Build](https://github.com/VainJoker/realme/actions/workflows/integration.yml/badge.svg)](https://github.com/VainJoker/realme/actions/workflows/integration.yml)
+[![Crates.io](https://img.shields.io/crates/v/realme.svg)](https://crates.io/crates/realme)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/github/VainJoker/realme/graph/badge.svg?token=KF87R60IJ1)](https://codecov.io/github/VainJoker/realme)
 
-Realme is a flexible and extensible configuration management library for Rust. It simplifies the process of loading and managing configuration settings from various sources. The name "Realme" is a play on "Realm" and "me," emphasizing its role in managing your application's configuration realm.
+Realme is a flexible and extensible configuration management library for Rust. It greatly simplifies the process of loading and managing configurations from multiple data sources by decoupling the configuration **Source** from the **Parser**.
 
-## Features
+## Core Concepts
 
-- Support for multiple configuration formats for file(etc. TOML, JSON ...) or string or env or even command line flags, and you can easily add support for more formats
-- Loosely typed — Serialization and deserialization of configuration data, configuration values may be read in any supported type, as long as there exists a reasonable conversion
-- Custom parser support and flexible adaptor system for different data sources, for example, you can check the [cmd](https://github.com/VainJoker/realme/blob/main/src/adaptor/parser/cmd.rs) parser, which allows you to read configuration from command line flags with clap
-- Live watching and re-reading of config files
+Realme's design revolves around several core components:
+
+-   **`Source`**: Defines the origin of configuration data. It can be a file (`FileSource`), environment variables (`EnvSource`), command-line arguments (`CmdSource`), a string (`StringSource`), or a serialized object (`SerSource`).
+-   **`Parser`**: Defines how to parse raw data into configuration values. For example, `TomlParser` is used for parsing TOML format, `JsonParser` for JSON format, and `SerParser` for serialized objects.
+-   **`Adaptor`**: An adapter that connects a `Source` and a `Parser` together, telling `Realme` where to read the data from and how to parse it.
+-   **`Realme`**: The core configuration object that loads multiple `Adaptors` in sequence, merging the parsed configuration data into a unified view. Later configurations will override earlier ones with the same name.
+
+## Key Features
+
+-   **Layered Configuration**: Load configurations from multiple sources in order, such as: default configuration file → environment-specific file → environment variables → command-line arguments
+-   **Multi-Source Support**: Built-in support for files, environment variables, command-line arguments, strings, and serialized objects as configuration sources
+-   **Multi-Format Parsing**: Supports popular formats like TOML, JSON, YAML, JSON5, RON, and INI through feature flags
+-   **Profile Support**: Supports multi-environment configuration, allowing different settings for different environments (e.g., dev, prod, test)
+-   **Hot Reload**: Can monitor configuration file changes and automatically reload the configuration at runtime without restarting the application
+-   **Strong and Weak Typing**: Configuration values can be deserialized into strongly-typed Rust structs, and also accessed as weakly-typed values at runtime
+-   **Fully Extensible**: You can easily add custom data sources and parsers by implementing the `Source` and `Parser` traits
+-   **Placeholder/Template Support**: (Via the `placeholder` feature) Supports using [Tera](https://keats.github.io/tera/) template syntax in configuration values
+-   **Macro Support**: Provides convenient macros to simplify the configuration building process
 
 ## Installation
 
-Add this to your `Cargo.toml`:
+Add Realme to your `Cargo.toml`:
+
+```sh
+cargo add realme
+```
+
+Then enable the required features in your `Cargo.toml`. For example, to use TOML and environment variables:
 
 ```toml
 [dependencies]
-realme = {version = "0.1.4", features = ["toml"]}
+realme = { version = "0.2.2", features = ["toml", "env"] }
+serde = { version = "1", features = ["derive"] }
 ```
-You can also enable other features, for example, to use hot reloading feature, you need to enable `json` and`watch` feature:
+
+By default, Realme enables `env` and `macros` features. To use all features, you can enable the `full` feature:
 
 ```toml
-realme = {version = "0.1.4", features = ["toml", "json", "watch"]}
+[dependencies]
+realme = { version = "0.2.2", features = ["full"] }
 ```
 
-## Usage
+## Quick Start
 
-Here's a simple example of how to use Realme:
+Here's a simple example of reading a TOML configuration string and deserializing it into a struct:
 
 ```rust
-    use realme::{Adaptor, Realme, StringSource, TomlParser};
-    use serde::{Serialize, Deserialize};
+use realme::prelude::*;
+use serde::{Deserialize, Serialize};
 
-    #[derive(Debug, Serialize, Deserialize)]
-    struct Person {
-        name: String,
-        age: u32,
-        birthday: chrono::DateTime<chrono::Utc>,
-    }
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Settings {
+    name: String,
+    age: u32,
+    features: Vec<String>,
+}
 
-    const CONFIGURATION1: &str = r#"
-        name = "John"
-        age = 30
-        birthday = 1993-01-01T00:00:00Z
-    "#;
+const CONFIG_DATA: &str = r#"
+    name = "MyApp"
+    age = 42
+    features = ["fast", "reliable"]
+"#;
 
-fn main() {
+fn main() -> Result<(), realme::Error> {
     let realme = Realme::builder()
-        .load(Adaptor::new(StringSource::<TomlParser>::new(
-            CONFIGURATION1,
-        )))
-        .build()
-        .expect("Building configuration object");
+        .load(Adaptor::new(StringSource::<TomlParser>::new(CONFIG_DATA)))
+        .build()?;
 
-    let person: Person = realme.try_deserialize().unwrap();
+    // Deserialize into struct
+    let settings: Settings = realme.try_deserialize()?;
+    println!("{:#?}", settings);
 
-    println!("{:?}", person);
-    println!("{:?}", realme);
-    
-    assert_eq!(person.name, TryInto::<String>::try_into(realme.get("name").unwrap()).unwrap());
-    assert_eq!(person.age, realme.get_as::<u32, _>("age").unwrap());
-    assert_eq!(person.birthday, realme.get_as::<chrono::DateTime<chrono::Utc>, _>("birthday").unwrap());
+    // Or get individual values
+    let name: String = realme.get_as("name")?.unwrap();
+    println!("App name: {}", name);
+
+    Ok(())
 }
 ```
 
-For more detailed examples, check the `examples` directory.
+## Layered Configuration Example
 
-For a real-world example, you can check the [Rinkle](https://github.com/VainJoker/rinkle/blob/main/src/config.rs) project.
+A common pattern is to load configuration from multiple sources:
 
-## Compartion
+```rust
+use realme::prelude::*;
 
-I am impressed by the following libraries: 
-- [config-rs](https://github.com/mehcode/config-rs)
-- [toml](https://github.com/toml-rs/toml)
-- [figment](https://github.com/SergioBenitez/Figment)
-- [viper](https://github.com/spf13/viper)
+fn main() -> Result<(), realme::Error> {
+    let realme = Realme::builder()
+        // 1. Load default configuration
+        .load(Adaptor::new(FileSource::<TomlParser>::new("config/default.toml")))
+        // 2. Load environment-specific configuration
+        .load(Adaptor::new(FileSource::<TomlParser>::new("config/dev.toml"))
+            .profile("dev"))
+        // 3. Override with environment variables
+        .load(Adaptor::new(EnvSource::<EnvParser>::new("APP", Some("_"))))
+        .profile("dev")  // Select dev environment
+        .build()?;
 
-And compared to them, Realme has the following features:
-- Realme value conversion is all based on `serde`, so you can convert to any type that implements `serde::Serialize` and `serde::Deserialize` trait
-- Realme has a flexible adaptor system, you can easily add your own adaptor by implementing the `Parser` and `Source` trait
-- Realme supports file source hot reloading, you can reload the configuration file at runtime
+    println!("Final config: {:#?}", realme);
+    Ok(())
+}
+```
 
-But Realme has the following drawbacks:
-- Newer project, less documentations, less tests
-- It might have some breaking changes
+## Available Features
+
+| Feature     | Description                                          | Dependencies                 |
+|-------------|------------------------------------------------------|------------------------------|
+| `full`      | Enables all features below                           | -                            |
+| `env`       | Default enabled, parses environment variable config | -                            |
+| `macros`    | Default enabled, provides procedural macros         | `realme_macros`              |
+| `placeholder` | Enables `tera`-based placeholder substitution     | `tera`                       |
+| `watch`     | Enables file hot-reloading functionality            | `notify`, `crossbeam`        |
+| `tracing`   | Integrates with `tracing` library for logging       | `tracing`                    |
+| `cmd`       | Parses configuration from command-line arguments     | `clap`, `nom`                |
+| `toml`      | Adds TOML format support                             | `toml`                       |
+| `json`      | Adds JSON format support                             | `serde_json`                 |
+| `yaml`      | Adds YAML format support                             | `serde_yaml2`                |
+| `json5`     | Adds JSON5 format support                            | `serde_json5`                |
+| `ron`       | Adds Rusty Object Notation (RON) support            | `ron`                        |
+| `ini`       | Adds INI format support                              | `rust-ini`                   |
+
+## Documentation
+
+- 📖 [Detailed Usage Guide](USAGE.md) - Advanced usage, examples, and best practices
+- 🔧 [API Documentation](https://docs.rs/realme) - Complete API reference
+- 💡 [Example Code](examples/) - Example code in the project
+
+## Comparison with Other Libraries
+
+I drew inspiration from the following excellent libraries:
+
+-   [config-rs](https://github.com/mehcode/config-rs)
+-   [figment](https://github.com/SergioBenitez/Figment)
+-   [viper](https://github.com/spf13/viper) (Go language)
+
+Compared to them, Realme's distinguishing features are:
+
+-   **Unified `serde` Conversion**: All value conversions are based on `serde`, enabling seamless type conversion
+-   **Flexible Adaptor System**: Through `Source` and `Parser` traits, easily extend support for new data sources and formats
+-   **Built-in Hot Reload**: File hot-reloading is a first-class, built-in feature
+-   **Profile Support**: Native support for multi-environment configuration management
+-   **Convenient Macros**: Provides macros to simplify the configuration building process
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+All forms of contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-<sup>
-Licensed under either of <a href="LICENSE-APACHE">Apache License, Version
-2.0</a> or <a href="LICENSE-MIT">MIT license</a> at your option.
-</sup>
+This project is dual-licensed under both [Apache License, Version 2.0](LICENSE-APACHE) and [MIT license](LICENSE-MIT).
 
-<br>
-
-<sub>
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
-be dual licensed as above, without any additional terms or conditions.
-</sub>
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project by you, as defined in the Apache-2.0 license, shall be dual-licensed as above, without any additional terms or conditions.
