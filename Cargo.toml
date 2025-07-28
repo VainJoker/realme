@@ -28,7 +28,7 @@ full = [
 ]
 env = []
 macros = ["dep:realme_macros"]
-placeholder = ["dep:tera"]
+placeholder = ["dep:minijinja"]
 cmd = ["dep:clap", "dep:nom"]
 toml = ["dep:toml"]
 json = ["dep:serde_json"]
@@ -44,7 +44,7 @@ realme_macros = { version = "0.2.2", path = "./realme_macros", optional = true }
 thiserror = "2.0"
 serde = { version = "1", features = ["derive"] }
 itertools = { version = "0.14.0" }
-tera = { version = "1.19.0", default-features = false, optional = true }
+minijinja = { version = "2.4.0", optional = true }
 toml = { version = "0.9.2", optional = true }
 serde_json = { version = "1.0", optional = true }
 serde_yaml2 = { version = "0.1.2", optional = true }
@@ -60,7 +60,7 @@ crossbeam = { version = "0.8.4", optional = true }
 [dev-dependencies]
 anyhow = "1.0"
 pretty_assertions = {"version" = "1.4"}
-criterion = { version = "0.6", features = ["html_reports"] }
+criterion = { version = "0.7", features = ["html_reports"] }
 chrono = { version = "0.4.24", features = ["serde"] }
 dotenvy = "0.15.7"
 tracing-subscriber = "0.3.15"
@@ -69,10 +69,6 @@ toml = { version = "0.9.2" }
 serde_json = { version = "1.0" }
 validator = { version = "0.20.0", features = ["derive"] }
 regex-lite = "0.1.6"
-
-[[bench]]
-name = "simple_bench"
-harness = false
 
 [lints.rust]
 unsafe_code = "forbid"

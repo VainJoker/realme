@@ -3,9 +3,6 @@ use std::{
     path::PathBuf,
 };
 
-#[cfg(feature = "placeholder")]
-use tera::Tera;
-
 use crate::{
     Error,
     Result,
@@ -58,17 +55,28 @@ impl<T> FileSource<T> {
 
         #[cfg(feature = "placeholder")]
         {
-            let mut tera = Tera::default();
-            tera.register_function("env", crate::utils::get_env());
-            tera.add_raw_template("config", &buffer).map_err(|e| {
+            use minijinja::{
+                Environment,
+                context,
+            };
+
+            let mut env = Environment::new();
+            env.add_function("env", crate::utils::get_env);
+            env.add_template("config", &buffer).map_err(|e| {
                 Error::new_parse_error(
                     self.path.display().to_string(),
                     format!("Failed to add template: {e}"),
                 )
             })?;
 
-            let context = tera::Context::new();
-            let rendered = tera.render("config", &context).map_err(|e| {
+            let template = env.get_template("config").map_err(|e| {
+                Error::new_parse_error(
+                    self.path.display().to_string(),
+                    format!("Failed to get template: {e}"),
+                )
+            })?;
+
+            let rendered = template.render(context!()).map_err(|e| {
                 Error::new_parse_error(
                     self.path.display().to_string(),
                     format!("Failed to render template: {e}"),
