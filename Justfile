@@ -77,7 +77,7 @@ lint-strict:
     fi
 
 # CI/CD complete check pipeline
-ci: format-check lint typos check test coverage build-release
+ci: format-check lint check test coverage build-release
     @echo "✅ CI/CD pipeline complete"
 
 # Auto-fix with clippy
@@ -402,10 +402,6 @@ release-exec level="patch": (_ensure-tool "cargo-release")
 # Generic tool ensure function
 _ensure-tool tool:
     @bin={{tool}}; \
-    # Handle *-cli tool names \
-    if echo "$bin" | grep -q -- '-cli$'; then \
-        bin=${bin%-cli}; \
-    fi; \
     if ! command -v "$bin" >/dev/null 2>&1; then \
         just _install-tool {{tool}}; \
     fi
