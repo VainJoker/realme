@@ -28,7 +28,7 @@ jobs:
       - name: Install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
-          components: rustfmt
+          components: clippy rustfmt
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
       - name: Install just
@@ -56,7 +56,7 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
-          components: clippy
+          components: clippy rustfmt
       - name: Install just
         uses: extractions/setup-just@v3
       - name: Cache Cargo dependencies
