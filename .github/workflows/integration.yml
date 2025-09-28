@@ -31,14 +31,14 @@ jobs:
           components: rustfmt
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
-      - name: Install cargo-make
-        uses: taiki-e/install-action@cargo-make
+      - name: Install just
+        uses: extractions/setup-just@v3
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
       - name: Check formatting
-        run: cargo make lint-format
+        run: just format lint
       - name: Check documentation
-        run: cargo make lint-docs
+        run: just lint-docs
       - name: Check typos
         uses: crate-ci/typos@master
 
@@ -57,36 +57,11 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
-      - name: Install cargo-make
-        uses: taiki-e/install-action@cargo-make
+      - name: Install just
+        uses: extractions/setup-just@v3
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
-      - name: Run cargo make check
-        run: cargo make check
-      - name: Run cargo make clippy-all
-        run: cargo make clippy
-
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        toolchain: ["nightly"]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Install Rust ${{ matrix.toolchain }}
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.toolchain }}
-      - name: Install cargo-make
-        uses: taiki-e/install-action@cargo-make
-      - name: Install cargo-nextest
-        uses: taiki-e/install-action@nextest
-      - name: Cache Cargo dependencies
-        uses: Swatinem/rust-cache@v2
-      - name: Test docs
-        run: cargo make test
+      - name: Run just ci
+        run: just ci
         env:
           RUST_BACKTRACE: full
