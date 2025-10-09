@@ -65,6 +65,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@cargo-nextest
       - name: Setup dependencies
         run: just setup
       - name: Run just ci
