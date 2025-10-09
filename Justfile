@@ -331,7 +331,7 @@ setup:
     @Write-Host '╔══════════════════════════════════════════════════════════════════╗' -ForegroundColor Cyan
     @Write-Host '║              🔧 Setting up development environment                ║' -ForegroundColor Cyan
     @Write-Host '╚══════════════════════════════════════════════════════════════════╝' -ForegroundColor Cyan
-    @foreach ($tool in "{{ALL_TOOLS}}".Split()) { just _install-tool $tool }
+    @foreach ($tool in "{{ESSENTIAL_TOOLS}}".Split()) { just _install-tool "$tool" }
     @Write-Host '✅ Development environment ready!' -ForegroundColor Green
 
 [unix]
@@ -339,7 +339,7 @@ setup:
     @echo "╔══════════════════════════════════════════════════════════════════╗"
     @echo "║              🔧 Setting up development environment                ║"
     @echo "╚══════════════════════════════════════════════════════════════════╝"
-    @for tool in {{ALL_TOOLS}}; do just _install-tool "$$tool"; done
+    @for tool in {{ESSENTIAL_TOOLS}}; do just _install-tool "$tool"; done
     @echo "✅ Development environment ready!"
 
 # ============================================================================
