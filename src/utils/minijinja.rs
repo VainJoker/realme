@@ -6,9 +6,9 @@ use minijinja::{
     Value,
 };
 
-pub fn get_env(_state: &State, args: Vec<Value>) -> Result<Value, Error> {
+pub fn get_env(_state: &State, args: &[Value]) -> Result<Value, Error> {
     let name = args
-        .get(0)
+        .first()
         .ok_or_else(|| {
             Error::new(
                 minijinja::ErrorKind::InvalidOperation,
@@ -23,7 +23,7 @@ pub fn get_env(_state: &State, args: Vec<Value>) -> Result<Value, Error> {
             )
         })?;
 
-    let default = args.get(1).map(|v| v.as_str().unwrap_or("")).unwrap_or("");
+    let default = args.get(1).map_or("", |v| v.as_str().unwrap_or(""));
 
     let value = env::var(name).unwrap_or_else(|_| default.to_string());
 
