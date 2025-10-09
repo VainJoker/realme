@@ -11,9 +11,9 @@ set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 set shell := ["bash", "-c"]
 
 # Tool Categories
-ESSENTIAL_TOOLS := "cargo-binstall jaq cargo-nextest"
+ESSENTIAL_TOOLS := "cargo-binstall cargo-nextest"
 QUALITY_TOOLS   := "cargo-audit cargo-deny cargo-tarpaulin"
-UTILITY_TOOLS   := "git-cliff typos-cli cargo-cache cargo-watch cargo-outdated tokei"
+UTILITY_TOOLS   := "git-cliff typos-cli jaq cargo-cache cargo-watch cargo-outdated tokei"
 ALL_TOOLS       := "{{ESSENTIAL_TOOLS}} {{QUALITY_TOOLS}} {{UTILITY_TOOLS}}"
 
 # Build Flags
@@ -356,26 +356,39 @@ _ensure-tool tool:
 _install-tool tool:
     @Write-Host "  📦 Installing {{tool}}..." -ForegroundColor Yellow
     @$hasBinstall = Get-Command cargo-binstall -ErrorAction SilentlyContinue; \
+    $success = $false; \
     if ($hasBinstall) { \
-        cargo binstall {{tool}} --no-confirm --log-level warn 2>&1 | Out-Null; \
-        if ($LASTEXITCODE -ne 0) { \
-            cargo install {{tool}} 2>&1 | Out-Null \
+        $output = cargo binstall {{tool}} --no-confirm --log-level warn 2>&1; \
+        if ($LASTEXITCODE -eq 0) { \
+            $success = $true \
+        } else { \
+            Write-Host "     ⚠️  Falling back to cargo install..." -ForegroundColor Yellow; \
+            $output = cargo install {{tool}} 2>&1; \
+            if ($LASTEXITCODE -eq 0) { $success = $true } \
         } \
     } else { \
-        cargo install {{tool}} 2>&1 | Out-Null \
+        $output = cargo install {{tool}} 2>&1; \
+        if ($LASTEXITCODE -eq 0) { $success = $true } \
     }; \
-    Write-Host "     └─ ✓ {{tool}} installed" -ForegroundColor Green
+    if ($success) { \
+        Write-Host "     └─ ✓ {{tool}} installed" -ForegroundColor Green \
+    } else { \
+        Write-Host "     ✗ Failed to install {{tool}}" -ForegroundColor Red; \
+        $output | Select-Object -Last 5 | ForEach-Object { Write-Host "       $_" -ForegroundColor Red } \
+    }
 
 # Install tool (Unix)
 [unix]
 _install-tool tool:
     @echo "  📦 Installing {{tool}}..."
     @if command -v cargo-binstall >/dev/null 2>&1; then \
-        cargo binstall {{tool}} --no-confirm --log-level warn >/dev/null 2>&1 || \
-        cargo install {{tool}} >/dev/null 2>&1; \
+        if cargo binstall {{tool}} --no-confirm --log-level warn 2>&1 | grep -q "error\|failed"; then \
+            echo "     ⚠️  Falling back to cargo install..."; \
+            cargo install {{tool}} 2>&1 | tail -5; \
+        fi \
     else \
-        cargo install {{tool}} >/dev/null 2>&1; \
-    fi && echo "     └─ ✓ {{tool}} installed"
+        cargo install {{tool}} 2>&1 | tail -5; \
+    fi && echo "     └─ ✓ {{tool}} installed" || echo "     ✗ Failed to install {{tool}}"
 
 # ============================================================================
 # 🚄 Aliases (Shortcuts)
