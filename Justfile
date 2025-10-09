@@ -20,31 +20,34 @@ ALL_TOOLS       := "{{ESSENTIAL_TOOLS}} {{QUALITY_TOOLS}} {{UTILITY_TOOLS}}"
 ALL_TARGETS_FLAG  := "--all-targets"
 ALL_FEATURES_FLAG := "--all-features"
 
-# Metadata Extraction (Cross-platform)
-PACKAGES := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(" ")'` 
+PACKAGES := if os() == "windows" {
+    `try { $m = cargo metadata --format-version 1 --no-deps | ConvertFrom-Json; ($m.packages | ForEach-Object { $_.name }) -join ' ' } catch { '' }`
+} else {
+    `tool=""; if command -v jq >/dev/null 2>&1; then tool=jq; elif command -v jaq >/dev/null 2>&1; then tool=jaq; fi; if [ -n "$tool" ]; then cargo metadata --format-version 1 --no-deps | $tool -r '[.packages[].name] | join(" ")'; fi || echo ''`
 }
 
-IS_WORKSPACE := `cargo metadata --format-version 1 --no-deps | jaq -r '.packages | length > 1'`
-
-FEATURES := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(" ")'` 
+IS_WORKSPACE := if os() == "windows" {
+    `try { $m = cargo metadata --format-version 1 --no-deps | ConvertFrom-Json; if ($m.packages.Count -gt 1) { 'true' } else { 'false' } } catch { 'false' }`
+} else {
+    `tool=""; if command -v jq >/dev/null 2>&1; then tool=jq; elif command -v jaq >/dev/null 2>&1; then tool=jaq; fi; if [ -n "$tool" ]; then cargo metadata --format-version 1 --no-deps | $tool -r '.packages | length > 1'; else echo false; fi`
 }
 
-BIN := env_var_or_default("BIN", if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == \"bin\") | .name] | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == "bin") | .name] | join(" ")'` 
+FEATURES := if os() == "windows" {
+    `try { $m = cargo metadata --format-version 1 --no-deps | ConvertFrom-Json; ($m.packages | ForEach-Object { $_.features.PSObject.Properties.Name } | Sort-Object -Unique) -join ' ' } catch { '' }`
+} else {
+    `tool=""; if command -v jq >/dev/null 2>&1; then tool=jq; elif command -v jaq >/dev/null 2>&1; then tool=jaq; fi; if [ -n "$tool" ]; then cargo metadata --format-version 1 --no-deps | $tool -r '[.packages[].features | keys[]] | unique | sort | join(" ")'; fi || echo ''`
+}
+
+BIN := env_var_or_default("BIN", if os() == "windows" {
+    `try { $m = cargo metadata --format-version 1 --no-deps | ConvertFrom-Json; ($m.packages | ForEach-Object { $_.targets | Where-Object { $_.kind -contains 'bin' } | ForEach-Object { $_.name } } | Sort-Object -Unique) -join ' ' } catch { '' }`
+} else {
+    `tool=""; if command -v jq >/dev/null 2>&1; then tool=jq; elif command -v jaq >/dev/null 2>&1; then tool=jaq; fi; if [ -n "$tool" ]; then cargo metadata --format-version 1 --no-deps | $tool -r '[.packages[].targets[] | select(.kind[] == "bin") | .name] | join(" ")'; fi || echo ''`
 })
 
-WORKSPACE_FLAG := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then \"--workspace\" else \"\" end'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then "--workspace" else "" end'` 
+WORKSPACE_FLAG := if os() == "windows" {
+    `try { $m = cargo metadata --format-version 1 --no-deps | ConvertFrom-Json; if ($m.packages.Count -gt 1) { '--workspace' } else { '' } } catch { '' }`
+} else {
+    `tool=""; if command -v jq >/dev/null 2>&1; then tool=jq; elif command -v jaq >/dev/null 2>&1; then tool=jaq; fi; if [ -n "$tool" ]; then cargo metadata --format-version 1 --no-deps | $tool -r 'if (.packages | length) > 1 then "--workspace" else "" end'; fi || echo ''`
 }
 
 # ============================================================================
@@ -302,24 +305,10 @@ info:
 env:
     @echo "🌍 Environment Variables"
     @echo "════════════════════════════════════"
-    @echo "  WORKSPACE_FLAG : {{WORKSPACE_FLAG}}"
     @echo "  IS_WORKSPACE   : {{IS_WORKSPACE}}"
     @echo "  PACKAGES       : {{PACKAGES}}"
     @echo "  FEATURES       : {{FEATURES}}"
     @echo "  BIN            : {{BIN}}"
-
-# Health check
-health:
-    @echo "🏥 Running Health Check"
-    @echo "════════════════════════════════════"
-    @echo "  ▶ Compile check..."
-    @cargo check {{WORKSPACE_FLAG}} --quiet 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "  ▶ Format check..."
-    @cargo fmt --all -- --check 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "  ▶ Clippy check..."
-    @cargo clippy {{WORKSPACE_FLAG}} --quiet -- -D warnings 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "════════════════════════════════════"
-    @echo "✅ Health check complete"
 
 # ============================================================================
 # 🔧 Setup
@@ -331,7 +320,7 @@ setup:
     @Write-Host '╔══════════════════════════════════════════════════════════════════╗' -ForegroundColor Cyan
     @Write-Host '║              🔧 Setting up development environment                ║' -ForegroundColor Cyan
     @Write-Host '╚══════════════════════════════════════════════════════════════════╝' -ForegroundColor Cyan
-    @foreach ($tool in "{{ESSENTIAL_TOOLS}}".Split()) { just _install-tool "$tool" }
+    @foreach ($tool in "{{ESSENTIAL_TOOLS}}".Split()) { just _ensure-tool "$tool" }
     @Write-Host '✅ Development environment ready!' -ForegroundColor Green
 
 [unix]
@@ -339,7 +328,7 @@ setup:
     @echo "╔══════════════════════════════════════════════════════════════════╗"
     @echo "║              🔧 Setting up development environment                ║"
     @echo "╚══════════════════════════════════════════════════════════════════╝"
-    @for tool in {{ESSENTIAL_TOOLS}}; do just _install-tool "$tool"; done
+    @for tool in {{ESSENTIAL_TOOLS}}; do just _ensure-tool "$tool"; done
     @echo "✅ Development environment ready!"
 
 # ============================================================================
@@ -435,7 +424,6 @@ alias sec := security
 # Information
 alias i  := info
 alias e  := env
-alias h  := health
 
 # Workflows
 alias q  := quick
