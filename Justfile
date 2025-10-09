@@ -20,31 +20,34 @@ ALL_TOOLS       := "{{ESSENTIAL_TOOLS}} {{QUALITY_TOOLS}} {{UTILITY_TOOLS}}"
 ALL_TARGETS_FLAG  := "--all-targets"
 ALL_FEATURES_FLAG := "--all-features"
 
-# Metadata Extraction (Cross-platform)
-PACKAGES := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(" ")'` 
+PACKAGES := if os() == "windows" {
+    `if (Get-Command jaq -ErrorAction SilentlyContinue) { cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(\" \")' } else { '' }`
+} else {
+    `command -v jaq >/dev/null 2>&1 && cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].name] | join(" ")' || echo ''`
 }
 
-IS_WORKSPACE := `cargo metadata --format-version 1 --no-deps | jaq -r '.packages | length > 1'`
-
-FEATURES := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(" ")'` 
+IS_WORKSPACE := if os() == "windows" {
+    `if (Get-Command jaq -ErrorAction SilentlyContinue) { cargo metadata --format-version 1 --no-deps | jaq -r '.packages | length > 1' } else { 'false' }`
+} else {
+    `command -v jaq >/dev/null 2>&1 && cargo metadata --format-version 1 --no-deps | jaq -r '.packages | length > 1' || echo false`
 }
 
-BIN := env_var_or_default("BIN", if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == \"bin\") | .name] | join(\" \")'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == "bin") | .name] | join(" ")'` 
+FEATURES := if os() == "windows" {
+    `if (Get-Command jaq -ErrorAction SilentlyContinue) { cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(\" \")' } else { '' }`
+} else {
+    `command -v jaq >/dev/null 2>&1 && cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].features | keys[]] | unique | join(" ")' || echo ''`
+}
+
+BIN := env_var_or_default("BIN", if os() == "windows" {
+    `if (Get-Command jaq -ErrorAction SilentlyContinue) { cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == \"bin\") | .name] | join(\" \")' } else { '' }`
+} else {
+    `command -v jaq >/dev/null 2>&1 && cargo metadata --format-version 1 --no-deps | jaq -r '[.packages[].targets[] | select(.kind[] == "bin") | .name] | join(" ")' || echo ''`
 })
 
-WORKSPACE_FLAG := if os() == "windows" { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then \"--workspace\" else \"\" end'` 
-} else { 
-    `cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then "--workspace" else "" end'` 
+WORKSPACE_FLAG := if os() == "windows" {
+    `if (Get-Command jaq -ErrorAction SilentlyContinue) { cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then \"--workspace\" else \"\" end' } else { '' }`
+} else {
+    `command -v jaq >/dev/null 2>&1 && cargo metadata --format-version 1 --no-deps | jaq -r 'if (.packages | length) > 1 then "--workspace" else "" end' || echo ''`
 }
 
 # ============================================================================
@@ -308,19 +311,6 @@ env:
     @echo "  FEATURES       : {{FEATURES}}"
     @echo "  BIN            : {{BIN}}"
 
-# Health check
-health:
-    @echo "🏥 Running Health Check"
-    @echo "════════════════════════════════════"
-    @echo "  ▶ Compile check..."
-    @cargo check {{WORKSPACE_FLAG}} --quiet 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "  ▶ Format check..."
-    @cargo fmt --all -- --check 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "  ▶ Clippy check..."
-    @cargo clippy {{WORKSPACE_FLAG}} --quiet -- -D warnings 2>&1 && echo "    └─ ✅ Pass" || echo "    └─ ❌ Fail"
-    @echo "════════════════════════════════════"
-    @echo "✅ Health check complete"
-
 # ============================================================================
 # 🔧 Setup
 # ============================================================================
@@ -435,7 +425,6 @@ alias sec := security
 # Information
 alias i  := info
 alias e  := env
-alias h  := health
 
 # Workflows
 alias q  := quick
