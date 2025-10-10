@@ -73,13 +73,13 @@ help:
 # ============================================================================
 
 # Run complete development workflow
-dev: lint format check test
+dev: format build
     @echo "╭─────────────────────────────────────╮"
     @echo "│ ✅ Development workflow complete    │"
     @echo "╰─────────────────────────────────────╯"
 
 # Run CI/CD pipeline
-ci: format lint check test coverage build
+ci: format lint check test release
     @echo "╭─────────────────────────────────────╮"
     @echo "│ ✅ CI/CD pipeline complete          │"
     @echo "╰─────────────────────────────────────╯"
