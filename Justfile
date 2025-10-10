@@ -322,6 +322,7 @@ setup:
     @Write-Host '╚══════════════════════════════════════════════════════════════════╝' -ForegroundColor Cyan
     @foreach ($tool in "{{ESSENTIAL_TOOLS}}".Split()) { just _ensure-tool "$tool" }
     @Write-Host '✅ Development environment ready!' -ForegroundColor Green
+    @echo $PATH
 
 [unix]
 setup:
@@ -330,6 +331,7 @@ setup:
     @echo "╚══════════════════════════════════════════════════════════════════╝"
     @for tool in {{ESSENTIAL_TOOLS}}; do just _ensure-tool "$tool"; done
     @echo "✅ Development environment ready!"
+    @echo $PATH
 
 # ============================================================================
 # 🛠️ Internal Helpers
