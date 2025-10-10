@@ -35,8 +35,6 @@ jobs:
         uses: extractions/setup-just@v3
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
-      - name: Setup dependencies
-        run: just setup
       - name: Check formatting
         run: just format lint
       - name: Check documentation
@@ -65,8 +63,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
-      - name: Install cargo-nextest
-        uses: taiki-e/install-action@cargo-nextest
+      - name: Setup cargo path
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Setup dependencies
         run: just setup
       - name: Run just ci
