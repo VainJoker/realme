@@ -1,5 +1,6 @@
 use crate::{
     Error,
+    Map,
     prelude::*,
 };
 /// A parser for INI format configuration files.

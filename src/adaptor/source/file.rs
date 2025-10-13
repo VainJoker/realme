@@ -60,8 +60,10 @@ impl<T> FileSource<T> {
                 context,
             };
 
+            use crate::utils::get_env;
+
             let mut env = Environment::new();
-            env.add_function("env", crate::utils::get_env);
+            env.add_function("env", get_env);
             env.add_template("config", &buffer).map_err(|e| {
                 Error::new_parse_error(
                     self.path.display().to_string(),

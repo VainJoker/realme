@@ -4,6 +4,7 @@ use serde::{
 };
 
 use crate::{
+    Map,
     Result,
     Value,
     prelude::*,

@@ -8,7 +8,8 @@
 /// template expressions could lead to runtime panics during rendering.
 fn main() {
     use realme::prelude::*;
-    std::env::set_var("SECRET_KEY", "123123");
+    // No need to set SECRET_KEY at runtime; the template in
+    // config.toml now provides a default fallback.
     let realme = Realme::builder()
         .load(Adaptor::new(FileSource::<TomlParser>::new(
             "examples/placeholder/config.toml",

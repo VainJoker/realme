@@ -14,7 +14,7 @@ use super::{
     Table,
     Value,
 };
-use crate::utils::Map;
+use crate::Map;
 
 /// Represents a custom deserializer for `Value` type.
 impl<'de> Deserialize<'de> for Value {

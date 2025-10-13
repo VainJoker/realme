@@ -109,7 +109,7 @@ impl Realme {
     /// Returns a `Result<Self, Error>` which is `Ok` containing a new `Realme`
     /// instance if successful, or an `Err` containing a `Error` if the
     /// operation fails.
-    pub(crate) fn try_serialize<T: Serialize>(from: &T) -> Result<Self> {
+    pub fn try_serialize<T: Serialize>(from: &T) -> Result<Self> {
         let cache = Value::try_serialize(from)?;
         Ok(Self {
             cache:   cache.clone(),

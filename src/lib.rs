@@ -1,11 +1,12 @@
-#![allow(dead_code)]
-mod adaptor;
+// Internal modules (not publicly exposed) ----------------------------------
+mod adaptor; // core adaptor system (Parser/Source implementations live here)
+mod realme; // core Realme + builder implementation
+mod utils; // internal utilities (Map, template helpers, wrappers)
+mod value; // Value representation
+
+// Curated public prelude (kept public for ergonomic downstream imports)
 pub mod errors;
 pub mod prelude;
-pub mod utils;
-
-pub mod realme;
-pub mod value;
 
 #[cfg(feature = "cmd")]
 pub use adaptor::parser::cmd::CmdParser;
@@ -27,6 +28,8 @@ pub use adaptor::parser::yaml::YamlParser;
 pub use adaptor::source::cmd::CmdSource;
 #[cfg(feature = "env")]
 pub use adaptor::source::env::EnvSource;
+// Core public types (narrow surface)
+// ---------------------------------------
 pub use adaptor::{
     Adaptor,
     parser::{
@@ -41,7 +44,8 @@ pub use adaptor::{
     },
 };
 pub use errors::Error;
-pub(crate) use errors::Result;
+pub(crate) use errors::Result; /* kept crate-visible for internal
+                                 * ergonomics */
 #[cfg(feature = "watch")]
 pub use realme::SharedRealme;
 pub use realme::{
@@ -50,5 +54,10 @@ pub use realme::{
 };
 #[cfg(feature = "macros")]
 pub use realme_macros::*;
-pub use utils::Map;
-pub use value::Value;
+// Keep Map & internal helpers private (least exposure principle)
+pub(crate) use utils::map::Map;
+// Value related public exports
+pub use value::{
+    Table,
+    Value,
+}; // internal re-export for existing uses

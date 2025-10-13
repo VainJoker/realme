@@ -14,7 +14,7 @@ use serde::{
 };
 
 use super::Value;
-use crate::utils::Map;
+use crate::Map;
 
 pub struct ValueSerializer;
 

@@ -28,12 +28,6 @@ where
         }
     }
 
-    pub(crate) fn with_capacity(capacity: usize) -> Self {
-        Self {
-            inner: InnerMap::with_capacity(capacity),
-        }
-    }
-
     #[inline]
     pub(crate) fn insert(&mut self, k: K, v: V) -> Option<V> {
         self.inner.insert(k, v)
@@ -58,14 +52,6 @@ where
 
     pub(crate) fn len(&self) -> usize {
         self.inner.len()
-    }
-
-    pub(crate) fn is_empty(&self) -> bool {
-        self.inner.is_empty()
-    }
-
-    pub(crate) fn clear(&mut self) {
-        self.inner.clear();
     }
 
     pub(crate) fn contains_key<Q>(&self, k: &Q) -> bool

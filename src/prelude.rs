@@ -27,6 +27,7 @@ pub use crate::builder;
 pub use crate::{
     Realme,
     RealmeBuilder,
+    Table,
     Value,
     adaptor::{
         Adaptor,
@@ -40,9 +41,5 @@ pub use crate::{
             ser::SerSource,
             string::StringSource,
         },
-    },
-    utils::{
-        Map,
-        W,
     },
 };

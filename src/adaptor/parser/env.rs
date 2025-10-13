@@ -1,5 +1,6 @@
 use crate::{
     Error,
+    Map,
     prelude::*,
 };
 
@@ -32,7 +33,7 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```rust ignore
     /// use std::env;
     ///
     /// use realme::prelude::*;

@@ -1,7 +1,7 @@
 [package]
 name = "realme"
 version = "0.2.4"
-edition = "2021"
+edition = "2024"
 authors = ["Jasper Zhang <hanjie.zhang1228@gmail.com>"]
 readme = "README.md"
 license = "MIT OR Apache-2.0"
@@ -11,7 +11,7 @@ homepage = "https://github.com/vainjoker/realme"
 description = "A flexible and extensible configuration management library for Rust, designed to simplify the process of loading and managing configuration settings from various sources."
 
 [features]
-default = ["env", "macros"]
+default = ["full"]
 full = [
   "cmd",
   "env",

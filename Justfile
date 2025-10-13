@@ -123,7 +123,7 @@ watch: (_ensure-tool "cargo-watch")
 # ============================================================================
 
 # Run all tests
-test: test-unit test-doc
+test: test-unit test-doc test-examples
     @echo "╭─────────────────────────────────────╮"
     @echo "│ ✅ All tests passed                 │"
     @echo "╰─────────────────────────────────────╯"
@@ -133,6 +133,11 @@ test-unit: (_ensure-tool "cargo-nextest")
     @echo "🧪 Running unit tests..."
     @cargo nextest run {{WORKSPACE_FLAG}} {{ALL_TARGETS_FLAG}} {{ALL_FEATURES_FLAG}}
 
+# Run examples
+test-examples:
+    @echo "🧪 Running example tests..."
+    @cargo test --examples {{WORKSPACE_FLAG}} {{ALL_FEATURES_FLAG}}
+    
 # Run documentation tests
 test-doc:
     @echo "📚 Running documentation tests..."

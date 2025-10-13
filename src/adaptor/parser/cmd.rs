@@ -1,5 +1,6 @@
 use crate::{
     Error,
+    Map,
     prelude::*,
 };
 
@@ -35,12 +36,11 @@ impl CmdParser {
                 in_quotes = !in_quotes;
                 current.push(ch);
             } else if ch == ',' && !in_quotes {
-                if !current.trim().is_empty() {
-                    if let Some((key, value)) =
+                if !current.trim().is_empty() &&
+                    let Some((key, value)) =
                         Self::parse_single_pair(&current)?
-                    {
-                        pairs.push((key, value));
-                    }
+                {
+                    pairs.push((key, value));
                 }
                 current.clear();
             } else {
@@ -49,10 +49,10 @@ impl CmdParser {
         }
 
         // Handle the last pair
-        if !current.trim().is_empty() {
-            if let Some((key, value)) = Self::parse_single_pair(&current)? {
-                pairs.push((key, value));
-            }
+        if !current.trim().is_empty() &&
+            let Some((key, value)) = Self::parse_single_pair(&current)?
+        {
+            pairs.push((key, value));
         }
 
         Ok(pairs)
@@ -229,14 +229,11 @@ impl CmdParser {
                 let entry = map
                     .entry((*head).to_string())
                     .or_insert_with(|| Value::Table(Map::new()));
-
-                if let Value::Table(ref mut nested_map) = entry {
+                if let Value::Table(nested_map) = entry {
                     Self::insert_nested_parts(nested_map, tail, value);
                 } else {
-                    // If the key already exists and is not a table,
-                    // we overwrite it with a new table
                     *entry = Value::Table(Map::new());
-                    if let Value::Table(ref mut nested_map) = entry {
+                    if let Value::Table(nested_map) = entry {
                         Self::insert_nested_parts(nested_map, tail, value);
                     }
                 }
@@ -477,9 +474,9 @@ mod tests {
         let result = CmdParser::parse(cmd)?;
 
         // Verify some key values
-        if let Value::Table(ref map) = result {
+        if let Value::Table(map) = result {
             // Check app section
-            if let Some(Value::Table(ref app)) = map.get("app") {
+            if let Some(Value::Table(app)) = map.get("app") {
                 assert_eq!(
                     app.get("name"),
                     Some(&Value::String("My Application".to_string()))
@@ -488,7 +485,7 @@ mod tests {
             }
 
             // Check server section
-            if let Some(Value::Table(ref server)) = map.get("server") {
+            if let Some(Value::Table(server)) = map.get("server") {
                 assert_eq!(
                     server.get("host"),
                     Some(&Value::String("localhost".to_string()))
@@ -497,7 +494,7 @@ mod tests {
             }
 
             // Check arrays
-            if let Some(Value::Array(ref features)) = map.get("features") {
+            if let Some(Value::Array(features)) = map.get("features") {
                 assert_eq!(features.len(), 3);
                 assert_eq!(features[0], Value::String("auth".to_string()));
             }

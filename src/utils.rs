@@ -1,9 +1,6 @@
-pub mod map;
+// Internal utilities module
+pub(crate) mod map;
 #[cfg(feature = "placeholder")]
-pub mod minijinja;
-pub mod wrap;
-
-pub use map::*;
+pub(crate) mod minijinja;
 #[cfg(feature = "placeholder")]
-pub use minijinja::get_env;
-pub use wrap::*;
+pub(crate) use minijinja::get_env;

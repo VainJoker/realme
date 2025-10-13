@@ -12,6 +12,7 @@ use std::{
 use super::SharedRealme;
 use crate::{
     Error,
+    Map,
     Result,
     prelude::*,
 };
