@@ -69,6 +69,25 @@ where
     pub(crate) fn iter(&self) -> <&Self as IntoIterator>::IntoIter {
         <&Self as IntoIterator>::into_iter(self)
     }
+
+    #[inline]
+    pub(crate) fn remove<Q>(&mut self, k: &Q) -> Option<V>
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq + ?Sized,
+    {
+        self.inner.remove(k)
+    }
+
+    #[inline]
+    pub(crate) fn keys(&self) -> impl Iterator<Item = &K> {
+        self.inner.keys()
+    }
+
+    #[inline]
+    pub(crate) fn values(&self) -> impl Iterator<Item = &V> {
+        self.inner.values()
+    }
 }
 
 impl<K, V> FromIterator<(K, V)> for Map<K, V>

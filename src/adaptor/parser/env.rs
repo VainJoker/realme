@@ -50,20 +50,16 @@ impl<T: AsRef<str>> Parser<T> for EnvParser {
         if args.is_empty() {
             return Ok(Value::Table(Map::new()));
         }
+        let prefix_lower = args.to_ascii_lowercase();
         let mut map = Map::new();
         for (key, value) in std::env::vars_os() {
-            if key
-                .to_ascii_lowercase()
-                .to_string_lossy()
-                .starts_with(&args.to_ascii_lowercase())
-            {
-                let key = key
-                    .to_ascii_lowercase()
-                    .to_string_lossy()
-                    .trim_start_matches(&args.to_ascii_lowercase())
-                    .to_string();
+            let key_lower = key.to_ascii_lowercase();
+            let key_lossy = key_lower.to_string_lossy();
+            if key_lossy.starts_with(&prefix_lower) {
+                let stripped =
+                    key_lossy.strip_prefix(&prefix_lower).unwrap_or("");
                 map.insert(
-                    key,
+                    stripped.to_string(),
                     Value::String(value.to_string_lossy().to_string()),
                 );
             }

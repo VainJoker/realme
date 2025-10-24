@@ -142,26 +142,6 @@ mod tests {
         Ok(())
     }
 
-    // #[test]
-    // fn test_replace_value() {
-    //     let value = Value::Table(Table::from_iter(vec![(
-    //         "a".to_string(),
-    //         Value::String("{{env}}".to_string()),
-    //     )]));
-    //     assert_eq!(
-    //         Value::replace_value(
-    //             "{{env}}",
-    //             &Value::String("hello".to_string()),
-    //             value
-    //         )
-    //         ?,
-    //         Value::Table(Table::from_iter(vec![(
-    //             "a".to_string(),
-    //             Value::String("hello".to_string()),
-    //         )]))
-    //     );
-    // }
-
     #[test]
     fn test_get_mut() -> anyhow::Result<()> {
         let mut value = Value::Table(Table::new());
@@ -315,31 +295,4 @@ mod tests {
             panic!("Expected merged result to be a table");
         }
     }
-
-    // #[test]
-    // fn test_set_with_key() {
-    //     let mut value = Value::Table(Table::new());
-    //     value.set("a", Value::Table(Table::new()));
-    //     value.set("a.b", Value::Integer(42));
-    //     value.set("a.c", Value::Integer(42));
-    //     assert_eq!(
-    //         value.get("a").and_then(|v| v.get("b")),
-    //         Some(Value::Integer(42))
-    //     );
-    //     assert_eq!(
-    //         value.get("a").and_then(|v| v.get("c")),
-    //         Some(Value::Integer(42))
-    //     );
-    //     value.with("a", |a| {
-    //         a.set("c", Value::Integer(43)).set("b", Value::Integer(44));
-    //     });
-    //     assert_eq!(
-    //         value.get("a").and_then(|v| v.get("b")),
-    //         Some(Value::Integer(44))
-    //     );
-    //     assert_eq!(
-    //         value.get("a").and_then(|v| v.get("c")),
-    //         Some(Value::Integer(43))
-    //     );
-    // }
 }

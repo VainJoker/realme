@@ -7,6 +7,7 @@ use crate::{
     Map,
     Result,
     Value,
+    errors::ValidationError,
 };
 
 impl Value {
@@ -21,16 +22,25 @@ impl Value {
                         table.insert(id, value);
                     }
                     Self::Array(arr) => {
-                        let idx = id
-                            .parse::<isize>()
-                            .map_err(|e| Error::SetValueError(e.to_string()))?;
-                        let idx = idx.rem_euclid(arr.len() as isize) as usize;
-                        // if idx >= arr.len() {
-                        //     return Err(Error::SetValueError(format!("Index {}
-                        // out of bounds for array of length {}", idx,
-                        // arr.len()))); }
-                        arr.resize(idx.max(arr.len()), Self::Null);
-                        arr[idx] = value;
+                        let raw_idx = id.parse::<isize>().map_err(|e| {
+                            Error::ValidationError(ValidationError::new(
+                                "set",
+                                format!("Invalid array index '{id}': {e}"),
+                            ))
+                        })?;
+                        if arr.is_empty() {
+                            // Empty array: any index other than 0 becomes 0
+                            // after normalization
+                            let normalized =
+                                if raw_idx < 0 { 0 } else { raw_idx as usize };
+                            arr.resize(normalized.max(1), Self::Null);
+                            arr[normalized] = value;
+                        } else {
+                            let normalized =
+                                raw_idx.rem_euclid(arr.len() as isize) as usize;
+                            arr.resize(normalized.max(arr.len()), Self::Null);
+                            arr[normalized] = value;
+                        }
                     }
                     _ => {
                         *self =
@@ -46,28 +56,31 @@ impl Value {
                             existing
                         } else {
                             table.insert(id.clone(), Self::Array(Vec::new()));
-                            table.get_mut(&id).expect("Failed to get mut table")
+                            table.get_mut(&id).ok_or_else(|| {
+                                Error::ValidationError(ValidationError::new(
+                                    "set",
+                                    "Failed to get mutable table entry",
+                                ))
+                            })?
                         };
 
                         if let Self::Array(arr) = arr {
-                            let idx =
+                            if arr.is_empty() {
+                                arr.push(Self::Null); // ensure at least one slot
+                            }
+                            let normalized =
                                 idx.rem_euclid(arr.len() as isize) as usize;
-                            // if idx >= arr.len() {
-                            //     return
-                            // Err(Error::SetValueError(format!("Index {} out of
-                            // bounds for array of length {}", idx,
-                            // arr.len()))); }
-                            arr.resize(idx.max(arr.len()), Self::Null);
-                            arr[idx] = value;
+                            arr.resize(normalized.max(arr.len()), Self::Null);
+                            arr[normalized] = value;
                             Ok(self)
                         } else {
                             *arr = Self::Array(vec![value]);
                             Ok(self)
                         }
                     }
-                    _ => Err(Error::SetValueError(format!(
-                        "Expected a table, got {}",
-                        self.value_type()
+                    _ => Err(Error::ValidationError(ValidationError::new(
+                        "set",
+                        format!("Expected a table, got {}", self.value_type()),
                     ))),
                 }
             }
@@ -82,15 +95,23 @@ impl Value {
                             table
                                 .insert(e.to_string(), Self::Table(Map::new()));
                         }
-                        table
-                            .get_mut(&e.to_string())
-                            .expect("Failed to get mut table")
+                        table.get_mut(&e.to_string()).ok_or_else(|| {
+                            Error::ValidationError(ValidationError::new(
+                                "set",
+                                "Failed to get child table",
+                            ))
+                        })?
                     } else {
                         let mut new_table = Map::new();
                         new_table
                             .insert(e.to_string(), Self::Table(Map::new()));
                         *current = Self::Table(new_table);
-                        current.get_mut(e).expect("Failed to get mut table")
+                        current.get_mut(e).ok_or_else(|| {
+                            Error::ValidationError(ValidationError::new(
+                                "set",
+                                "Failed to get nested table",
+                            ))
+                        })?
                     };
                 }
                 Ok(current)

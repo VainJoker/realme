@@ -10,10 +10,7 @@ use serde::{
     },
 };
 
-use super::{
-    Table,
-    Value,
-};
+use super::Value;
 use crate::Map;
 
 /// Represents a custom deserializer for `Value` type.
@@ -562,10 +559,6 @@ struct EnumDeserializer {
 
 enum EnumVariant {
     Unit(String),
-    #[allow(dead_code)]
-    Tuple(Table),
-    #[allow(dead_code)]
-    Struct(Table),
 }
 
 impl EnumDeserializer {
@@ -625,9 +618,7 @@ impl<'de> de::EnumAccess<'de> for EnumDeserializer {
     where
         V: serde::de::DeserializeSeed<'de>,
     {
-        let EnumVariant::Unit(key) = self.variant else {
-            return Err(de::Error::custom("not a unit variant".to_string()));
-        };
+        let EnumVariant::Unit(key) = self.variant;
 
         let val = seed.deserialize(key.into_deserializer())?;
 

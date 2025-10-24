@@ -41,6 +41,10 @@ pub struct RealmeBuilder {
     adaptors: Vec<Adaptor>,
     /// Optional profile name for configuration.
     profile:  Option<String>,
+    /// Optional default base configuration merged first.
+    default:  Option<Value>,
+    /// Whether to run validation during build (placeholder for future).
+    validate: bool,
 }
 
 #[cfg(feature = "watch")]
@@ -72,7 +76,7 @@ impl Realme {
     ///
     /// let builder = Realme::builder();
     /// ```
-    pub fn builder() -> RealmeBuilder {
+    pub const fn builder() -> RealmeBuilder {
         RealmeBuilder::new()
     }
 

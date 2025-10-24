@@ -84,7 +84,9 @@ impl FromStr for Expression {
 
         match stack.len() {
             0 => Err(Error::ExprError("Empty expression".to_string())),
-            1 => Ok(stack.pop().expect("Failed to pop expression")),
+            1 => stack
+                .pop()
+                .ok_or_else(|| Error::ExprError("Pop failed".to_string())),
             _ => Ok(Self::Child(stack)),
         }
     }

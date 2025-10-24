@@ -1,5 +1,4 @@
 #![allow(clippy::unnecessary_wraps)]
-#![allow(dead_code)]
 #[cfg(feature = "yaml")]
 fn main() {
     use std::sync::OnceLock;
@@ -10,10 +9,9 @@ fn main() {
     pub static CFG: OnceLock<Config> = OnceLock::new();
 
     pub fn initialize_config() -> Result<&'static Config, anyhow::Error> {
-        let config = CFG.get_or_init(|| {
+        Ok(CFG.get_or_init(|| {
             Config::load_config().expect("Failed to load config")
-        });
-        Ok(config)
+        }))
     }
 
     pub fn get_config() -> &'static Config {
@@ -21,6 +19,7 @@ fn main() {
     }
 
     #[derive(Debug, Clone, Deserialize)]
+    #[allow(dead_code)]
     pub struct Config {
         pub port: u16,
         pub host: String,

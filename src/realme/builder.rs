@@ -2,6 +2,7 @@ use super::Realme;
 use crate::{
     Error,
     Map,
+    errors::ValidationError,
     prelude::*,
 };
 
@@ -11,8 +12,13 @@ use crate::{
 /// with a configured environment.
 impl RealmeBuilder {
     /// Creates a default `RealmeBuilder` instance.
-    pub fn new() -> Self {
-        Self::default()
+    pub const fn new() -> Self {
+        Self {
+            adaptors: Vec::new(),
+            profile:  None,
+            default:  None,
+            validate: false,
+        }
     }
 
     /// Adds an `Adaptor` to the builder based on its source type.
@@ -33,6 +39,21 @@ impl RealmeBuilder {
     #[must_use]
     pub fn load<A: Into<Adaptor>>(mut self, adaptor: A) -> Self {
         self.adaptors.push(adaptor.into());
+        self
+    }
+
+    /// Bulk load multiple adaptors at once.
+    ///
+    /// # Example
+    /// ```rust ignore
+    /// let builder = RealmeBuilder::new().loads(vec![a1, a2, a3]);
+    /// ```
+    #[must_use]
+    pub fn loads<I>(mut self, adaptors: I) -> Self
+    where
+        I: IntoIterator<Item = Adaptor>,
+    {
+        self.adaptors.extend(adaptors);
         self
     }
 
@@ -86,11 +107,34 @@ impl RealmeBuilder {
             })
         })?;
 
+        if let Some(default) = &self.default {
+            cache.merge(default);
+        }
+        if self.validate {
+            Self::run_validation(&cache)?;
+        }
+
         Ok(Realme {
             cache,
-            default: None,
+            default: self.default.clone(),
             builder: self,
         })
+    }
+
+    /// Provide default root configuration (merged first, overwritten later by
+    /// adaptors).
+    #[must_use]
+    pub fn with_defaults(mut self, defaults: Value) -> Self {
+        self.default = Some(defaults);
+        self
+    }
+
+    /// Enable or disable validation during build (placeholder for future
+    /// validation system).
+    #[must_use]
+    pub const fn validate_on_build(mut self, validate: bool) -> Self {
+        self.validate = validate;
+        self
     }
 
     pub(crate) fn check_profile(&mut self) -> Result<(), Error> {
@@ -108,9 +152,23 @@ impl RealmeBuilder {
             }
         });
         if profile_not_found {
+            let profile = self.profile.clone().unwrap_or_default();
             return Err(Error::new_build_error(format!(
-                "Can not find profile {}",
-                self.profile.as_ref().expect("Profile is not set")
+                "Can not find profile {profile}",
+            )));
+        }
+        Ok(())
+    }
+}
+
+impl RealmeBuilder {
+    fn run_validation(cache: &Value) -> Result<(), Error> {
+        if let Value::Table(t) = cache &&
+            t.len() == 0
+        {
+            return Err(Error::ValidationError(ValidationError::new(
+                "builder",
+                "Cache is empty after build with validate_on_build(true)",
             )));
         }
         Ok(())

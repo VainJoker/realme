@@ -89,7 +89,20 @@ fn main() -> Result<(), realme::Error> {
 
 ### Layered Configuration
 
-Layered configuration is a core feature of Realme, allowing you to load configurations from multiple sources where later configurations override earlier ones with the same name.
+Layered configuration lets you compose a final view from multiple sources (files, env vars, command-line, defaults). Realme applies a deterministic merge order:
+
+1. Explicit defaults passed via `with_defaults()` are merged first.
+2. Adaptors are sorted by their numeric `priority` (ascending). Lower priority loads first, higher priority overrides keys from earlier layers.
+3. Within the same priority, adaptors are merged in the order you call `.load()`.
+4. Environment/profile filtering: only adaptors whose `profile` matches the active builder profile (or have no profile) participate in the merge.
+
+Conflict resolution: when two tables contain the same key, the value from the later (higher priority or later insertion within equal priority) adaptor replaces the previous value (deep merge for tables; scalar/array replacement for non-table values).
+
+Arrays: arrays are replaced wholesale by later layers (no element-wise merge).
+
+Validation: if you enable `validate_on_build(true)`, a simple sanity check runs (currently: configuration must not be empty). More advanced validation hooks will arrive in future versions.
+
+Example demonstrating layered merge and priority:
 
 ```rust
 use realme::prelude::*;
@@ -112,17 +125,21 @@ struct AppConfig {
 }
 
 fn main() -> Result<(), realme::Error> {
-    // Set environment variables to demonstrate override
+    // Set environment variables to demonstrate override (env source will have highest priority if you assign larger number)
     env::set_var("APP_DATABASE_PASSWORD", "prod_secret_password");
     env::set_var("APP_DATABASE_HOST", "prod.database.com");
 
     let realme = Realme::builder()
-        // 1. First load default configuration
-        .load(Adaptor::new(FileSource::<TomlParser>::new("config/default.toml")))
-        // 2. Then load environment-specific configuration
-        .load(Adaptor::new(FileSource::<TomlParser>::new("config/production.toml")))
-        // 3. Finally load environment variables (highest priority)
-        .load(Adaptor::new(EnvSource::<EnvParser>::new("APP", Some("_"))))
+        // Provide a base inline default (merged first)
+        .with_defaults(Value::try_from(r#"{ "app_name": "FallbackApp" }"#).unwrap())
+        // 1. Load default file (priority 1)
+        .load(Adaptor::new(FileSource::<TomlParser>::new("config/default.toml")).priority(1))
+        // 2. Load production override (priority 5)
+        .load(Adaptor::new(FileSource::<TomlParser>::new("config/production.toml")).priority(5))
+        // 3. Load environment variables (priority 10: win over previous values)
+        .load(Adaptor::new(EnvSource::<EnvParser>::new("APP", Some("_")).priority(10)))
+        // Optional: enable build-time validation
+        .validate_on_build(true)
         .build()?;
 
     let config: AppConfig = realme.try_deserialize()?;

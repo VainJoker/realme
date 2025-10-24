@@ -1,5 +1,4 @@
 #[cfg(feature = "cmd")]
-#[allow(dead_code)]
 fn main() {
     use std::collections::HashMap;
 
@@ -56,6 +55,7 @@ fn main() {
     // but it is recommended for simple key-value pairs, because it need Args to
     // be serialized, which need to implement std::str::FromStr for the
     // struct and it is what i have done in cmdparser
+    #[allow(dead_code)]
     fn method2() {
         #[derive(Parser, Debug, Serialize)]
         #[clap(author, version, about)]

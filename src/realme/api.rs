@@ -214,4 +214,73 @@ impl Realme {
         }
         Ok(())
     }
+
+    /// Returns true if the given key exists in the configuration.
+    ///
+    /// # Example
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let mut realme = Realme::builder().build().expect("build config");
+    /// realme.set("debug", true).expect("set");
+    /// assert!(realme.has("debug"));
+    /// assert!(!realme.has("missing"));
+    /// ```
+    pub fn has<K: AsRef<str>>(&self, key: K) -> bool {
+        self.get(key).is_some()
+    }
+
+    /// Get the value as T or return provided default.
+    ///
+    /// This will attempt deserialization; if the key is missing or
+    /// deserialization fails the provided default is returned.
+    ///
+    /// # Example
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let mut realme = Realme::builder().build().expect("build config");
+    /// assert_eq!(realme.get_or_default::<i32, _>("port", 8080), 8080);
+    /// realme.set("port", 9090).expect("set");
+    /// assert_eq!(realme.get_or_default::<i32, _>("port", 8080), 9090);
+    /// ```
+    pub fn get_or_default<V, K: AsRef<str>>(&self, key: K, default: V) -> V
+    where
+        V: DeserializeOwned + Clone,
+    {
+        self.get_as::<V, _>(key).unwrap_or(default)
+    }
+
+    /// Remove a key from the configuration cache and return its owned value.
+    /// Does not touch defaults (only runtime cache mutation).
+    ///
+    /// # Example
+    /// ```rust
+    /// use realme::prelude::*;
+    /// let mut realme = Realme::builder().build().expect("build config");
+    /// realme.set("feature", "x").expect("set");
+    /// let removed = realme.remove("feature");
+    /// assert_eq!(removed, Some(Value::String("x".to_string())));
+    /// assert!(realme.get("feature").is_none());
+    /// ```
+    pub fn remove<K: AsRef<str>>(&mut self, key: K) -> Option<Value> {
+        match &mut self.cache {
+            Value::Table(t) => t.remove(key.as_ref()),
+            _ => None,
+        }
+    }
+
+    /// Returns all top-level keys in insertion order.
+    pub fn keys(&self) -> Vec<String> {
+        match &self.cache {
+            Value::Table(t) => t.keys().cloned().collect(),
+            _ => Vec::new(),
+        }
+    }
+
+    /// Returns references to all top-level values.
+    pub fn values(&self) -> Vec<&Value> {
+        match &self.cache {
+            Value::Table(t) => t.values().collect(),
+            _ => Vec::new(),
+        }
+    }
 }

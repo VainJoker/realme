@@ -102,12 +102,3 @@ fn update_cache(
     })?;
     Ok(cache)
 }
-
-// impl SharedRealme {
-//     pub fn get_realme(&self) -> Result<&Realme> {
-//         let Ok(realme) = self.0.read() else {
-//             return Err(Error::LockError("realme".to_string()));
-//         };
-//         Ok(realme)
-//     }
-// }

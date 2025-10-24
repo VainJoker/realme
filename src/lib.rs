@@ -1,10 +1,8 @@
-// Internal modules (not publicly exposed) ----------------------------------
 mod adaptor; // core adaptor system (Parser/Source implementations live here)
 mod realme; // core Realme + builder implementation
 mod utils; // internal utilities (Map, template helpers, wrappers)
 mod value; // Value representation
 
-// Curated public prelude (kept public for ergonomic downstream imports)
 pub mod errors;
 pub mod prelude;
 
@@ -28,8 +26,6 @@ pub use adaptor::parser::yaml::YamlParser;
 pub use adaptor::source::cmd::CmdSource;
 #[cfg(feature = "env")]
 pub use adaptor::source::env::EnvSource;
-// Core public types (narrow surface)
-// ---------------------------------------
 pub use adaptor::{
     Adaptor,
     parser::{

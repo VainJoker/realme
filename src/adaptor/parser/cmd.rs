@@ -1,3 +1,7 @@
+use std::borrow::Cow;
+
+use smallvec::SmallVec;
+
 use crate::{
     Error,
     Map,
@@ -21,7 +25,8 @@ impl CmdParser {
     /// Parse a command string into key-value pairs
     fn parse_pairs(input: &str) -> Result<Vec<(String, String)>, Error> {
         let mut pairs = Vec::new();
-        let mut current = String::new();
+        // stack allocate common small command segments
+        let mut current: SmallVec<[char; 256]> = SmallVec::new();
         let mut in_quotes = false;
         let mut escape_next = false;
 
@@ -29,32 +34,36 @@ impl CmdParser {
             if escape_next {
                 current.push(ch);
                 escape_next = false;
-            } else if ch == '\\' && in_quotes {
-                current.push(ch);
-                escape_next = true;
-            } else if ch == '"' {
-                in_quotes = !in_quotes;
-                current.push(ch);
-            } else if ch == ',' && !in_quotes {
-                if !current.trim().is_empty() &&
-                    let Some((key, value)) =
-                        Self::parse_single_pair(&current)?
-                {
-                    pairs.push((key, value));
+                continue;
+            }
+            match ch {
+                '\\' if in_quotes => {
+                    current.push(ch);
+                    escape_next = true;
                 }
-                current.clear();
-            } else {
-                current.push(ch);
+                '"' => {
+                    in_quotes = !in_quotes;
+                    current.push(ch);
+                }
+                ',' if !in_quotes => {
+                    if !current.is_empty() {
+                        let seg: String = current.iter().collect();
+                        if let Some((k, v)) = Self::parse_single_pair(&seg)? {
+                            pairs.push((k, v));
+                        }
+                    }
+                    current.clear();
+                }
+                _ => current.push(ch),
             }
         }
 
-        // Handle the last pair
-        if !current.trim().is_empty() &&
-            let Some((key, value)) = Self::parse_single_pair(&current)?
-        {
-            pairs.push((key, value));
+        if !current.is_empty() {
+            let seg: String = current.iter().collect();
+            if let Some((k, v)) = Self::parse_single_pair(&seg)? {
+                pairs.push((k, v));
+            }
         }
-
         Ok(pairs)
     }
 
@@ -85,7 +94,11 @@ impl CmdParser {
             ));
         }
 
-        Ok(Some((key.to_string(), value.to_string())))
+        // Use Cow to avoid allocation when possible
+        Ok(Some((
+            Cow::from(key).into_owned(),
+            Cow::from(value).into_owned(),
+        )))
     }
 
     /// Parse a string value into the appropriate Value type
